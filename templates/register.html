@@ -1,0 +1,27 @@
+{% extends "base_login.html" %}
+{% block conteudo %}
+
+<h1>Register</h1>
+
+<form method="POST" action="/sing_in">
+    <div class="">
+        <label for="name" class="">Nome</label>
+        <div class="">
+          <input type="text" class="form-control" id="name" name="name" placeholder="name">
+        </div>
+      <label for="email" class="">Email</label>
+      <div class="">
+        <input type="text" class="form-control" id="email" name="email" placeholder="e-mail">
+      </div>
+    </div>
+    <div class="">
+      <label for="Password" class="">Senha</label>
+      <div class="">
+        <input type="password" class="form-control" id="Password" name="password" placeholder="Senha">
+      </div>
+    </div>
+    <div class="">
+      <button type="submit" class="btn btn-primary">Entrar</button>
+    </div>
+  </form>
+{% endblock %}
