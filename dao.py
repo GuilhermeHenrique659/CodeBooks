@@ -1,20 +1,18 @@
-from errno import errorcode
-from tkinter import E
-
-import MySQLdb
+import sqlite3
 from models import User
 
-SQL_SEARCH_USER_LOGIN = 'select * from user where email=%s'
-SQL_CREATE_USER = 'INSERT INTO user (name, email, age, password) VALUES (%s,%s,0000-00-00,%s)'
+SQL_SEARCH_USER_LOGIN = 'select * from user where email=?'
+SQL_CREATE_USER = 'INSERT INTO user (name, email, age, password) VALUES (?,?,0000-00-00,?)'
 
 class UserDao:
     def __init__(self, db) -> None:
         self.__db = db
 
     def user_search_login(self,user_data):
-        cursor = self.__db.connection.cursor()
+        cursor = self.__db.cursor()
         cursor.execute(SQL_SEARCH_USER_LOGIN, (user_data,) )
         data = cursor.fetchone()
+        print(data)
         try:
             user = User(data['name'],data['email'],data['password'],data['idUser'])
             return user
@@ -22,18 +20,17 @@ class UserDao:
             return None
         
     def create_user(self,user):
-        cursor = self.__db.connection.cursor()
+        cursor = self.__db.cursor()
         try:
             if user._id:
                 pass
             else:
                 cursor.execute(SQL_CREATE_USER,(user._name,user._email,user._password,) )
-        except MySQLdb.IntegrityError as error:
+        except sqlite3.IntegrityError as error:
             print(error)
             return error.args[0]
-        cursor._id = cursor.lastrowid
-        self.__db.connection.commit()
-        return cursor._id
+        self.__db.commit()
+        return cursor.lastrowid
 
 
     

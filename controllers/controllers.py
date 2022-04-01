@@ -1,15 +1,18 @@
-from flask import flash, redirect, render_template, request, url_for
+from flask import flash, redirect, render_template, request, url_for, session
 from config import server
 from dao import UserDao
 from models import User
 
 user_dao = UserDao(server.db)
 
+
 class ControllerLogin:
     def __init__(self) -> None:
         pass
 
     def index(self):
+        if 'login_user' not in session or session['login_user'] == None:
+            return redirect(url_for('login'))
         return '<h1>CodeBooks</h1>'
 
     def login(self):
@@ -20,6 +23,7 @@ class ControllerLogin:
         user = user_dao.user_search_login(data['email'])
         if user:
             if user._password == data['password']:
+                session['login_user'] = data['email']
                 return redirect(url_for('index'))
             else:
                 flash('senha errada')
