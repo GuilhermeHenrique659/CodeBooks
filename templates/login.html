@@ -6,6 +6,7 @@
 
 
     <form method="POST" action="/authenticate">
+      <input type="hidden" name="url" value="{{url}}">
         <div class="">
           <label for="email" class="">Email</label>
           <div class="">
@@ -20,6 +21,9 @@
         </div>
         <div class="">
           <button type="submit" class="btn btn-primary">Entrar</button>
+        </div>
+        <div>
+          <button type="button" class="btn btn-secundary"><a href="{{url_for('register')}}">Registrar</a></button>
         </div>
       </form>
 {% endblock %}
