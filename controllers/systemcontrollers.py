@@ -24,10 +24,10 @@ class ControllerLogin:
                 return redirect(url_for('index'))
             else:
                 flash('senha errada')
-                return redirect(url_for(data['url']))
+                return redirect(url_for('login'))
         else:
             flash('usuario nao encontrado')
-            return redirect(url_for(data['url']))
+            return redirect(url_for('login'))
 
     def logout(self):
         session['login_user'] = None
@@ -44,7 +44,8 @@ class ControllerRegister:
         data = request.form
         user = User(data['name'],data['email'],data['password'])
         result = user_dao.create_user(user)
-        if result == 1062:
+        if result == "email not available":
+            print(result)
             flash('email ja ultilizado')
             return redirect(url_for('register'))
         else:

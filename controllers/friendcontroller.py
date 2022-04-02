@@ -12,7 +12,7 @@ class ControllerFriend:
         if 'login_user' not in session or session['login_user'] == None:
             return redirect(url_for('login'))
         username = request.get_json(force = True)
-        users_find = friend_dao.user_search(username['user'])
+        users_find = friend_dao.user_search(username['user'],session['user_id'])
         users_list_json = [user.change_for_json() for user in users_find]
         return jsonify(users_list_json)
 
