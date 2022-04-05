@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../static/css/home.css">
+    <script src="../static/js/home.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="../static/styles/default.min.css">
+    <script src="../static/highlight.min.js"></script>
+    <script>
+        hljs.highlightAll();
+    </script>
+    <title>Document</title>
+    <meta name="theme-color" content="#7952b3">
+
+
+    <style>
+        .post {
+            margin: 30px;
+            margin-left: 50px;
+            
+        }
+        .user {
+            display: flex;
+            align-items: center;
+        }
+        .user h3 {
+            margin-left: 20px;
+            
+        }
+        .post {
+            margin-top: 20px;
+        }
+        .post h4 {
+            margin-top: 15px;
+        }
+        .post p {
+            margin-top: 15px;
+        }
+
+        #friend-list-btn {
+            background-color: #20212B;
+            border: none;
+            position: fixed;
+            width: 200px;
+            left: 85%;
+        }
+
+        .gear_edit {
+            padding: 20px;
+            color: white;
+        }
+
+        .edit_button {
+            border: none;
+            background: none;
+            text-align: center;
+
+        }
+
+        .username {
+            font-size: 30px;
+            margin-top: 100px;
+            text-align: center;
+            color: white;
+        }
+
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+
+
+    <!-- Custom styles for this template -->
+    <link href="dashboard.css" rel="stylesheet">
+</head>
+
+<body style="background-color: #220018;">
+
+    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">Company name</a>
+        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search"
+            style="background-color: #20212B; border: none;">
+        <div class="navbar-nav">
+            <div class="nav-item text-nowrap">
+                <a class="nav-link px-3" href="{{url_for('logout')}}">Sign out</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <nav id="sidebarMenu" style="background-color: #20212B; position: fixed;"
+                class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3">
+                    {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <strong> {{ message }}.</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                    {% if session['login_user'] %}
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <div class="text-center" style="margin-top: 25px; padding: 20px;">
+                                <img src="https://static.wikia.nocookie.net/simpsons/images/0/01/200px-Langdon_Alger.png/revision/latest?cb=20200719135938&path-prefix=pt"
+                                    class="rounded-circle float-start" width="160" height="160" alt="...">
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <h1 class="username">
+                                <span data-feather="home"></span>
+                                {{session['username']}}
+                            </h1>
+                        </li>
+                        <li class="nav-item">
+                            <button class="edit_button">
+                                <a style="text-decoration: none; color: white;" href=""><img
+                                        src="../static/img/icon/gear.svg" alt="" class="gear_edit">Editar perfil</a>
+                            </button>
+                        </li>
+                        <hr>
+                    </ul>
+                    {% endif %}
+                    {% if session['login_user'] == None %}
+                    <form method="POST" action="/authenticate">
+                        <input type="hidden" name="url" value="index">
+                        <div class="">
+                            <label for="email" class="">Email</label>
+                            <div class="">
+                                <input type="text" class="form-control" id="email" name="email"
+                                    placeholder="Usuario ou e-mail">
+                            </div>
+                        </div>
+                        <div class="">
+                            <label for="Password" class="">Senha</label>
+                            <div class="">
+                                <input type="password" class="form-control" id="Password" name="password"
+                                    placeholder="Senha">
+                            </div>
+                        </div>
+                        <div class="">
+                            <button type="submit" class="btn btn-primary">Entrar</button>
+                        </div>
+                    </form>
+                    {% endif %}
+                </div>
+            </nav>
+            {% if session['login_user'] %}
+            <div class="btn-group dropup" id="friend-list" style="align-items: flex-end;">
+                <button type="button" class="btn btn-secondary fixed-bottom" id="friend-list-btn"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    Lista de amigos
+                </button>
+
+                <ul class="dropdown-menu" id="user_list_iten">
+                    <input type="text" id="search_user" name="user">
+                    {% for friend in friend_list %}
+                    <li><a class="dropdown-item" href="">{{ friend._name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            <div class="container">
+                <div class="row align-items-start"
+                    style="position: static; margin-left: 270px; margin-top: 200px; margin-right: 200px;">
+                    <div class="col">
+                        <div class="card">
+                            {% if session['login_user'] %}
+                            <div class="card-header">
+                                <img src="https://static.wikia.nocookie.net/simpsons/images/0/01/200px-Langdon_Alger.png/revision/latest?cb=20200719135938&path-prefix=pt"
+                                    class="rounded float-start" alt="..." width="35"> {{session['username']}}
+                            </div>
+                            {% endif %}
+                            <div class="card-body">
+                                <!-- Button trigger modal -->
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal">
+                                    Launch demo modal
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1"
+                                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                ...
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
+                                                <button type="button" class="btn btn-primary">Save changes</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="post">
+                                    <div class="user">
+                                        <div class="user_photo">
+                                            <img src="https://static.wikia.nocookie.net/simpsons/images/0/01/200px-Langdon_Alger.png/revision/latest?cb=20200719135938&path-prefix=pt"
+                                                class="rounded-circle" width="64" height="64" alt="...">
+                                        </div>
+                                        <div class="user_name">
+                                            <h3>nome do Usuario</h3>
+                                        </div>
+                                    </div>
+                                    <div class="title">
+                                        <h4>Titulo da postagem</h4>
+                                    </div>
+                                    <div class="post_desc">
+                                        <p>Descrição da postagem</p>
+                                    </div>
+
+                                    <div class="post_content">
+                                        <p>Conteudo da postagem</p>
+                                    </div>
+
+                                    <div class="post_lick">
+                                        <form action="">
+                                            <input type="radio">like
+                                        </form>
+                                    </div>
+                                </div>
+                                {% if post_list %}
+                                {% for post in post_list %}
+
+                                {% endfor %}
+                                {% else %}
+                                <h4>Não possui nenhuma postagem para visualizar</h4>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+        integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+        integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous">
+    </script>
+    <script>
+        var input = document.getElementById("search_user");
+        input.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                var xml = new XMLHttpRequest();
+                xml.open("POST", "{{url_for('search_user')}}", true);
+                xml.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xml.onload = function () {
+                    var dataReply = JSON.parse(this.responseText);
+
+                    for (var i = 0; i < dataReply.length; i++) {
+                        const li = document.createElement('li');
+                        const a = document.createElement('a');
+                        a.classList.add("dropdown-item")
+                        a.href = '/add_friend/' + dataReply[i].id
+                        li.appendChild(a)
+                        const node = document.createTextNode(dataReply[i].name);
+                        a.appendChild(node)
+                        console.log(dataReply[i].name)
+                        document.getElementById("user_list_iten").appendChild(li)
+                    }
+                };
+                dataSend = JSON.stringify({
+                    'user': input.value
+                });
+                xml.send(dataSend)
+            }
+        });
+    </script>
+</body>
+
+</html>
