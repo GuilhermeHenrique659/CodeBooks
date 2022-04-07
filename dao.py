@@ -2,12 +2,19 @@ import sqlite3
 from models import User, Post
 
 SQL_FRIEND_LIST_FRIEND = 'SELECT idUser, name FROM Friendship join user on Friendship.Friend_idUser = user.idUser where ( User_idUser = ? or Friend_idUser = ?) and idUser != ?'
+
 SQL_FRIEND_LIST_USER = 'SELECT idUser, name FROM Friendship join user on Friendship.User_idUser = user.idUser where ( User_idUser = ? or Friend_idUser = ?) and idUser != ?'
+
 SQL_FRIEND_EXISTS = 'SELECT * FROM Friendship WHERE (User_idUser = ? and Friend_idUser = ?) or ( User_idUser = ? and Friend_idUser = ?) '
+
 SQL_SEARCH_USER = 'select name, idUser from user where name=? and idUser !=?'
+
 SQL_SEARCH_USER_LOGIN = 'select * from user where email=?'
+
 SQL_CREATE_USER = 'INSERT INTO user (name, email, age, password) VALUES (?,?,0000-00-00,?)'
+
 SQL_ADD_FRIEND = 'INSERT INTO Friendship (User_idUser,Friend_idUser) VALUES (?,?)'
+
 SQL_LIST_POST = 'SELECT * FROM Post JOIN User ON User.idUser = Post.User_idUser'
 
 
@@ -20,6 +27,7 @@ class FriendDao:
         cursor.execute(SQL_SEARCH_USER, (name, iduser))
         users_data = self.__translate_to_list(cursor.fetchall())
         return users_data
+
 
     def friend_list(self, user_id):
         cursor = self.__db.cursor()

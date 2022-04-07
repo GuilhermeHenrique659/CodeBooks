@@ -2,6 +2,7 @@ from config import server
 
 cursor = server.db.cursor()
 
+
 cursor.execute(''' 
 CREATE TABLE IF NOT EXISTS `User` (
   `idUser` INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -27,7 +28,7 @@ CREATE TABLE IF NOT EXISTS `Friendship` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 
-CREATE TABLE IF NOT EXISTS `CodeBooksDB`.`Post` (
+CREATE TABLE IF NOT EXISTS `Post` (
   `idPost` INTEGER PRIMARY KEY AUTOINCREMENT,
   `title` VARCHAR(45) NOT NULL,
   `description` TEXT NOT NULL,
@@ -43,19 +44,26 @@ CREATE TABLE IF NOT EXISTS `CodeBooksDB`.`Post` (
 ENGINE = InnoDB;
 
 
-CREATE TABLE IF NOT EXISTS `CodeBooksDB`.`Code` (
-  `idtable1` INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE IF NOT EXISTS `Code` (
+  `idCode` INTEGER PRIMARY KEY AUTOINCREMENT,
   `code` TEXT NOT NULL,
   `created_at` TIMESTAMP NOT NULL,
   `Post_idPost` INTEGER NOT NULL,
+  `User_id` INTERGER NOT NULL,
   CONSTRAINT `fk_Code_Post1`
     FOREIGN KEY (`Post_idPost`)
     REFERENCES `Post` (`idPost`)
     ON DELETE CASCADE
-    ON UPDATE CASCADE)
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_Code_User`
+    FOREIGN KEY (`User_id`)
+    REFERENCES `User` (`idUser`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    )
 
 
-CREATE TABLE IF NOT EXISTS `CodeBooksDB`.`Comment` (
+CREATE TABLE IF NOT EXISTS `Comment` (
   `idComment` INTEGER PRIMARY KEY AUTOINCREMENT,
   `Comment` TEXT NOT NULL,
   `like_cont` INTEGER NULL,
@@ -71,5 +79,4 @@ CREATE TABLE IF NOT EXISTS `CodeBooksDB`.`Comment` (
     REFERENCES `User` (`idUser`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
-
 ''')

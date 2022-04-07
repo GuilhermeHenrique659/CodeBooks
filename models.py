@@ -17,7 +17,7 @@ class User:
         return self._name
 
 class Post:
-    def __init__(self,title, description, user, create_at = None, update_at = None, like_cont = None, idPost = None) -> None:
+    def __init__(self,title, description, user, create_at = None, update_at = None, like_cont = None, idPost = None, code = None) -> None:
         self._idPost = idPost
         self._title = title
         self._description = description
@@ -25,3 +25,14 @@ class Post:
         self._create_at = create_at
         self._update_at = update_at
         self._user = user
+        self._user = code
+
+class Code:
+    def __init__(self, code, idPost, idUser, created_at = None) -> None:
+        self._code = code
+        self._idPost = idPost
+        self._idUser = idUser
+        self._created_at = created_at
+        
+
+  
