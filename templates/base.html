@@ -281,19 +281,23 @@
         var input = document.getElementById("search_user");
         input.addEventListener("keyup", function (event) {
             if (event.keyCode === 13) {
-                list = document.getElementById('user_list_iten')
-                for (child of list.children) {
-                    child.
+                list = document.querySelectorAll('.line-friend')
+                for (i of list) {
+                    i.remove()
                 }
                 var xml = new XMLHttpRequest();
                 xml.open("POST", "{{url_for('search_user')}}", true);
                 xml.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                 xml.onload = function () {
-
+                    list = document.querySelectorAll('.line-friend')
+                    for (i of list) {
+                        i.remove()
+                    }
                     if (this.status == 200) {
                         var dataReply = JSON.parse(this.responseText);
                         for (var i = 0; i < dataReply.length; i++) {
                             const li = document.createElement('li');
+                            li.classList.add('line-friend')
                             const a = document.createElement('a');
                             a.classList.add("dropdown-item")
                             a.href = '/add_friend/' + dataReply[i].id
@@ -301,14 +305,15 @@
                             const node = document.createTextNode(dataReply[i].name);
                             a.appendChild(node)
                             document.getElementById("user_list_iten").appendChild(li)
+
                         }
                     } else {
                         const li = document.createElement('li');
                         const response = document.createTextNode("Nenhum usuario encontrado")
+                        li.classList.add('line-friend')
                         li.appendChild(response)
                         document.getElementById("user_list_iten").appendChild(li)
                     }
-
                 };
                 dataSend = JSON.stringify({
                     'user': input.value
