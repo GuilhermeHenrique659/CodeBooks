@@ -13,8 +13,11 @@ class ControllerFriend:
             return redirect(url_for('login'))
         username = request.get_json(force = True)
         users_find = friend_dao.user_search(username['user'],session['user_id'])
-        users_list_json = [user.change_for_json() for user in users_find]
-        return jsonify(users_list_json)
+        if len(users_find) > 0:
+            users_list_json = [user.change_for_json() for user in users_find]
+            return jsonify(users_list_json),200
+        else:
+            return jsonify({'message':'nenhum usuario encontrado'}),204
 
     def add_friend(self,id):
         if 'login_user' not in session or session['login_user'] == None:

@@ -27,7 +27,11 @@ CREATE TABLE IF NOT EXISTS `Friendship` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 
+<<<<<<< HEAD
 CREATE TABLE IF NOT EXISTS `CodeBooksDB`.`Post` (
+=======
+CREATE TABLE IF NOT EXISTS `Post` (
+>>>>>>> bfac567bf5eae9248b39eff22783a62b35c5ca5d
   `idPost` INTEGER PRIMARY KEY AUTOINCREMENT,
   `title` VARCHAR(45) NOT NULL,
   `description` TEXT NOT NULL,
@@ -43,19 +47,41 @@ CREATE TABLE IF NOT EXISTS `CodeBooksDB`.`Post` (
 ENGINE = InnoDB;
 
 
+<<<<<<< HEAD
 CREATE TABLE IF NOT EXISTS `CodeBooksDB`.`Code` (
   `idtable1` INTEGER PRIMARY KEY AUTOINCREMENT,
   `code` TEXT NOT NULL,
   `created_at` TIMESTAMP NOT NULL,
   `Post_idPost` INTEGER NOT NULL,
+=======
+CREATE TABLE IF NOT EXISTS `Code` (
+  `idCode` INTEGER PRIMARY KEY AUTOINCREMENT,
+  `code` TEXT NOT NULL,
+  `created_at` TIMESTAMP NOT NULL,
+  `Post_idPost` INTEGER NOT NULL,
+  `User_id` INTERGER NOT NULL,
+>>>>>>> bfac567bf5eae9248b39eff22783a62b35c5ca5d
   CONSTRAINT `fk_Code_Post1`
     FOREIGN KEY (`Post_idPost`)
     REFERENCES `Post` (`idPost`)
     ON DELETE CASCADE
+<<<<<<< HEAD
     ON UPDATE CASCADE)
 
 
 CREATE TABLE IF NOT EXISTS `CodeBooksDB`.`Comment` (
+=======
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_Code_User`
+    FOREIGN KEY (`User_id`)
+    REFERENCES `User` (`idUser`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+    )
+
+
+CREATE TABLE IF NOT EXISTS `Comment` (
+>>>>>>> bfac567bf5eae9248b39eff22783a62b35c5ca5d
   `idComment` INTEGER PRIMARY KEY AUTOINCREMENT,
   `Comment` TEXT NOT NULL,
   `like_cont` INTEGER NULL,
@@ -71,5 +97,8 @@ CREATE TABLE IF NOT EXISTS `CodeBooksDB`.`Comment` (
     REFERENCES `User` (`idUser`)
     ON DELETE CASCADE
     ON UPDATE CASCADE)
+<<<<<<< HEAD
 
+=======
+>>>>>>> bfac567bf5eae9248b39eff22783a62b35c5ca5d
 ''')
