@@ -4,6 +4,7 @@ __pycache__/config.cpython-310.pyc
 __pycache__/dao.cpython-310.pyc
 __pycache__/models.cpython-310.pyc
 __pycache__/route.cpython-310.pyc
+__pycache__/
 appvenv/pyvenv.cfg
 appvenv/Lib/site-packages/distutils-precedence.pth
 appvenv/Lib/site-packages/_distutils_hack/__init__.py
@@ -1699,4 +1700,4 @@ controllers/__pycache__/systemcontrollers.cpython-310.pyc
 controllers/__pycache__/feedcontrollers.cpython-310.pyc
 controllers/__pycache__/friendcontroller.cpython-310.pyc
 controllers/__pycache__/systemcontrollers.cpython-310.pyc
-controllers/__pycache__/*
+controllers/__pycache__/
