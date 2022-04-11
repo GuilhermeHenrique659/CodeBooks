@@ -2,12 +2,13 @@ from config import server
 from controllers.systemcontrollers import ControllerLogin,ControllerRegister
 from controllers.feedcontrollers import ControllerFeed
 from controllers.friendcontroller import ControllerFriend
+from controllers.postcontrollers import ControllerPost
 
 login_controllers = ControllerLogin()
 register_controller = ControllerRegister()
 feed_controller = ControllerFeed()
 friend_controller = ControllerFriend()
-
+post_controller = ControllerPost()
 class Routes:
     def __init__(self) -> None:
         server.app.add_url_rule('/',endpoint='index',view_func=feed_controller.index)
@@ -25,3 +26,5 @@ class Routes:
         server.app.add_url_rule('/search_user', endpoint='search_user', view_func=friend_controller.seach_user, methods=['POST','GET'])
 
         server.app.add_url_rule('/add_friend/<int:id>',endpoint='add_friend',view_func=friend_controller.add_friend, methods=['GET'])
+
+        server.app.add_url_rule('/create_post', endpoint='create_post', view_func=post_controller.create_post,methods = ['POST'])
