@@ -14,6 +14,8 @@ SQL_SEARCH_USER_LOGIN = 'select * from user where email=?'
 
 SQL_CREATE_USER = 'INSERT INTO user (name, email, age, password) VALUES (?,?,0000-00-00,?)'
 
+SQL_EDIT_USER = 'UPDATE user SET name=?,email=?,age=?,image=?,job=?,password=? WHERE idUser=?'
+
 SQL_ADD_FRIEND = 'INSERT INTO Friendship (User_idUser,Friend_idUser) VALUES (?,?)'
 
 SQL_LIST_POST = 'SELECT * FROM Post JOIN User ON User.idUser = Post.User_idUser'
@@ -74,8 +76,10 @@ class UserDao:
         cursor.execute(SQL_SEARCH_USER_LOGIN, (user_data,))
         data = cursor.fetchone()
         try:
+            if not data['image']:
+                data['image'] = 'image_not_found.jfif'
             user = User(data['name'], data['email'],
-                        data['password'], data['idUser'])
+                        data['password'], data['idUser'], image=data['image'])
             return user
         except:
             return None
@@ -84,7 +88,8 @@ class UserDao:
         cursor = self.__db.cursor()
         try:
             if user._id:
-                pass
+                cursor.execute(SQL_EDIT_USER, (user._name,user._email,user._age,user._image,
+                                                user._job,user._password,user._id))
             else:
                 cursor.execute(SQL_CREATE_USER, (user._name,
                                user._email, user._password,))
@@ -98,6 +103,8 @@ class UserDao:
         try:
             cursor.execute(SQL_SEARCH_USER_PROFILE, (id,))
             data_user_db = cursor.fetchone()
+            if not data_user_db['image']:
+                data_user_db['image'] = 'image_not_found.jfif'
             return User(data_user_db['name'],data_user_db['email'],None,data_user_db['idUser'],
                             data_user_db['age'],data_user_db['image'],data_user_db['job'])
         except:

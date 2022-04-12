@@ -1,6 +1,6 @@
 
 from config import server
-from controllers.systemcontrollers import ControllerLogin,ControllerRegister
+from controllers.systemcontrollers import ControllerLogin,ControllerRegister, ControllerUploads
 from controllers.feedcontrollers import ControllerFeed
 from controllers.friendcontroller import ControllerFriend
 from controllers.postcontrollers import ControllerPost
@@ -13,6 +13,8 @@ feed_controller = ControllerFeed()
 friend_controller = ControllerFriend()
 post_controller = ControllerPost()
 user_controller = ControllerUser()
+uploads_controller = ControllerUploads()
+
 class Routes:
     def __init__(self) -> None:
         server.app.add_url_rule('/',endpoint='index',view_func=feed_controller.index)
@@ -34,3 +36,7 @@ class Routes:
         server.app.add_url_rule('/create_post', endpoint='create_post', view_func=post_controller.create_post,methods = ['POST'])
 
         server.app.add_url_rule('/user_profile', endpoint='user_profile', view_func= user_controller.user_profile )
+
+        server.app.add_url_rule('/user_edit_save', endpoint='user_save',view_func=user_controller.user_edit_save,methods = ['POST'])
+
+        server.app.add_url_rule('/uploads/<filename>',endpoint='uploads',view_func=uploads_controller.upload_folder)

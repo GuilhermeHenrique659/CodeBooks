@@ -19,7 +19,10 @@ class User:
         'password': self._password,
         'image': self._image
       }
-        
+
+    def set_image(self,image):
+      self._image = image
+
     def __str__(self) -> str:
         return self._name
 

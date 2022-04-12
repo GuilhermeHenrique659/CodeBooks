@@ -131,7 +131,7 @@
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <div class="text-center" style="margin-top: 25px; padding: 20px;">
-                                <img src="../static/img/icon/image_not_found.jfif"
+                                <img src="{{ url_for('uploads', filename=session['user_img'] ) }}"
                                     class="rounded-circle float-start" width="160" height="160" alt="...">
                             </div>
                         </li>
@@ -142,10 +142,13 @@
                             </h1>
                         </li>
                         <li class="nav-item">
-                            <button class="edit_button">
-                                <a style="text-decoration: none; color: white;" href="/user_profile?pag=view"><img
-                                        src="../static/img/icon/gear.svg" alt="" class="gear_edit">Editar perfil</a>
-                            </button>
+                            <a style="text-decoration: none; color: white;"
+                                href="{{ url_for('user_profile' ,pag='view') }}">
+                                <button class="edit_button" style="color: white;">
+                                    <img src="{{url_for('static', filename='img/icon/gear.svg')}}" alt=""
+                                        class="gear_edit">Editar perfil
+                                </button>
+                            </a>
                         </li>
                         <hr>
                     </ul>

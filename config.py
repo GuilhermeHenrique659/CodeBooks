@@ -7,7 +7,7 @@ class Server:
     def __init__(self) -> None:
         self.__app = Flask(__name__)
         self.__app.secret_key='Codebooks'
-        self.__app.config['UPLOAD_FOLDER'] = os.path.abspath(os.path.dirname(__file__))+'\\uploads'
+        self.__app.config['UPLOAD_FOLDER'] = os.path.abspath(os.path.dirname(__file__))+'/uploads'
         self.__db = sqlite3.connect('db.sqlite', check_same_thread=False)
 
     def __dictionary_cursor(self, cursor, row):
