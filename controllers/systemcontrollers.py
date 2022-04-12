@@ -43,7 +43,7 @@ class ControllerRegister:
     def sing_in(self):
         data = request.form
         user = User(data['name'],data['email'],data['password'])
-        result = user_dao.create_user(user)
+        result = user_dao.save_user(user)
         if result == "email not available":
             flash('email ja ultilizado')
             return redirect(url_for('register'))

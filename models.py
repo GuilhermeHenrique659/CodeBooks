@@ -1,16 +1,23 @@
+
+
+
 class User:
-    def __init__(self,name,email,password,id=None) -> None:
+    def __init__(self,name,email,password,id  =None, age = None, image = None, job = None) -> None:
         self._id = id
         self._name = name
         self._email = email
         self._password = password
+        self._age = age
+        self._image = image
+        self._job = job
 
     def change_for_json(self):
       return {
         'id':self._id,
         'name': self._name,
         'email': self._email,
-        'password': self._password
+        'password': self._password,
+        'image': self._image
       }
         
     def __str__(self) -> str:

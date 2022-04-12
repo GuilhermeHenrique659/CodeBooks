@@ -1,3 +1,4 @@
+
 import sqlite3
 from models import User, Post
 
@@ -20,6 +21,9 @@ SQL_LIST_POST = 'SELECT * FROM Post JOIN User ON User.idUser = Post.User_idUser'
 SQL_CREATE_POST = 'INSERT INTO post (title, description, User_idUser) VALUES (?,?,?,?)'
 
 SQL_CREATE_CODE = 'INSERT INTO code (code, Post_idPost, User_id) VALUES (?,?,?) '
+
+SQL_SEARCH_USER_PROFILE = 'SELECT * FROM user where idUser = ?'
+
 
 class FriendDao:
     def __init__(self, db) -> None:
@@ -76,7 +80,7 @@ class UserDao:
         except:
             return None
 
-    def create_user(self, user) -> int:
+    def save_user(self, user) -> int:
         cursor = self.__db.cursor()
         try:
             if user._id:
@@ -88,6 +92,18 @@ class UserDao:
             return "email not available"
         self.__db.commit()
         return cursor.lastrowid
+
+    def search_user_profile(self, id):
+        cursor = self.__db.cursor()
+        try:
+            cursor.execute(SQL_SEARCH_USER_PROFILE, (id,))
+            data_user_db = cursor.fetchone()
+            return User(data_user_db['name'],data_user_db['email'],None,data_user_db['idUser'],
+                            data_user_db['age'],data_user_db['image'],data_user_db['job'])
+        except:
+            return None
+
+
 
 
 class PostDao:
