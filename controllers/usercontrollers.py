@@ -10,9 +10,9 @@ user_dao = UserDao(server.db)
 class ControllerUser:
     def __init__(self) -> None:
         pass
+
+    @server.loggin_required
     def user_profile(self):
-        if 'login_user' not in session or session['login_user'] == None:
-            return redirect(url_for('login'))
         User_profile = user_dao.search_user_profile(session['user_id'])
         try:
             pag = request.args['pag']  
@@ -23,9 +23,8 @@ class ControllerUser:
         else:
             return render_template('profile.html', user_profile = User_profile )
 
+    @server.loggin_required
     def user_edit_save(self):
-        if 'login_user' not in session or session['login_user'] == None:
-            return redirect(url_for('login'))
         id = request.args['id']
         user_data_form = request.form
         user_image_file = request.files['image']

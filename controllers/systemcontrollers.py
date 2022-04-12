@@ -12,7 +12,7 @@ class ControllerLogin:
 
     def login(self):
         return render_template('login.html')
-
+ 
     def authenticate(self):
         data = request.form
         user = user_dao.user_search_login(data['email'])

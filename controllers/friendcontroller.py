@@ -20,9 +20,8 @@ class ControllerFriend:
         else:
             return jsonify({'message':'nenhum usuario encontrado'}),204
 
+    @server.loggin_required
     def add_friend(self,id):
-        if 'login_user' not in session or session['login_user'] == None:
-            return redirect(url_for('login'))
         friend_exists = friend_dao.friend_exists(id,session['user_id'])
         if friend_exists or id == session['user_id']:
             flash("voce já é amigo dessa pessoa")
