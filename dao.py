@@ -1,6 +1,6 @@
 
 import sqlite3
-from models import User, Post
+from models import Code, User, Post
 
 SQL_FRIEND_LIST_FRIEND = 'SELECT idUser, name FROM Friendship join user on Friendship.Friend_idUser = user.idUser where ( User_idUser = ? or Friend_idUser = ?) and idUser != ?'
 
@@ -18,14 +18,13 @@ SQL_EDIT_USER = 'UPDATE user SET name=?,email=?,age=?,image=?,job=?,password=? W
 
 SQL_ADD_FRIEND = 'INSERT INTO Friendship (User_idUser,Friend_idUser) VALUES (?,?)'
 
-SQL_LIST_POST = 'SELECT * FROM Post JOIN User ON User.idUser = Post.User_idUser'
+SQL_LIST_POST = 'SELECT * FROM Post JOIN User ON User.idUser = Post.User_idUser JOIN Code on Code.Post_idPost = Post.idPost'
 
-SQL_CREATE_POST = 'INSERT INTO post (title, description, User_idUser) VALUES (?,?,?,?)'
+SQL_CREATE_POST = 'INSERT INTO post (title, description, User_idUser) VALUES (?,?,?)'
 
 SQL_CREATE_CODE = 'INSERT INTO code (code, Post_idPost, User_id) VALUES (?,?,?) '
 
 SQL_SEARCH_USER_PROFILE = 'SELECT * FROM user where idUser = ?'
-
 
 class FriendDao:
     def __init__(self, db) -> None:
@@ -119,14 +118,17 @@ class PostDao:
 
     def __translate_to_list(self, post_db) -> list:
         def translate_to_object(post):
-            user = User(post['User.name'],post['User.email'], None, post['User.idUser'])
-            return Post(post['title'], post['description'],user,post['create_at'], post['update_at'], post['like_cont'], post['idPost'])
+            user = User(post['name'],post['email'], None, post['idUser'],image=post['image'])
+            code = Code(post['code'],post['Post_idPost'], post['User_id'])
+            return Post(post['title'], post['description'],user,post['created_at'], 
+                        post['updated_at'], post['like_cont'], post['idPost'],code)
         return list(map(translate_to_object, post_db))
 
     def list_post(self) -> list:
         cursor = self.__db.cursor()
         cursor.execute(SQL_LIST_POST,)
-        list_post_db = cursor.fetchone()
+        list_post_db = cursor.fetchall()
+        print(list_post_db)
         try:
             list_post = self.__translate_to_list(list_post_db)
             return list_post
@@ -140,8 +142,9 @@ class PostDao:
                 pass
             else:
                 cursor.execute(SQL_CREATE_POST,(post._title, post._description, post._user,))
-        except:
+        except NameError:
             return None
+        self.__db.commit()
         post_id = cursor.lastrowid
         return post_id
         
@@ -155,4 +158,6 @@ class CodeDao:
             cursor.execute(SQL_CREATE_CODE,(code._code,code._idPost,code._idUser,))
         except:
             return None
+        self.__db.commit()   
         return cursor.lastrowid
+        

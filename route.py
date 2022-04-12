@@ -40,3 +40,5 @@ class Routes:
         server.app.add_url_rule('/user_edit_save', endpoint='user_save',view_func=user_controller.user_edit_save,methods = ['POST'])
 
         server.app.add_url_rule('/uploads/<filename>',endpoint='uploads',view_func=uploads_controller.upload_folder)
+
+        server.app.add_url_rule('/create_post', endpoint='create_post', view_func=post_controller.create_post,methods = ['POST'])
