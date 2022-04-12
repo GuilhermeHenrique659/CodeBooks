@@ -25,14 +25,18 @@ class Post:
         self._create_at = create_at
         self._update_at = update_at
         self._user = user
-        self._user = code
-
+        self._code = code
+        
+    def set_idPost(self, idPost):
+      self._idPost = idPost
 class Code:
     def __init__(self, code, idPost, idUser, created_at = None) -> None:
         self._code = code
         self._idPost = idPost
         self._idUser = idUser
         self._created_at = created_at
+
+
         
 
   

@@ -17,6 +17,9 @@ SQL_ADD_FRIEND = 'INSERT INTO Friendship (User_idUser,Friend_idUser) VALUES (?,?
 
 SQL_LIST_POST = 'SELECT * FROM Post JOIN User ON User.idUser = Post.User_idUser'
 
+SQL_CREATE_POST = 'INSERT INTO post (title, description, User_idUser) VALUES (?,?,?)'
+
+SQL_CREATE_CODE = 'INSERT INTO code (code, Post_idPost, User_id) VALUES (?,?,?) '
 
 class FriendDao:
     def __init__(self, db) -> None:
@@ -57,7 +60,6 @@ class FriendDao:
         def translate_to_objects(user_dict):
             return User(user_dict['name'], None, None, user_dict['idUser'])
         return list(map(translate_to_objects, user_dict))
-
 
 class UserDao:
     def __init__(self, db) -> None:
@@ -107,4 +109,31 @@ class PostDao:
             return list_post
         except:
             return None
+
+    def create_post(self,post):
+        cursor = self.__db.cursor()
+        try:
+            if post._idPost:
+                pass
+            else:
+                cursor.execute(SQL_CREATE_POST,(post._title, post._description, post._user,))
+        except NameError:
+            print(NameError)
+            return None
+        self.__db.commit()
+        post_id = cursor.lastrowid
+        return post_id
+        
+class CodeDao:
+    def __init__(self,db) -> None:
+        self.__db = db
+
+    def create_code(self,code):
+        cursor = self.__db.cursor()
+        try:
+            cursor.execute(SQL_CREATE_CODE,(code._code,code._idPost,code._idUser,))
+        except:
+            return None
+        self.__db.commit()   
+        return cursor.lastrowid
         
