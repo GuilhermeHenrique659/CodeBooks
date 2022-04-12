@@ -9,8 +9,6 @@ class ControllerFriend:
         pass
 
     def seach_user(self):
-        if 'login_user' not in session or session['login_user'] == None:
-            return redirect(url_for('login'))
         username = request.get_json(force = True)
         if username['user'] == '':
             users_find = friend_dao.friend_list(session['user_id'])

@@ -1,4 +1,4 @@
-from flask import flash, redirect, render_template, request, url_for, session
+from flask import flash, redirect, render_template, request, send_from_directory, url_for, session
 from config import server
 from dao import UserDao
 from models import User
@@ -21,6 +21,7 @@ class ControllerLogin:
                 session['login_user'] = data['email']
                 session['username'] = user._name
                 session['user_id'] = user._id
+                session['user_img'] = user._image
                 return redirect(url_for('index'))
             else:
                 flash('senha errada')
@@ -31,6 +32,7 @@ class ControllerLogin:
 
     def logout(self):
         session['login_user'] = None
+        session.clear()
         return redirect(url_for('login'))
 
 class ControllerRegister:
@@ -43,9 +45,16 @@ class ControllerRegister:
     def sing_in(self):
         data = request.form
         user = User(data['name'],data['email'],data['password'])
-        result = user_dao.create_user(user)
+        result = user_dao.save_user(user)
         if result == "email not available":
             flash('email ja ultilizado')
             return redirect(url_for('register'))
         else:
             return redirect(url_for('login'))
+
+class ControllerUploads:
+    def __init__(self) -> None:
+        pass
+
+    def upload_folder(self,filename):
+        return send_from_directory('uploads',filename)
