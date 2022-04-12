@@ -1,5 +1,5 @@
 import sqlite3
-from flask import Flask
+from flask import Flask , session, redirect, url_for
 import os
 
 
@@ -20,6 +20,13 @@ class Server:
         self.__app.run(
             debug=True
             )
+
+    def loggin_required(self, controller):
+        def wrapper(*agrs, **kwargs):
+            if 'login_user' not in session or session['login_user'] == None:
+                return redirect(url_for('login'))
+            return controller(*agrs, **kwargs)
+        return wrapper
 
     @property
     def db(self) -> sqlite3:
