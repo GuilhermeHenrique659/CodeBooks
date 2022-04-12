@@ -128,7 +128,6 @@ class PostDao:
         cursor = self.__db.cursor()
         cursor.execute(SQL_LIST_POST,)
         list_post_db = cursor.fetchall()
-        print(list_post_db)
         try:
             list_post = self.__translate_to_list(list_post_db)
             return list_post
