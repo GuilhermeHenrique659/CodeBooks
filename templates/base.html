@@ -827,14 +827,14 @@ padding: 50px 30px;
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <div class="text-center" style="margin-top: 25px; padding: 20px;">
-                                <img src="{{ url_for('uploads', filename=session['user_img'] ) }}"
+                                <img src="{{ url_for('uploads', filename=user._image ) }}"
                                     class="rounded-circle float-start" width="160" height="160" alt="...">
                             </div>
                         </li>
                         <li class="nav-item">
                             <h1 class="username">
                                 <span data-feather="home"></span>
-                                {{session['username']}}
+                                {{user._name}}
                             </h1>
                         </li>
                         <li class="nav-item">
