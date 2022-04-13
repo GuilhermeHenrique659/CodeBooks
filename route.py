@@ -35,7 +35,7 @@ class Routes:
 
         server.app.add_url_rule('/create_post', endpoint='create_post', view_func=post_controller.create_post,methods = ['POST'])
 
-        server.app.add_url_rule('/user_profile', endpoint='user_profile', view_func= user_controller.user_profile )
+        server.app.add_url_rule('/user_profile/<int:id>', endpoint='user_profile', view_func= user_controller.user_profile )
 
         server.app.add_url_rule('/user_edit_save', endpoint='user_save',view_func=user_controller.user_edit_save,methods = ['POST'])
 

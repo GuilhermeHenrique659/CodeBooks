@@ -839,7 +839,7 @@ padding: 50px 30px;
                         </li>
                         <li class="nav-item">
                             <a style="text-decoration: none; color: white;"
-                                href="{{ url_for('user_profile' ,pag='view') }}">
+                                href="{{ url_for('user_profile' ,pag='view', id=session['user_id']) }}">
                                 <button class="edit_button" style="color: white;">
                                     <img src="{{url_for('static', filename='img/icon/gear.svg')}}" alt=""
                                         class="gear_edit">Editar perfil
@@ -882,9 +882,13 @@ padding: 50px 30px;
                 </button>
 
                 <ul class="dropdown-menu" id="user_list_iten">
-                    <input type="text" id="search_user" name="user">
+                    <input type="text" id="search_user" name="user" autocomplete="off">
                     {% for friend in friend_list %}
-                    <li class="line-friend"><a class="dropdown-item" href="">{{ friend._name }}</a></li>
+                    <li class="line-friend"><a class="dropdown-item" href="{{ url_for('user_profile' ,pag='view', id=friend._id) }}">
+                        <img src="{{ url_for('uploads', filename=friend._image) }}" alt=""
+                            class="rounded-circle" width="32" height="32" alt="..." style="margin: 5px;">
+                        {{ friend._name }}
+                        </a></li>
                     {% endfor %}
                 </ul>
             </div>
@@ -1017,17 +1021,24 @@ input.addEventListener("keyup", function (event) {
                 var dataReply = JSON.parse(this.responseText);
                 for (var i = 0; i < dataReply.length; i++) {
                     const li = document.createElement('li');
+                    const img = document.createElement('img');
                     li.classList.add('line-friend')
                     const a = document.createElement('a');
                     a.classList.add("dropdown-item")
-                    a.href = '/add_friend/' + dataReply[i].id
+                    a.href = '/user_profile/'+dataReply[i].id+'?pag=view'
+                    img.classList.add('rounded-circle')
+                    img.style.cssText += 'margin: 5px;'
+                    img.width = 32
+                    img.height = 32
+                    img.src = dataReply[i].image
                     li.appendChild(a)
+                    a.appendChild(img)
                     const node = document.createTextNode(dataReply[i].name);
                     a.appendChild(node)
                     document.getElementById("user_list_iten").appendChild(li)
 
                 }
-            } else {
+            }else{
                 const li = document.createElement('li');
                 const response = document.createTextNode("Nenhum usuario encontrado")
                 li.classList.add('line-friend')

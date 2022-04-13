@@ -12,13 +12,13 @@ class ControllerUser:
         pass
 
     @server.loggin_required
-    def user_profile(self):
-        User_profile = user_dao.search_user_profile(session['user_id'])
+    def user_profile(self,id):
+        User_profile = user_dao.search_user_profile(id)
         try:
             pag = request.args['pag']  
         except:
             pag = None      
-        if(pag == 'edit'):
+        if pag == 'edit' and id == session['user_id']:
             return render_template('profile_edit.html', user_profile = User_profile )
         else:
             return render_template('profile.html', user_profile = User_profile )
@@ -35,4 +35,4 @@ class ControllerUser:
             upload_folder = server.app.config['UPLOAD_FOLDER']
             user_image_file.save(f'{upload_folder}/{image_filename}')
         user_dao.save_user(user)
-        return redirect(url_for('user_profile',pag='view'))
+        return redirect(url_for('user_profile',pag='view', id=id))

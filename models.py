@@ -1,5 +1,5 @@
 
-
+from flask import url_for
 
 class User:
     def __init__(self,name,email,password,id  =None, age = None, image = None, job = None) -> None:
@@ -17,7 +17,7 @@ class User:
         'name': self._name,
         'email': self._email,
         'password': self._password,
-        'image': self._image
+        'image': url_for('uploads', filename=self._image)
       }
 
     def set_image(self,image):
