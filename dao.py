@@ -2,13 +2,13 @@
 import sqlite3
 from models import Code, User, Post
 
-SQL_FRIEND_LIST_FRIEND = 'SELECT idUser, name FROM Friendship join user on Friendship.Friend_idUser = user.idUser where ( User_idUser = ? or Friend_idUser = ?) and idUser != ?'
+SQL_FRIEND_LIST_FRIEND = 'SELECT idUser, name, image FROM Friendship join user on Friendship.Friend_idUser = user.idUser where ( User_idUser = ? or Friend_idUser = ?) and idUser != ?'
 
-SQL_FRIEND_LIST_USER = 'SELECT idUser, name FROM Friendship join user on Friendship.User_idUser = user.idUser where ( User_idUser = ? or Friend_idUser = ?) and idUser != ?'
+SQL_FRIEND_LIST_USER = 'SELECT idUser, name,image FROM Friendship join user on Friendship.User_idUser = user.idUser where ( User_idUser = ? or Friend_idUser = ?) and idUser != ?'
 
 SQL_FRIEND_EXISTS = 'SELECT * FROM Friendship WHERE (User_idUser = ? and Friend_idUser = ?) or ( User_idUser = ? and Friend_idUser = ?) '
 
-SQL_SEARCH_USER = 'select name, idUser from user where name=? and idUser !=?'
+SQL_SEARCH_USER = 'select name, idUser, image from user where name=? and idUser !=?'
 
 SQL_SEARCH_USER_LOGIN = 'select * from user where email=?'
 
@@ -63,7 +63,7 @@ class FriendDao:
 
     def __translate_to_list(self, user_dict):
         def translate_to_objects(user_dict):
-            return User(user_dict['name'], None, None, user_dict['idUser'])
+            return User(user_dict['name'], None, None, user_dict['idUser'],image=user_dict['image'])
         return list(map(translate_to_objects, user_dict))
 
 class UserDao:

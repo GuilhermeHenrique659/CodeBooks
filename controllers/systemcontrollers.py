@@ -5,7 +5,6 @@ from models import User
 
 user_dao = UserDao(server.db)
 
-
 class ControllerLogin:
     def __init__(self) -> None:
         pass
@@ -28,6 +27,7 @@ class ControllerLogin:
             flash('usuario nao encontrado')
             return redirect(url_for(request.args['previous']))
 
+    @server.loggin_required
     def logout(self):
         session['login_user'] = None
         session.clear()

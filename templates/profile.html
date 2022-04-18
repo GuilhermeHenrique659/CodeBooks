@@ -101,7 +101,19 @@
   }
 </style>
 
+
+
 <body>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong> {{ message }}.</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {% endfor %}
+  {% endif %}
+  {% endwith %}
   <div class="container">
     <div class="main-body">
       <div class="row gutters-sm">
@@ -109,13 +121,17 @@
           <div class="card">
             <div class="card-body">
               <div class="d-flex flex-column align-items-center text-center">
-                <img src="{{ url_for('uploads', filename=user_profile._image ) }}" alt="Admin" class="rounded-circle" width="150" id="user_profile">
+                <img src="{{ url_for('uploads', filename=user_profile._image ) }}" alt="Admin" class="rounded-circle"
+                  width="150" id="user_profile">
                 <div class="mt-3">
                   <h4 class="font_prof">{{user_profile._name}}</h4>
                   <p class="font_prof">{{user_profile._job}}</p>
                   <p class="font_prof">Bay Area, San Francisco, CA</p>
-                  <Button class="button_editar">Seguir</Button>
+                  {% if user_profile._id != session['user_id'] %}
+                  <a href="{{ url_for('add_friend', id=user_profile._id) }}"><Button
+                      class="button_editar">Seguir</Button></a>
                   <Button class="button_editar">Mensagem</Button>
+                  {% endif %}
                 </div>
               </div>
             </div>
@@ -226,10 +242,13 @@
                       <th><a class="folow_a" href="/">Seguindo: 15</a></th>
                       <th><a class="folow_a" href="/">Publicações: 15</a></th>
                     </div>
-                    <a href="{{ url_for('user_profile' ,pag='edit') }}" style="text-decoration: none; color: black;">
+                    {% if user_profile._id == session['user_id'] %}
+                    <a href="{{ url_for('user_profile' ,pag='edit', id=session['user_id']) }}"
+                      style="text-decoration: none; color: black;">
                       <Button class="button_editar">
                         Editar
                       </Button>
+                      {% endif %}
                     </a>
                   </div>
                 </div>
