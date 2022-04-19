@@ -5,8 +5,9 @@ from controllers.feedcontrollers import ControllerFeed
 from controllers.friendcontroller import ControllerFriend
 from controllers.postcontrollers import ControllerPost
 from controllers.usercontrollers import ControllerUser
+from controllers.codecontrolles import  CodeController
 from models import User
-
+code_controller = CodeController()
 login_controllers = ControllerLogin()
 register_controller = ControllerRegister()
 feed_controller = ControllerFeed()
@@ -42,5 +43,7 @@ class Routes:
         server.app.add_url_rule('/uploads/<filename>',endpoint='uploads',view_func=uploads_controller.upload_folder)
 
         server.app.add_url_rule('/create_post', endpoint='create_post', view_func=post_controller.create_post,methods = ['POST'])
+
+        server.app.add_url_rule('/post/<int:id>', endpoint='post', view_func=code_controller.code_list,methods = ['GET']  )
 
         

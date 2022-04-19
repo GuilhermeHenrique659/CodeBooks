@@ -26,6 +26,8 @@ SQL_CREATE_CODE = 'INSERT INTO code (code, Post_idPost, User_id) VALUES (?,?,?) 
 
 SQL_SEARCH_USER_PROFILE = 'SELECT * FROM user where idUser = ?'
 
+SQL_SEARCH_CODE_LIST = 'SELECT * FROM Code JOIN User ON User.idUser = code.User_id WHERE Post_idPost = ?'
+
 class FriendDao:
     def __init__(self, db) -> None:
         self.__db = db
@@ -159,4 +161,21 @@ class CodeDao:
             return None
         self.__db.commit()   
         return cursor.lastrowid
+    
+    def list_code(self, id_post):
+        cursor = self.__db.cursor()
+        cursor.execute(SQL_SEARCH_CODE_LIST,(id_post,))
+        list_code_db = cursor.fetchall()
+        list_code = self.__translate_to_list(list_code_db)
+        return list_code
+    
+    def __translate_to_list(self, code_db) -> list:
+        def translate_to_object(code):
+            user = User(code['name'],None,None,code['idCode'],None)
+            return Code(code['code'],code['Post_idPost'],user,None,code['idCode'])
+        return list(map(translate_to_object, code_db))
+
+    
+
+
         

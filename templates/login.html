@@ -1,28 +1,36 @@
 
-{% extends "base_login.html" %}
-{% block conteudo %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <link rel="stylesheet" href="static\css\index.css">
 
-<h1>LOGIN</h1>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<div class="container" id="container">
+	<div class="form-container sign-in-container">
+		<form action="{{url_for('authenticate',previous='login')}}" method="POST">
+			<h1>Sign in</h1>
+			<span>or use your account</span>
+			<input type="email" placeholder="Email" name="email" />
+			<input type="password" placeholder="Password"  name="password"/>
+			<a href="#">Forgot your password?</a>
+			<button>Sign In</button>
+		</form>
+	</div>
+	<div class="overlay-container">
+		<div class="overlay">
+			</div>
+			<div class="overlay-panel overlay-right">
+                <div class="cima"><img src="static\img\icon\bolinhasdolinux.png" width="60px" height="20px"></div>
+                <h1 class="pisc">_</h1>
+			</div>
+	</div>
+	</div>
 
-
-    <form method="POST" action="/authenticate?previous=login">
-        <div class="">
-          <label for="email" class="">Email</label>
-          <div class="">
-            <input type="text" class="form-control" id="email" name="email" placeholder="Usuario ou e-mail">
-          </div>
-        </div>
-        <div class="">
-          <label for="Password" class="">Senha</label>
-          <div class="">
-            <input type="password" class="form-control" id="Password" name="password" placeholder="Senha">
-          </div>
-        </div>
-        <div class="">
-          <button type="submit" class="btn btn-primary">Entrar</button>
-        </div>
-        <div>
-          <button type="button" class="btn btn-secundary"><a href="{{url_for('register')}}">Registrar</a></button>
-        </div>
-      </form>
-{% endblock %}
+</div>
+</body>
+</html>
