@@ -1,9 +1,9 @@
 from flask import render_template,request,redirect, session,url_for
 from config import server
-from dao import UserDao
+from dao import UserDao, FriendDao
 from models import User 
 
-
+friend_dao = FriendDao(server.db)
 user_dao = UserDao(server.db)
 
 
@@ -21,7 +21,8 @@ class ControllerUser:
         if pag == 'edit' and id == session['user_id']:
             return render_template('profile_edit.html', user_profile = User_profile )
         else:
-            return render_template('profile.html', user_profile = User_profile )
+            friend_exists = friend_dao.friend_exists(id,session['user_id'])
+            return render_template('profile.html', user_profile = User_profile,friend_exists = friend_exists )
 
     @server.loggin_required
     def user_edit_save(self):

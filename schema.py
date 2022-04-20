@@ -6,7 +6,7 @@ cursor.execute('''
 CREATE TABLE IF NOT EXISTS `User` (
   `idUser` INTEGER PRIMARY KEY AUTOINCREMENT,
   `name` VARCHAR(45) NOT NULL,
-  `email` VARCHAR(65) NOT NULL,
+  `email` VARCHAR(65) NOT NULL UNIQUE,
   `age` DATE NOT NULL,
   `image` VARCHAR(360),
   `job` VARCHAR(55),
