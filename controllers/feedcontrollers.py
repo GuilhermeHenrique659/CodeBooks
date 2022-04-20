@@ -20,5 +20,5 @@ class ControllerFeed:
             friend_list = friend_dao.friend_list(session['user_id'])
             user = user_dao.search_user_profile(session['user_id'])
         post_list = post_controller.list_post()
-        
+        print(post_list)
         return render_template('base.html', friend_list = friend_list,post_list = post_list, user = user)

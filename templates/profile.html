@@ -2,7 +2,6 @@
   integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 <style>
   body {
-    margin-top: 20px;
     color: #1a202c;
     text-align: left;
     background-color: #220018;
@@ -104,6 +103,20 @@
 
 
 <body>
+  <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="{{url_for('index')}}">Company name</a>
+    <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+      data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search"
+      style="background-color: #20212B; border: none;">
+    <div class="navbar-nav">
+      <div class="nav-item text-nowrap">
+        <a class="nav-link px-3" href="{{url_for('logout')}}">Sign out</a>
+      </div>
+    </div>
+  </header>
   {% with messages = get_flashed_messages() %}
   {% if messages %}
   {% for message in messages %}
@@ -128,8 +141,13 @@
                   <p class="font_prof">{{user_profile._job}}</p>
                   <p class="font_prof">Bay Area, San Francisco, CA</p>
                   {% if user_profile._id != session['user_id'] %}
+                  {% if not friend_exists %}
                   <a href="{{ url_for('add_friend', id=user_profile._id) }}"><Button
                       class="button_editar">Seguir</Button></a>
+                  {% else %}
+                  <a href="{{ url_for('remove_friend', id=user_profile._id) }}"><Button class="button_editar">Remover
+                      amigo</Button></a>
+                  {% endif %}
                   <Button class="button_editar">Mensagem</Button>
                   {% endif %}
                 </div>

@@ -20,3 +20,4 @@ class ControllerPost:
         code = Code(data_post_front['code'],post._idPost,session['user_id'])
         result = code_dao.create_code(code)
         return redirect(url_for('index'))
+

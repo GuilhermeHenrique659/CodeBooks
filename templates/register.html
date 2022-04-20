@@ -1,27 +1,27 @@
 {% extends "base_login.html" %}
 {% block conteudo %}
 
-<h1>Register</h1>
 
-<form method="POST" action="/sing_in">
-    <div class="">
-        <label for="name" class="">Nome</label>
-        <div class="">
-          <input type="text" class="form-control" id="name" name="name" placeholder="name">
-        </div>
-      <label for="email" class="">Email</label>
-      <div class="">
-        <input type="text" class="form-control" id="email" name="email" placeholder="e-mail">
-      </div>
-    </div>
-    <div class="">
-      <label for="Password" class="">Senha</label>
-      <div class="">
-        <input type="password" class="form-control" id="Password" name="password" placeholder="Senha">
-      </div>
-    </div>
-    <div class="">
-      <button type="submit" class="btn btn-primary">Entrar</button>
-    </div>
-  </form>
+<div class="container" id="container">
+	<div class="form-container sign-in-container">
+		<form action="{{url_for('sing_in')}}" method="POST">
+			<h1>Sing in</h1>
+			<span>or use your account</span>
+      <input type="text" placeholder="Name" name="name"  required/>
+			<input type="email" placeholder="Email" name="email" required />
+			<input type="password" placeholder="Password" name="password" required />
+			<button type="submit">Sing In</button>
+		</form>
+	</div>
+	<div class="overlay-container">
+		<div class="overlay">
+		</div>
+		<div class="overlay-panel overlay-right">
+			<div class="cima"><img src="static\img\icon\bolinhasdolinux.png" width="60px" height="20px"></div>
+			<h1 class="pisc">_</h1>
+		</div>
+	</div>
+</div>
+
+</div>
 {% endblock %}
