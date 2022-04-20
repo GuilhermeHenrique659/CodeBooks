@@ -5,23 +5,20 @@ from models import User
 
 user_dao = UserDao(server.db)
 
-
 class ControllerLogin:
     def __init__(self) -> None:
         pass
 
     def login(self):
         return render_template('login.html')
-
+ 
     def authenticate(self):
         data = request.form
         user = user_dao.user_search_login(data['email'])
         if user:
             if user._password == data['password']:
                 session['login_user'] = data['email']
-                session['username'] = user._name
                 session['user_id'] = user._id
-                session['user_img'] = user._image
                 return redirect(url_for('index'))
             else:
                 flash('senha errada')
@@ -30,6 +27,7 @@ class ControllerLogin:
             flash('usuario nao encontrado')
             return redirect(url_for(request.args['previous']))
 
+    @server.loggin_required
     def logout(self):
         session['login_user'] = None
         session.clear()

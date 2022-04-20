@@ -2,13 +2,15 @@
 import sqlite3
 from models import Code, User, Post
 
-SQL_FRIEND_LIST_FRIEND = 'SELECT idUser, name FROM Friendship join user on Friendship.Friend_idUser = user.idUser where ( User_idUser = ? or Friend_idUser = ?) and idUser != ?'
+SQL_FRIEND_LIST_FRIEND = 'SELECT idUser, name, image FROM Friendship join user on Friendship.Friend_idUser = user.idUser where ( User_idUser = ? or Friend_idUser = ?) and idUser != ?'
 
-SQL_FRIEND_LIST_USER = 'SELECT idUser, name FROM Friendship join user on Friendship.User_idUser = user.idUser where ( User_idUser = ? or Friend_idUser = ?) and idUser != ?'
+SQL_FRIEND_LIST_USER = 'SELECT idUser, name,image FROM Friendship join user on Friendship.User_idUser = user.idUser where ( User_idUser = ? or Friend_idUser = ?) and idUser != ?'
 
 SQL_FRIEND_EXISTS = 'SELECT * FROM Friendship WHERE (User_idUser = ? and Friend_idUser = ?) or ( User_idUser = ? and Friend_idUser = ?) '
 
-SQL_SEARCH_USER = 'select name, idUser from user where name=? and idUser !=?'
+SQL_FRIEND_DELETE = 'DELETE FROM Friendship WHERE (User_idUser = ? and Friend_idUser = ?) or ( User_idUser = ? and Friend_idUser = ?) '
+
+SQL_SEARCH_USER = 'select name, idUser, image from user where name=? and idUser !=?'
 
 SQL_SEARCH_USER_LOGIN = 'select * from user where email=?'
 
@@ -18,13 +20,15 @@ SQL_EDIT_USER = 'UPDATE user SET name=?,email=?,age=?,image=?,job=?,password=? W
 
 SQL_ADD_FRIEND = 'INSERT INTO Friendship (User_idUser,Friend_idUser) VALUES (?,?)'
 
-SQL_LIST_POST = 'SELECT * FROM Post JOIN User ON User.idUser = Post.User_idUser JOIN Code on Code.Post_idPost = Post.idPost'
+SQL_LIST_POST = 'SELECT * FROM Post JOIN User ON User.idUser = Post.User_idUser'
 
 SQL_CREATE_POST = 'INSERT INTO post (title, description, User_idUser) VALUES (?,?,?)'
 
 SQL_CREATE_CODE = 'INSERT INTO code (code, Post_idPost, User_id) VALUES (?,?,?) '
 
 SQL_SEARCH_USER_PROFILE = 'SELECT * FROM user where idUser = ?'
+
+SQL_SEARCH_CODE_LIST = 'SELECT code,Post_idPost,created_at,idCode,name,idUser FROM Code JOIN User ON User.idUser = code.User_id WHERE Post_idPost = ?'
 
 class FriendDao:
     def __init__(self, db) -> None:
@@ -52,6 +56,12 @@ class FriendDao:
         friend_list = cursor.fetchall()
         return friend_list
 
+    def remove_friend(self, friend_id, user_id):
+        cursor = self.__db.cursor()
+        cursor.execute(SQL_FRIEND_DELETE,
+                    (user_id, friend_id, friend_id, user_id))
+        self.__db.commit()
+
     def add_friend_in_db(self, friend_id, user_id):
         cursor = self.__db.cursor()
         try:
@@ -63,7 +73,9 @@ class FriendDao:
 
     def __translate_to_list(self, user_dict):
         def translate_to_objects(user_dict):
-            return User(user_dict['name'], None, None, user_dict['idUser'])
+            if not user_dict['image']:
+                user_dict['image'] = 'image_not_found.jfif'
+            return User(user_dict['name'], None, None, user_dict['idUser'],image=user_dict['image'])
         return list(map(translate_to_objects, user_dict))
 
 class UserDao:
@@ -118,16 +130,17 @@ class PostDao:
 
     def __translate_to_list(self, post_db) -> list:
         def translate_to_object(post):
+            if not post['image']:
+                post['image'] = 'image_not_found.jfif'
             user = User(post['name'],post['email'], None, post['idUser'],image=post['image'])
-            code = Code(post['code'],post['Post_idPost'], post['User_id'])
             return Post(post['title'], post['description'],user,post['created_at'], 
-                        post['updated_at'], post['like_cont'], post['idPost'],code)
+                        post['updated_at'], post['like_cont'], post['idPost'])
         return list(map(translate_to_object, post_db))
 
     def list_post(self) -> list:
         cursor = self.__db.cursor()
         cursor.execute(SQL_LIST_POST,)
-        list_post_db = cursor.fetchall()
+        list_post_db = cursor.fetchall()        
         try:
             list_post = self.__translate_to_list(list_post_db)
             return list_post
@@ -154,9 +167,26 @@ class CodeDao:
     def create_code(self,code):
         cursor = self.__db.cursor()
         try:
-            cursor.execute(SQL_CREATE_CODE,(code._code,code._idPost,code._idUser,))
-        except:
+            cursor.execute(SQL_CREATE_CODE,(code._code,code._idPost,code._user,))
+        except NameError:
             return None
         self.__db.commit()   
         return cursor.lastrowid
+    
+    def list_code(self, id_post):
+        cursor = self.__db.cursor()
+        cursor.execute(SQL_SEARCH_CODE_LIST,(id_post,))
+        list_code_db = cursor.fetchall()
+        list_code = self.__translate_to_list(list_code_db)
+        return list_code
+    
+    def __translate_to_list(self, code_db) -> list:
+        def translate_to_object(code):
+            user = User(code['name'],None,None,code['idUser'],None)
+            return Code(code['code'],code['Post_idPost'],user,code['created_at'],code['idCode'])
+        return list(map(translate_to_object, code_db))
+
+    
+
+
         
