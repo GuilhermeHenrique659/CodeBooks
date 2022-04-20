@@ -33,6 +33,7 @@ class ControllerLogin:
         session.clear()
         return redirect(url_for('login'))
 
+
 class ControllerRegister:
     def __init__(self) -> None:
         pass
@@ -49,6 +50,7 @@ class ControllerRegister:
             return redirect(url_for('register'))
         else:
             return redirect(url_for('login'))
+
 
 class ControllerUploads:
     def __init__(self) -> None:

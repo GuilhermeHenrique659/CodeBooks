@@ -66,7 +66,7 @@ class FriendDao:
     def __translate_to_list(self, user_dict):
         def translate_to_objects(user_dict):
             return User(user_dict['name'], None, None, user_dict['idUser'],image=user_dict['image'])
-        return list(map(translate_to_objects, user_dict))
+        return list(map(translate_to_objects, user_dict) )
 
 class UserDao:
     def __init__(self, db) -> None:

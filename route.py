@@ -6,7 +6,7 @@ from controllers.friendcontroller import ControllerFriend
 from controllers.postcontrollers import ControllerPost
 from controllers.usercontrollers import ControllerUser
 from controllers.codecontrolles import  CodeController
-from models import User
+
 code_controller = CodeController()
 login_controllers = ControllerLogin()
 register_controller = ControllerRegister()
