@@ -20,7 +20,7 @@ SQL_EDIT_USER = 'UPDATE user SET name=?,email=?,age=?,image=?,job=?,password=? W
 
 SQL_ADD_FRIEND = 'INSERT INTO Friendship (User_idUser,Friend_idUser) VALUES (?,?)'
 
-SQL_LIST_POST = 'SELECT * FROM Post JOIN User ON User.idUser = Post.User_idUser'
+SQL_LIST_POST = 'SELECT * FROM Post LEFT JOIN User ON User.idUser = Post.User_idUser'
 
 SQL_CREATE_POST = 'INSERT INTO post (title, description, User_idUser) VALUES (?,?,?)'
 
@@ -28,7 +28,9 @@ SQL_CREATE_CODE = 'INSERT INTO code (code, Post_idPost, User_id) VALUES (?,?,?) 
 
 SQL_SEARCH_USER_PROFILE = 'SELECT * FROM user where idUser = ?'
 
-SQL_SEARCH_CODE_LIST = 'SELECT code,Post_idPost,created_at,idCode,name,idUser FROM Code JOIN User ON User.idUser = code.User_id WHERE Post_idPost = ?'
+SQL_SEARCH_CODE_LIST = 'SELECT code,Post_idPost,created_at,idCode,name,idUser FROM Code LEFT JOIN User ON User.idUser = code.User_id WHERE Post_idPost = ?'
+
+SQL_DELETE_USER = 'DELETE FROM User WHERE idUser=? '
 
 class FriendDao:
     def __init__(self, db) -> None:
@@ -121,6 +123,10 @@ class UserDao:
         except:
             return None
 
+    def delete_user(self,id):
+        cursor = self.__db.cursor()
+        cursor.execute(SQL_DELETE_USER, (id,))
+        self.__db.commit()
 
 
 
@@ -182,7 +188,10 @@ class CodeDao:
     
     def __translate_to_list(self, code_db) -> list:
         def translate_to_object(code):
-            user = User(code['name'],None,None,code['idUser'],None)
+            if code['idUser']:
+                user = User(code['name'],None,None,code['idUser'])
+            else:
+                user = User('usuario not found',None,None,0)
             return Code(code['code'],code['Post_idPost'],user,code['created_at'],code['idCode'])
         return list(map(translate_to_object, code_db))
 

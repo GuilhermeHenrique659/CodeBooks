@@ -1,115 +1,15 @@
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-  integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-<style>
-  body {
-    color: #1a202c;
-    text-align: left;
-    background-color: #220018;
-  }
+<!DOCTYPE html>
+<html lang="en">
 
-  .main-body {
-    padding: 15px;
-  }
-
-  .card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    word-wrap: break-word;
-    background-color: #20212B;
-    background-clip: border-box;
-    border: 2px solid black;
-    border-radius: 4px;
-    box-shadow: black;
-  }
-
-  .gutters-sm {
-    margin-right: -8px;
-    margin-left: -8px;
-  }
-
-  .gutters-sm>.col,
-  .gutters-sm>[class*=col-] {
-    padding-right: 8px;
-    padding-left: 8px;
-  }
-
-  .mb-3,
-  .my-3 {
-    margin-bottom: 1rem !important;
-  }
-
-  .h-100 {
-    height: 100% !important;
-  }
-
-  .shadow-none {
-    box-shadow: none !important;
-  }
-
-  .mb-0 {
-    color: black;
-    border: black;
-
-  }
-
-  .button_editar {
-    cursor: pointer;
-    background-color: #656565;
-    color: black;
-    border: 2px solid black;
-    border-radius: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 4px;
-    padding-bottom: 4px;
-    margin-top: 5px;
-
-  }
-
-  .button_editar:hover {
-    background-color: #220018;
-  }
-
-  .font_prof {
-    color: black;
-  }
-
-  .bio {
-    padding: 10px;
-    color: black;
-    border: solid 2px;
-  }
-
-  .folow {
-    color: black;
-    margin-left: 250px;
-
-  }
-
-  .folow_a {
-    color: black;
-    text-decoration: none;
-    font-weight: 500;
-  }
-
-  .folow_a:hover {
-    color: #220018;
-    font-weight: bold;
-  }
-
-  input {
-    border: none;
-    background-color: #20212B;
-    color: #656565;
-  }
-
-  input:focus {
-    color: black;
-    background-color: #656565;
-  }
-</style>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <link rel="stylesheet" href="{{url_for('static', filename='css/profile.css')}}">
+</head>
 
 <body>
   <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
@@ -294,6 +194,38 @@
                         <th><a class="folow_a" href="/">Publicações: 15</a></th>
                       </div>
                       <Button type="submit" class="button_editar">Salvar</Button>
+
+
+                      <!-- Button trigger modal -->
+                      <button type="button" class="button_cancelar" data-bs-toggle="modal"
+                        data-bs-target="#DeleteModal">
+                        Excluir conta
+                      </button>
+
+                      <!-- Modal -->
+                      <div class="modal fade" id="DeleteModal" tabindex="-1" aria-labelledby="DeleteModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content" id="DeleteModalContent">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="DeleteModalLabel">Modal title</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                              <h3>Tem certeza que deseja excluir sua conta?</h3>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Não</button>
+                              <a href="{{ url_for('delete_account', id=user_profile._id) }}"><button type="button" class="btn btn-primary">Sim</button></a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+
+
                     </div>
                   </div>
                 </div>
@@ -308,6 +240,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
       integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous">
+
     </script>
     <script>
       function previewImage() {
@@ -328,3 +261,5 @@
       }
     </script>
 </body>
+
+</html>

@@ -1,11 +1,8 @@
 from flask import render_template,redirect,session,url_for
-from dao import FriendDao, UserDao
+from FactoryDao import dao
 from config import server
 from controllers.postcontrollers import ControllerPost
 
-friend_dao = FriendDao(server.db)
-user_dao = UserDao(server.db)
-post_controller = ControllerPost()
 
 
 class ControllerFeed:
@@ -17,8 +14,7 @@ class ControllerFeed:
             friend_list = None
             user = None
         else:
-            friend_list = friend_dao.friend_list(session['user_id'])
-            user = user_dao.search_user_profile(session['user_id'])
-        post_list = post_controller.list_post()
-        print(post_list)
+            friend_list = dao.friend.friend_list(session['user_id'])
+            user = dao.user.search_user_profile(session['user_id'])
+        post_list = dao.post.list_post()
         return render_template('base.html', friend_list = friend_list,post_list = post_list, user = user)

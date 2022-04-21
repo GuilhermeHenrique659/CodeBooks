@@ -904,7 +904,8 @@
                 </button>
 
                 <ul class="dropdown-menu" id="user_list_iten">
-                    <input type="text" id="search_user" name="user" autocomplete="off">
+                    <input type="text" id="search_user" name="user" autocomplete="off" placeholder="Procure um usuario">
+                    <hr>
                     {% for friend in friend_list %}
                     <li class="line-friend">
                         <a class="dropdown-item" href="{{ url_for('user_profile' ,pag='view', id=friend._id) }}">
