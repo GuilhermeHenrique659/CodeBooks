@@ -1,9 +1,8 @@
 from flask import flash, redirect, render_template, request, send_from_directory, url_for, session
 from config import server
-from dao import UserDao
+from FactoryDao import dao
 from models import User
 
-user_dao = UserDao(server.db)
 
 class ControllerLogin:
     def __init__(self) -> None:
@@ -14,7 +13,7 @@ class ControllerLogin:
  
     def authenticate(self):
         data = request.form
-        user = user_dao.user_search_login(data['email'])
+        user = dao.user.user_search_login(data['email'])
         if user:
             if user._password == data['password']:
                 session['login_user'] = data['email']
@@ -33,6 +32,7 @@ class ControllerLogin:
         session.clear()
         return redirect(url_for('login'))
 
+
 class ControllerRegister:
     def __init__(self) -> None:
         pass
@@ -43,12 +43,13 @@ class ControllerRegister:
     def sing_in(self):
         data = request.form
         user = User(data['name'],data['email'],data['password'])
-        result = user_dao.save_user(user)
+        result = dao.user.save_user(user)
         if result == "email not available":
             flash('email ja ultilizado')
             return redirect(url_for('register'))
         else:
             return redirect(url_for('login'))
+
 
 class ControllerUploads:
     def __init__(self) -> None:
