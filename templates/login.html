@@ -1,28 +1,27 @@
-
 {% extends "base_login.html" %}
 {% block conteudo %}
 
-<h1>LOGIN</h1>
 
+<div class="container" id="container">
+	<div class="form-container sign-in-container">
+		<form action="{{url_for('authenticate',previous='login')}}" method="POST">
+			<h1>Log in</h1>
+			<span>or use your account</span>
+			<input type="email" placeholder="Email" name="email"  required/>
+			<input type="password" placeholder="Password" name="password"  required/>
+			<a href="{{ url_for('register')}}">Sing in</a>
+			<button type="submit">Log In</button>
+		</form>
+	</div>
+	<div class="overlay-container">
+		<div class="overlay">
+		</div>
+		<div class="overlay-panel overlay-right">
+			<div class="cima"><img src="static\img\icon\bolinhasdolinux.png" width="60px" height="20px"></div>
+			<h1 class="pisc">_</h1>
+		</div>
+	</div>
+</div>
 
-    <form method="POST" action="/authenticate?previous=login">
-        <div class="">
-          <label for="email" class="">Email</label>
-          <div class="">
-            <input type="text" class="form-control" id="email" name="email" placeholder="Usuario ou e-mail">
-          </div>
-        </div>
-        <div class="">
-          <label for="Password" class="">Senha</label>
-          <div class="">
-            <input type="password" class="form-control" id="Password" name="password" placeholder="Senha">
-          </div>
-        </div>
-        <div class="">
-          <button type="submit" class="btn btn-primary">Entrar</button>
-        </div>
-        <div>
-          <button type="button" class="btn btn-secundary"><a href="{{url_for('register')}}">Registrar</a></button>
-        </div>
-      </form>
+</div>
 {% endblock %}

@@ -5,8 +5,9 @@ from controllers.feedcontrollers import ControllerFeed
 from controllers.friendcontroller import ControllerFriend
 from controllers.postcontrollers import ControllerPost
 from controllers.usercontrollers import ControllerUser
-from models import User
+from controllers.codecontrolles import  CodeController
 
+code_controller = CodeController()
 login_controllers = ControllerLogin()
 register_controller = ControllerRegister()
 feed_controller = ControllerFeed()
@@ -33,9 +34,11 @@ class Routes:
 
         server.app.add_url_rule('/add_friend/<int:id>',endpoint='add_friend',view_func=friend_controller.add_friend, methods=['GET'])
 
+        server.app.add_url_rule('/remove_friend/<int:id>', endpoint='remove_friend',view_func=friend_controller.remove_friend)
+
         server.app.add_url_rule('/create_post', endpoint='create_post', view_func=post_controller.create_post,methods = ['POST'])
 
-        server.app.add_url_rule('/user_profile', endpoint='user_profile', view_func= user_controller.user_profile )
+        server.app.add_url_rule('/user_profile/<int:id>', endpoint='user_profile', view_func= user_controller.user_profile )
 
         server.app.add_url_rule('/user_edit_save', endpoint='user_save',view_func=user_controller.user_edit_save,methods = ['POST'])
 
@@ -43,4 +46,7 @@ class Routes:
 
         server.app.add_url_rule('/create_post', endpoint='create_post', view_func=post_controller.create_post,methods = ['POST'])
 
+        server.app.add_url_rule('/post/<int:id>', endpoint='post', view_func=code_controller.code_list,methods = ['GET']  )
+
+        server.app.add_url_rule('/add_code/<int:id>', endpoint='add_code', view_func=code_controller.add_code,methods=['POST'])
         

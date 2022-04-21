@@ -16,7 +16,8 @@ class ControllerPost:
     def create_post(self):
         data_post_front = request.form
         post = Post(data_post_front['title'],data_post_front['description'],session['user_id']) 
-        post.set_idPost(post_dao.create_post(post))
+        post.set_idPost(post_dao.create_post(post) )
         code = Code(data_post_front['code'],post._idPost,session['user_id'])
         result = code_dao.create_code(code)
         return redirect(url_for('index'))
+

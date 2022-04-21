@@ -1,0 +1,37 @@
+a {
+    text-decoration: none;
+    color: black;
+}
+.code-header{
+    display: flex;
+    justify-content: space-between;
+}
+.code-body {
+    padding: 50px;
+    border: 1px rgb(182, 182, 182) solid;
+    border-radius: 8px;
+}
+
+.code-body textarea {
+    height: auto;
+    width: 100%;
+    resize: vertical;
+}
+
+.conteiner{
+    padding: 100px;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 80% 20%;
+}
+.post{
+    border-top-left-radius: 8px;
+    grid-column: 1;
+    padding: 50px;  
+    background-color: white;
+}
+.comment {
+    grid-column: 2;
+    background-color: gray;
+    border-top-right-radius: 8px;
+}

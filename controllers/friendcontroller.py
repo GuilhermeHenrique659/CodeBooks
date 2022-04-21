@@ -1,3 +1,4 @@
+from cProfile import run
 from flask import flash, redirect,request,url_for,jsonify,session
 from dao import FriendDao
 from config import server
@@ -8,6 +9,7 @@ class ControllerFriend:
     def __init__(self) -> None:
         pass
 
+    @server.loggin_required
     def seach_user(self):
         username = request.get_json(force = True)
         if username['user'] == '':
@@ -25,7 +27,18 @@ class ControllerFriend:
         friend_exists = friend_dao.friend_exists(id,session['user_id'])
         if friend_exists or id == session['user_id']:
             flash("voce já é amigo dessa pessoa")
-            return redirect(url_for('index'))
+            return redirect(url_for('user_profile',pag='view', id=id))
         else:
-            id = friend_dao.add_friend_in_db(id,session['user_id'])
-            return redirect(url_for('index'))
+            friend_dao.add_friend_in_db(id,session['user_id'])
+            return redirect(url_for('user_profile',pag='view', id=id))
+
+    @server.loggin_required
+    def remove_friend(self,id):
+        friend_exists = friend_dao.friend_exists(id,session['user_id'])
+        if friend_exists:
+            flash("Amizade desfeita")
+            friend_dao.remove_friend(id,session['user_id'])
+            return redirect(url_for('user_profile',pag='view', id=id))
+        else:
+            flash("usuario nao é seu amigo")
+            return redirect(url_for('user_profile',pag='view', id=id))
