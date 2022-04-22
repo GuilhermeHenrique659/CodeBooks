@@ -4,7 +4,7 @@ from .friendcontroller import ControllerFriend
 from .postcontrollers import ControllerPost
 from .usercontrollers import ControllerUser
 from .codecontrolles import  ControllerCode
-
+from .chatcontrollers import ControllerChat
 
 class FactoryController:
     def __init__(self) -> None:
@@ -16,6 +16,7 @@ class FactoryController:
         self.__post = ControllerPost()
         self.__user = ControllerUser()
         self.__code = ControllerCode()
+        self.__chat = ControllerChat()
 
     @property
     def login(self):
@@ -53,5 +54,8 @@ class FactoryController:
     def code(self):
         return self.__code
 
+    @property
+    def chat(self):
+        return self.__chat
 
 controllers = FactoryController()

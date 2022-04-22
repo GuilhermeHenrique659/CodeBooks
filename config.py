@@ -1,6 +1,7 @@
 import sqlite3
 from flask import Flask , session, redirect, url_for
 import os
+from flask_socketio import SocketIO
 
 
 class Server:
@@ -9,6 +10,7 @@ class Server:
         self.__app.secret_key='Codebooks'
         self.__app.config['UPLOAD_FOLDER'] = os.path.abspath(os.path.dirname(__file__))+'/uploads'
         self.__db = sqlite3.connect('db.sqlite', check_same_thread=False)
+        self.__socketio = SocketIO(self.__app)
 
     def __dictionary_cursor(self, cursor, row):
         dictionary = {}
@@ -20,6 +22,7 @@ class Server:
         self.__app.run(
             debug=True
             )
+        self.__socketio.run(self.__app)
 
     def loggin_required(self, controller):
         def wrapper(*agrs, **kwargs):
@@ -37,5 +40,8 @@ class Server:
     def app(self) -> Flask:
         return self.__app
 
+    @property
+    def socketio(self):
+        return self.__socketio
 
 server = Server()

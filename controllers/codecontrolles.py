@@ -1,5 +1,5 @@
 from flask import render_template,redirect, request,session,url_for
-from FactoryDao import dao
+from factoryDao import dao
 from config import server
 from models import Code
 
