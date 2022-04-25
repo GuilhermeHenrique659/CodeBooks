@@ -22,12 +22,14 @@ form {
         grid-template-rows: 70% 30%;
 }
 .body-chat{
+    height: 100%;
     grid-column: 2;
     padding: 50px;
     background-color: white;
     }
 
 .header-chat{
+    height: 100%;
     padding: 20px;
     grid-column: 1;
     background-color: gray;
