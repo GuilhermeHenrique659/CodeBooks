@@ -68,8 +68,17 @@
             {% for code in list_code %}
             <div class="code">
                 <div class="code-header">
-                    <h4><a href="{{url_for('user_profile',id=code._user._id)}}">{{code._user._name}}</a></h4>
+                    <h4><a href="{{ url_for('user_profile',id=code._user.id) }}">{{code._user.name}}</a></h4>
                     <h5>{{code._created_at}}</h5>
+                    {% if session['user_id'] == code._user.id %}
+                    <div class="trash-icon" style="margin-left: 50px;">
+                        
+                        <a href="{{url_for('delete_code', id=code._idcode, post_id=post_id)}}">
+                            <button type="button" class="btn"><img src="{{ url_for('static', filename = 'img/icon/trash.svg') }}"
+                                alt=""></button>
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
                 <div class="code-body">
                     <code><textarea name="" id="" class="code-area"

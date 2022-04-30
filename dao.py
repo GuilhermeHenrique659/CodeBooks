@@ -20,15 +20,24 @@ SQL_EDIT_USER = 'UPDATE user SET name=?,email=?,age=?,image=?,job=?,password=? W
 
 SQL_ADD_FRIEND = 'INSERT INTO Friendship (User_idUser,Friend_idUser) VALUES (?,?)'
 
-SQL_LIST_POST = 'SELECT * FROM Post JOIN User ON User.idUser = Post.User_idUser'
+SQL_LIST_POST = 'SELECT * FROM Post LEFT JOIN User ON User.idUser = Post.User_idUser'
 
 SQL_CREATE_POST = 'INSERT INTO post (title, description, User_idUser) VALUES (?,?,?)'
+
+SQL_EDIT_POST = 'UPDATE Post SET title=?, description=? WHERE idPost=? AND User_idUser = ?'
 
 SQL_CREATE_CODE = 'INSERT INTO code (code, Post_idPost, User_id) VALUES (?,?,?) '
 
 SQL_SEARCH_USER_PROFILE = 'SELECT * FROM user where idUser = ?'
 
-SQL_SEARCH_CODE_LIST = 'SELECT code,Post_idPost,created_at,idCode,name,idUser FROM Code JOIN User ON User.idUser = code.User_id WHERE Post_idPost = ?'
+SQL_SEARCH_CODE_LIST = 'SELECT code,Post_idPost,created_at,idCode,name,idUser FROM Code LEFT JOIN User ON User.idUser = code.User_id WHERE Post_idPost = ?'
+
+SQL_DELETE_USER = 'DELETE FROM User WHERE idUser=? '
+
+SQL_DELETE_POST = 'DELETE FROM Post WHERE idPost=? and User_idUser = ?'
+
+SQL_DELETE_CODE = 'DELETE FROM Code WHERE idCode = ? and User_id = ?'
+
 
 class FriendDao:
     def __init__(self, db) -> None:
@@ -41,7 +50,7 @@ class FriendDao:
         return users_data
 
 
-    def friend_list(self, user_id):
+    def friend_list(self, user_id) -> list:
         cursor = self.__db.cursor()
         cursor.execute(SQL_FRIEND_LIST_FRIEND, (user_id, user_id, user_id,))
         friend_list = self.__translate_to_list(cursor.fetchall())
@@ -73,8 +82,6 @@ class FriendDao:
 
     def __translate_to_list(self, user_dict):
         def translate_to_objects(user_dict):
-            if not user_dict['image']:
-                user_dict['image'] = 'image_not_found.jfif'
             return User(user_dict['name'], None, None, user_dict['idUser'],image=user_dict['image'])
         return list(map(translate_to_objects, user_dict) )
 
@@ -85,12 +92,10 @@ class UserDao:
     def user_search_login(self, user_data) -> object:
         cursor = self.__db.cursor()
         cursor.execute(SQL_SEARCH_USER_LOGIN, (user_data,))
-        data = cursor.fetchone()
+        data_user = cursor.fetchone()
         try:
-            if not data['image']:
-                data['image'] = 'image_not_found.jfif'
-            user = User(data['name'], data['email'],
-                        data['password'], data['idUser'], image=data['image'])
+            user = User(data_user['name'], data_user['email'],
+                        data_user['password'], data_user['idUser'], image=data_user['image'])
             return user
         except:
             return None
@@ -109,18 +114,20 @@ class UserDao:
         self.__db.commit()
         return cursor.lastrowid
 
-    def search_user_profile(self, id):
+    def search_user_profile(self, id) -> User:
         cursor = self.__db.cursor()
         try:
             cursor.execute(SQL_SEARCH_USER_PROFILE, (id,))
             data_user_db = cursor.fetchone()
-            if not data_user_db['image']:
-                data_user_db['image'] = 'image_not_found.jfif'
             return User(data_user_db['name'],data_user_db['email'],None,data_user_db['idUser'],
                             data_user_db['age'],data_user_db['image'],data_user_db['job'])
         except:
             return None
 
+    def delete_user(self,id):
+        cursor = self.__db.cursor()
+        cursor.execute(SQL_DELETE_USER, (id,))
+        self.__db.commit()
 
 
 
@@ -130,8 +137,6 @@ class PostDao:
 
     def __translate_to_list(self, post_db) -> list:
         def translate_to_object(post):
-            if not post['image']:
-                post['image'] = 'image_not_found.jfif'
             user = User(post['name'],post['email'], None, post['idUser'],image=post['image'])
             return Post(post['title'], post['description'],user,post['created_at'], 
                         post['updated_at'], post['like_cont'], post['idPost'])
@@ -147,11 +152,19 @@ class PostDao:
         except:
             return None
 
+    def delete_post(self, post_id,user_id):
+        cursor = self.__db.cursor()
+        try:
+            cursor.execute(SQL_DELETE_POST,(post_id,user_id,))
+        except NameError as error:
+            return error
+        self.__db.commit()
+
     def create_post(self,post):
         cursor = self.__db.cursor()
         try:
             if post._idPost:
-                pass
+                cursor.execute(SQL_EDIT_POST, (post._title,post._description, post._idPost, post._user))
             else:
                 cursor.execute(SQL_CREATE_POST,(post._title, post._description, post._user,))
         except NameError:
@@ -172,8 +185,12 @@ class CodeDao:
             return None
         self.__db.commit()   
         return cursor.lastrowid
+
+    def delete_code(self, id, user_id):
+        self.__db.cursor().execute(SQL_DELETE_CODE,(id,user_id,))
+        self.__db.commit()
     
-    def list_code(self, id_post):
+    def list_code(self, id_post) -> list:
         cursor = self.__db.cursor()
         cursor.execute(SQL_SEARCH_CODE_LIST,(id_post,))
         list_code_db = cursor.fetchall()
@@ -182,7 +199,7 @@ class CodeDao:
     
     def __translate_to_list(self, code_db) -> list:
         def translate_to_object(code):
-            user = User(code['name'],None,None,code['idUser'],None)
+            user = User(code['name'],None,None,code['idUser'])
             return Code(code['code'],code['Post_idPost'],user,code['created_at'],code['idCode'])
         return list(map(translate_to_object, code_db))
 

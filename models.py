@@ -23,6 +23,24 @@ class User:
     def set_image(self,image):
       self._image = image
 
+    @property
+    def image(self):
+      if not self._image:
+        self._image = 'image_not_found.jfif'
+      return self._image
+
+    @property
+    def name(self):
+      if not self._name:
+        self._name = 'usuario não encontrado'
+      return self._name
+
+    @property
+    def id(self):
+      if not self._id:
+        self._id = 0
+      return self._id
+
     def __str__(self) -> str:
         return self._name
 
