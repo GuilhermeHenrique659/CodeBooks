@@ -1,6 +1,6 @@
 from flask import flash, redirect, render_template, request, send_from_directory, url_for, session
 from config import server
-from FactoryDao import dao
+from factoryDao import dao
 from models import User
 
 
@@ -18,6 +18,7 @@ class ControllerLogin:
             if user._password == data['password']:
                 session['login_user'] = data['email']
                 session['user_id'] = user._id
+                session['user_name'] = user._name
                 return redirect(url_for('index'))
             else:
                 flash('senha errada')

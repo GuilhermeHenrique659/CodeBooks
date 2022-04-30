@@ -1,6 +1,5 @@
-
 from config import server
-from controllers.FactoryController import controllers
+from controllers.factoryController import controllers
 
 class Routes:
     def __init__(self) -> None:
@@ -54,3 +53,4 @@ class Routes:
         server.app.add_url_rule('/delete_account/<int:id>',endpoint='delete_account',
                     view_func=controllers.user.delete_account)
         
+        server.app.add_url_rule('/chat/<int:id>', endpoint='chat', view_func=controllers.chat.chat)

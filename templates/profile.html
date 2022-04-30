@@ -57,7 +57,7 @@
                   <a href="{{ url_for('remove_friend', id=user_profile._id) }}"><Button class="button_editar">Remover
                       amigo</Button></a>
                   {% endif %}
-                  <Button class="button_editar">Mensagem</Button>
+                  <a href="{{url_for('chat', id=user_profile._id)}}"><Button class="button_editar">Mensagem</Button></a>
                   {% endif %}
                 </div>
               </div>

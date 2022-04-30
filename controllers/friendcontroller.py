@@ -1,5 +1,5 @@
 from flask import flash, redirect,request,url_for,jsonify,session
-from FactoryDao import dao
+from factoryDao import dao
 from config import server
 
 
