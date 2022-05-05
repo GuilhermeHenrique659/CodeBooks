@@ -50,7 +50,17 @@ class Routes:
         server.app.add_url_rule('/add_code/<int:id>', endpoint='add_code', 
                                     view_func =  controllers.code.add_code,methods=['POST'])
 
+        server.app.add_url_rule('/delete_code/<int:id>', endpoint='delete_code', 
+                                    view_func = controllers.code.delete_code)
+
         server.app.add_url_rule('/delete_account/<int:id>',endpoint='delete_account',
                     view_func=controllers.user.delete_account)
         
-        server.app.add_url_rule('/chat/<int:id>', endpoint='chat', view_func=controllers.chat.chat)
+        server.app.add_url_rule('/chat/<int:id>', endpoint='chat', 
+                                    view_func=controllers.chat.chat)
+
+        server.app.add_url_rule('/delte_post/<int:id>', endpoint='delete_post',
+                                    view_func=controllers.post.delete_post)
+
+        server.app.add_url_rule('/edit_post', endpoint='edit_post', 
+                                    view_func=controllers.post.edit_post, methods=['POST'])

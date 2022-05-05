@@ -17,3 +17,9 @@ class ControllerCode:
         code = Code(data_code_front['code'],id,session['user_id'])
         dao.code.create_code(code)
         return redirect(url_for('post',id=id))
+
+    @server.loggin_required
+    def delete_code(self, id):
+        post = request.args['post_id']
+        dao.code.delete_code(id,session['user_id'])
+        return redirect(url_for('post',id=post))

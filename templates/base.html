@@ -849,14 +849,14 @@
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <div class="text-center" style="margin-top: 25px; padding: 20px;">
-                                <img src="{{ url_for('uploads', filename=user._image ) }}"
+                                <img src="{{ url_for('uploads', filename=user.image ) }}"
                                     class="rounded-circle float-start" width="160" height="160" alt="...">
                             </div>
                         </li>
                         <li class="nav-item">
                             <h1 class="username">
                                 <span data-feather="home"></span>
-                                {{user._name}}
+                                {{user.name}}
                             </h1>
                         </li>
                         <li class="nav-item">
@@ -908,13 +908,13 @@
                     <hr>
                     {% for friend in friend_list %}
                     <li class="line-friend">
-                        <a class="dropdown-item" href="{{ url_for('user_profile' ,pag='view', id=friend._id) }}">
-                            <img src="{{ url_for('uploads', filename=friend._image ) }}" alt="" class="rounded-circle"
+                        <a class="dropdown-item" href="{{ url_for('user_profile' ,pag='view', id=friend.id) }}">
+                            <img src="{{ url_for('uploads', filename=friend.image ) }}" alt="" class="rounded-circle"
                                 width="32" height="32" alt="..." style="margin: 5px;">
-                            {{ friend._name }}
+                            {{ friend.name }}
                         </a>
-                    
-                    </div>
+
+
                     </li>
                     {% endfor %}
                 </ul>
@@ -990,26 +990,43 @@
                                 </div>
 
 
-                                <div class="modal fade" id="codeModal" tabindex="-1" aria-labelledby="codeModallLabel"
-                                    aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="codeModallLabel">Modal title</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
 
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-primary">Save changes</button>
-                                            </div>
+                                <div class="modal fade" id="editmodal" tabindex="-1" aria-labelledby="editmodalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                      <div class="modal-content">
+                                        <div class="modal-header">
+                                          <h5 class="modal-title" id="editmodalLabel">Atualização do post</h5>
+                                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
+                                        <div class="modal-body">
+                                          <form action="{{url_for('edit_post')}}" method="POST">
+                                              <input type="hidden" id="idpost" name="idpost">
+                                            <div class="form-row">
+                                                <div class="name">Título</div>
+                                                <div class="value">
+                                                    <input class="input--style-6" id="title" type="text"
+                                                        name="title">
+                                                </div>
+                                            </div>
+                                            <div class="form-row">
+                                                <div class="name">Descrição</div>
+                                                <div class="value">
+                                                    <div class="input-group">
+                                                        <textarea class="textarea--style-6" id="description"
+                                                            name="description"
+                                                            placeholder="Coloque a descrção da sua publicação aqui! ;)"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                        </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                        </div>
+                                      </div>
                                     </div>
-                                </div>
+                                  </div>
+
 
                                 {% endif %}
 
@@ -1018,19 +1035,36 @@
                                 <div class="post">
                                     <div class="user">
                                         <div class="user_photo">
-                                            <img src="{{ url_for('uploads', filename=post._user._image ) }}"
+                                            <img src="{{ url_for('uploads', filename=post._user.image ) }}"
                                                 class="rounded-circle" width="64" height="64" alt="...">
                                         </div>
 
                                         <div class="user_name">
-                                            <h3>{{ post._user._name}}</h3>
+                                            <h3>{{ post._user.name}}</h3>
                                         </div>
+                                        {% if session['user_id'] == post._user.id %}
+                                        <div class="trash-icon" style="margin-left: 50px;">
+                                            
+                                            <a href="{{url_for('delete_post', id = post._idPost)}}">
+                                                <button type="button" class="btn"><img src="{{ url_for('static', filename = 'img/icon/trash.svg') }}"
+                                                    alt=""></button>
+                                            </a>
+                                        </div>
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="btn" data-bs-toggle="modal"
+                                            data-bs-target="#editmodal" data-id="{{ post._idPost}}" data-title="{{post._title}}" data-desc="{{post._description}}">
+                                            <img src="{{ url_for('static', filename = 'img/icon/edit.svg') }}" alt="">
+                                        </button>
+
+                                        <!-- Modal -->
+
+                                        {% endif %}
                                     </div>
                                     <div class="title">
                                         <h4 style="color: black;">{{ post._title}}</h4>
                                     </div>
                                     <div class="post_desc">
-                                        <a href="{{ url_for('post', id=post._idPost) }}">
+                                        <a href="{{ url_for('post', id=post._idPost) }}" style="text-decoration: none; color: black;">
                                             <p>{{ post._description}} </p>
                                         </a>
                                     </div>
@@ -1053,8 +1087,31 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
         integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous">
-    </script>
 
+    </script>
+ <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+            const editModal = document.getElementById('editmodal')
+            editModal.addEventListener('hide.bs.modal', function (event) {
+               document.getElementById('title').value= null;
+               document.getElementById('description').value= null;
+               document.getElementById('idpost').value= null;
+               })
+
+            editModal.addEventListener('show.bs.modal', function (event) {
+                let button = event.relatedTarget
+                let id = button.getAttribute('data-id')
+                let title = button.getAttribute('data-title')
+                let desc = button.getAttribute('data-desc')
+                console.log(title)
+                let id_input = editModal.querySelector('#idpost')
+                id_input.value = id
+                let title_input = editModal.querySelector('#title')
+                title_input.value = title
+                let desc_input = editModal.querySelector('#description')
+                desc_input.value = desc
+            })
+    </script>
 
     <script>
         var input = document.getElementById("search_user");
@@ -1072,7 +1129,8 @@
                     for (i of list) {
                         i.remove()
                     }
-                    if (this.status == 200) {
+                    const SUCCESS_CODE = 200
+                    if (this.status == SUCCESS_CODE) {
                         var dataReply = JSON.parse(this.responseText);
                         for (var i = 0; i < dataReply.length; i++) {
                             const li = document.createElement('li');
