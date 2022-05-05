@@ -37,7 +37,7 @@
     {% endwith %}
     <div class="container">
         <div class="header-chat">
-            <img src="{{ url_for('uploads', filename=friend._image ) }}" class="rounded-circle" alt="" width="50"
+            <img src="{{ url_for('uploads', filename=friend.image ) }}" class="rounded-circle" alt="" width="50"
                 height="50">
             <h3>{{friend._name}}</h3>
         </div>

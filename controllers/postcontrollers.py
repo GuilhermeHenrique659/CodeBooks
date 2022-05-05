@@ -1,4 +1,4 @@
-from flask import render_template,request,redirect, session,url_for
+from flask import flash, render_template,request,redirect, session,url_for
 from config import server
 from factoryDao import dao
 from models import Code, Post
@@ -20,3 +20,18 @@ class ControllerPost:
         result = dao.code.create_code(code)
         return redirect(url_for('index'))
 
+    @server.loggin_required
+    def delete_post(self,id):
+        result = dao.post.delete_post(id,session['user_id'])
+        if result:
+            flash('Erro ao deletar postagem')
+            return redirect(url_for('index'))
+        flash('Post deletado com sucesso')
+        return redirect(url_for('index'))
+    
+    @server.loggin_required
+    def edit_post(self):
+        post_data = request.form
+        post = Post(post_data['title'],post_data['description'],session['user_id'],idPost=post_data['idpost'])
+        dao.post.create_post(post)
+        return redirect(url_for('index'))
