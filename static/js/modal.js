@@ -1,19 +1,20 @@
-$('#modal_fin').on('hide.bs.modal', function (event) {
-    document.getElementById('porcentagem_corr').value= null;
-    document.getElementById('porcentagem_imob').value= null;
-    document.getElementById('valor_corr').value= null;
-    document.getElementById('valor_imob').value= null;
+const editModal = document.getElementById('editmodal')
+editModal.addEventListener('hide.bs.modal', function (event) {
+    document.getElementById('title').value = null;
+    document.getElementById('description').value = null;
+    document.getElementById('idpost').value = null;
 })
 
-$('#modal_fin').on('show.bs.modal', function (event) {
-    var button = $(event.relatedTarget)
-    var id = button.data('id')
-    var total = button.data('total')
-    var corretor = button.data('corretor')
-    var modal = $(this)
-    modal.find('.modal-title').text('Insira os valores para o registro: ' + id)
-    modal.find('#id_fin').val(id)
-    modal.find('#total').val(total)
-    modal.find('#corretor').val(corretor)
-
+editModal.addEventListener('show.bs.modal', function (event) {
+    let button = event.relatedTarget
+    let id = button.getAttribute('data-id')
+    let title = button.getAttribute('data-title')
+    let desc = button.getAttribute('data-desc')
+    console.log(title)
+    let id_input = editModal.querySelector('#idpost')
+    id_input.value = id
+    let title_input = editModal.querySelector('#title')
+    title_input.value = title
+    let desc_input = editModal.querySelector('#description')
+    desc_input.value = desc
 })

@@ -1,14 +1,22 @@
 
 import sqlite3
+from typing import List
 from models import Code, User, Post
 
-SQL_FRIEND_LIST_FRIEND = 'SELECT idUser, name, image FROM Friendship join user on Friendship.Friend_idUser = user.idUser where ( User_idUser = ? or Friend_idUser = ?) and idUser != ?'
 
-SQL_FRIEND_LIST_USER = 'SELECT idUser, name,image FROM Friendship join user on Friendship.User_idUser = user.idUser where ( User_idUser = ? or Friend_idUser = ?) and idUser != ?'
+SQL_FRIEND_LIST = '''
+                SELECT idUser, name, image FROM Friendship 
+                join user on Friendship.Friend_idUser = user.idUser 
+                where ( User_idUser = :id_user or Friend_idUser = :id_user) and idUser != :id_user
+                union
+                SELECT idUser, name,image FROM Friendship 
+                join user on Friendship.User_idUser = user.idUser 
+                where ( User_idUser = :id_user or Friend_idUser = :id_user) and idUser != :id_user
+'''
 
-SQL_FRIEND_EXISTS = 'SELECT * FROM Friendship WHERE (User_idUser = ? and Friend_idUser = ?) or ( User_idUser = ? and Friend_idUser = ?) '
+SQL_FRIEND_EXISTS = 'SELECT * FROM Friendship WHERE (User_idUser = :id_user and Friend_idUser = :id_friend) or ( User_idUser = :id_friend and Friend_idUser = :id_user) '
 
-SQL_FRIEND_DELETE = 'DELETE FROM Friendship WHERE (User_idUser = ? and Friend_idUser = ?) or ( User_idUser = ? and Friend_idUser = ?) '
+SQL_FRIEND_DELETE = 'DELETE FROM Friendship WHERE (User_idUser = :id_user and Friend_idUser = :id_friend) or ( User_idUser = :id_friend and Friend_idUser = :id_user) '
 
 SQL_SEARCH_USER = 'select name, idUser, image from user where name=? and idUser !=?'
 
@@ -52,23 +60,19 @@ class FriendDao:
 
     def friend_list(self, user_id) -> list:
         cursor = self.__db.cursor()
-        cursor.execute(SQL_FRIEND_LIST_FRIEND, (user_id, user_id, user_id,))
+        cursor.execute(SQL_FRIEND_LIST, {'id_user':user_id})
         friend_list = self.__translate_to_list(cursor.fetchall())
-        cursor.execute(SQL_FRIEND_LIST_USER, (user_id, user_id, user_id,))
-        friend_list.extend(self.__translate_to_list(cursor.fetchall()))
         return friend_list
 
     def friend_exists(self, friend_id, user_id):
         cursor = self.__db.cursor()
-        cursor.execute(SQL_FRIEND_EXISTS,
-                       (user_id, friend_id, friend_id, user_id))
+        cursor.execute(SQL_FRIEND_EXISTS, {'id_user':user_id, 'id_friend': friend_id})
         friend_list = cursor.fetchall()
         return friend_list
 
     def remove_friend(self, friend_id, user_id):
         cursor = self.__db.cursor()
-        cursor.execute(SQL_FRIEND_DELETE,
-                    (user_id, friend_id, friend_id, user_id))
+        cursor.execute(SQL_FRIEND_DELETE, {'id_user':user_id, 'id_friend': friend_id})
         self.__db.commit()
 
     def add_friend_in_db(self, friend_id, user_id):
@@ -80,8 +84,8 @@ class FriendDao:
         self.__db.commit()
         return cursor.lastrowid
 
-    def __translate_to_list(self, user_dict):
-        def translate_to_objects(user_dict):
+    def __translate_to_list(self, user_dict) -> list:
+        def translate_to_objects(user_dict) -> User:
             return User(user_dict['name'], None, None, user_dict['idUser'],image=user_dict['image'])
         return list(map(translate_to_objects, user_dict) )
 
@@ -100,7 +104,7 @@ class UserDao:
         except:
             return None
 
-    def save_user(self, user) -> int:
+    def save_user(self, user:User):
         cursor = self.__db.cursor()
         try:
             if user._id:
@@ -109,7 +113,7 @@ class UserDao:
             else:
                 cursor.execute(SQL_CREATE_USER, (user._name,
                                user._email, user._password,))
-        except sqlite3.IntegrityError as error:
+        except sqlite3.IntegrityError:
             return "email not available"
         self.__db.commit()
         return cursor.lastrowid
@@ -136,7 +140,7 @@ class PostDao:
         self.__db = db
 
     def __translate_to_list(self, post_db) -> list:
-        def translate_to_object(post):
+        def translate_to_object(post) -> Post:
             user = User(post['name'],post['email'], None, post['idUser'],image=post['image'])
             return Post(post['title'], post['description'],user,post['created_at'], 
                         post['updated_at'], post['like_cont'], post['idPost'])
@@ -160,7 +164,7 @@ class PostDao:
             return error
         self.__db.commit()
 
-    def create_post(self,post):
+    def create_post(self,post:Post):
         cursor = self.__db.cursor()
         try:
             if post._idPost:
@@ -177,7 +181,7 @@ class CodeDao:
     def __init__(self,db) -> None:
         self.__db = db
 
-    def create_code(self,code):
+    def create_code(self,code:Code):
         cursor = self.__db.cursor()
         try:
             cursor.execute(SQL_CREATE_CODE,(code._code,code._idPost,code._user,))
@@ -198,12 +202,7 @@ class CodeDao:
         return list_code
     
     def __translate_to_list(self, code_db) -> list:
-        def translate_to_object(code):
+        def translate_to_object(code) -> Code:
             user = User(code['name'],None,None,code['idUser'])
             return Code(code['code'],code['Post_idPost'],user,code['created_at'],code['idCode'])
         return list(map(translate_to_object, code_db))
-
-    
-
-
-        

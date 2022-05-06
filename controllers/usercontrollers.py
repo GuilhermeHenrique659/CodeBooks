@@ -33,8 +33,10 @@ class ControllerUser:
         user_data_form = request.form
         user_image_file = request.files['image']
         image_filename = f'user_image_profile{id}.jpg'
+        
         user = User(user_data_form['name'],user_data_form['email'],user_data_form['password'],id,
                     user_data_form['age'],image_filename,user_data_form['job'])
+
         if user_image_file:
             upload_folder = server.app.config['UPLOAD_FOLDER']
             user_image_file.save(f'{upload_folder}/{image_filename}')
