@@ -1,4 +1,3 @@
-
 from flask import url_for
 
 class User:
@@ -17,7 +16,7 @@ class User:
         'name': self._name,
         'email': self._email,
         'password': self._password,
-        'image': url_for('uploads', filename=self._image)
+        'image': (url_for('uploads', filename=self.image))
       }
 
     def set_image(self,image):
@@ -57,6 +56,8 @@ class Post:
         
     def set_idPost(self, idPost):
       self._idPost = idPost
+
+
 class Code:
     def __init__(self, code, idPost, user, created_at = None, idcode = None) -> None:
         self._idcode = idcode

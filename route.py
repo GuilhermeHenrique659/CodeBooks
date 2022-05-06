@@ -5,7 +5,6 @@ from controllers.factoryController import controllers
 class Routes:
     def __init__(self) -> None:
 
-
         server.app.add_url_rule('/',endpoint='index',
                                     view_func=controllers.feed.index)
 

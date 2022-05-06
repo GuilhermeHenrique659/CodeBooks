@@ -7,13 +7,17 @@ class ControllerFriend:
     def __init__(self) -> None:
         pass
 
-    @server.loggin_required
-    def seach_user(self):
-        username = request.get_json(force = True)
+    def users_list(self, username):
         if username['user'] == '':
             users_find = dao.friend.friend_list(session['user_id'])
         else: 
             users_find = dao.friend.user_search(username['user'],session['user_id'])
+        return users_find
+
+    @server.loggin_required
+    def seach_user(self):
+        username = request.get_json(force = True)
+        users_find = self.users_list(username)
         if len(users_find) > 0:
             users_list_json = [user.change_for_json() for user in users_find]
             return jsonify(users_list_json),200
