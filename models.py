@@ -16,7 +16,7 @@ class User:
         'name': self._name,
         'email': self._email,
         'password': self._password,
-        'image': (url_for('uploads', filename=self.image))
+        'image': url_for('uploads', filename=self.image)
       }
 
     def set_image(self,image):

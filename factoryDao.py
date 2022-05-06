@@ -25,4 +25,5 @@ class FactoryDao:
         return self.__code
 
 
+
 dao = FactoryDao()

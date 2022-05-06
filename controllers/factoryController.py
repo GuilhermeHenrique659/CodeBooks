@@ -4,6 +4,7 @@ from .friendcontroller import ControllerFriend
 from .postcontrollers import ControllerPost
 from .usercontrollers import ControllerUser
 from .codecontrolles import  ControllerCode
+
 from .chatcontrollers import ControllerChat
 
 class FactoryController:
@@ -59,3 +60,4 @@ class FactoryController:
         return self.__chat
 
 controllers = FactoryController()
+
