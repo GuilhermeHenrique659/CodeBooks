@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `Post` (
   CONSTRAINT `fk_Post_User1`
     FOREIGN KEY (`User_idUser`)
     REFERENCES `User` (`idUser`)
-    ON DELETE CASCADE
+    ON DELETE SET NULL
     ON UPDATE CASCADE)
 
 CREATE TABLE IF NOT EXISTS `Files` (
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `Files` (
   `file` VARCHAR(10) NOT NULL,
   `type` VARCHAR(100) NOT NULL,
   `idPost` INTERGER NOT NULL,
-  CONSTRAINT `fk_Code_Post1`
+  CONSTRAINT `fk_Files_Post1`
     FOREIGN KEY (`idPost`)
     REFERENCES `Post` (`idPost`)
     ON DELETE CASCADE
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `Code` (
   CONSTRAINT `fk_Code_User`
     FOREIGN KEY (`User_id`)
     REFERENCES `User` (`idUser`)
-    ON DELETE CASCADE
+    ON DELETE SET NULL
     ON UPDATE CASCADE)
 
 
