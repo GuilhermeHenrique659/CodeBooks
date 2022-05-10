@@ -2,6 +2,7 @@ from flask import render_template,request,redirect, session,url_for
 from config import server
 from factoryDao import dao
 from models import User 
+import os
 
 
 
@@ -46,4 +47,5 @@ class ControllerUser:
     @server.loggin_required
     def delete_account(self,id):
         dao.user.delete_user(id)
+        os.remove(os.path.join(server.app.config['UPLOAD_PATH'], f'user_image_profile{id}.jpg'))
         return redirect(url_for('logout'))

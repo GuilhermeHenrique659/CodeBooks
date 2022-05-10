@@ -1,5 +1,7 @@
 from flask import url_for
 
+FIRST_FILE = 0
+
 class User:
     def __init__(self,name,email,password,id  =None, age = None, image = None, job = None) -> None:
         self._id = id
@@ -44,7 +46,7 @@ class User:
         return self._name
 
 class Post:
-    def __init__(self,title, description, user, create_at = None, update_at = None, like_cont = None, idPost = None, code = None) -> None:
+    def __init__(self,title, description, user, create_at = None, update_at = None, like_cont = None, idPost = None, code = None, files=None) -> None:
         self._idPost = idPost
         self._title = title
         self._description = description
@@ -53,10 +55,18 @@ class Post:
         self._update_at = update_at
         self._user = user
         self._code = code
+        self._files = files
         
     def set_idPost(self, idPost):
       self._idPost = idPost
+    
+    def set_files(self, files): 
+      self._files = files
 
+    def get_first_file(self):
+        first_file = self._files[FIRST_FILE]
+        self._files.pop(FIRST_FILE)
+        return first_file
 
 class Code:
     def __init__(self, code, idPost, user, created_at = None, idcode = None) -> None:
@@ -66,7 +76,9 @@ class Code:
         self._user = user
         self._created_at = created_at
 
-
-        
-
-  
+class File:
+    def __init__(self, filename, type, id_post) -> None:
+        self._filename = filename
+        self._type = type
+        self._id_post = id_post
+    

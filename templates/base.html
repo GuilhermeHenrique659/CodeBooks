@@ -948,7 +948,8 @@
                                                             <h2 class="title">Nova Publicação</h2>
                                                         </div>
                                                         <div class="card-body">
-                                                            <form action="{{url_for('create_post')}}" method="POST">
+                                                            <form action="{{url_for('create_post')}}" method="POST"
+                                                            enctype="multipart/form-data">
                                                                 <div class="form-row">
                                                                     <div class="name">Título</div>
                                                                     <div class="value">
@@ -973,6 +974,14 @@
                                                                             <textarea class="textarea--style-6"
                                                                                 name="code"
                                                                                 placeholder="Cole seu código aqui! ;)"></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="form-row">
+                                                                    <div class="name">Arquivos</div>
+                                                                    <div class="value">
+                                                                        <div class="input-group">
+                                                                            <input type="file" name="files" id="files" accept=".jpg, .mp4"  multiple>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -1072,6 +1081,31 @@
                                             style="text-decoration: none; color: black;">
                                             <p>{{ post._description}} </p>
                                         </a>
+                                    </div>
+                                    <div>
+                                        {% if post._files %}
+                                        <div id="carouselExampleControls" class="carousel carousel-dark slide" data-bs-ride="carousel">
+                                            <div class="carousel-inner">
+                                                <div class="carousel-item active">
+                                                    <img src="{{ url_for('uploads', filename=post.get_first_file()._filename ) }}" class="rounded mx-auto d-block" width="350" height="350" alt="...">
+                                                </div>
+                                                {% for file in post._files %}
+                                                <div class="carousel-item">
+                                                    <img src="{{ url_for('uploads', filename=file._filename ) }}" class="rounded mx-auto d-block" width="350"  height="350" alt="...">
+                                                </div>
+                                              {% endfor %}
+                                            </div>
+                                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                                              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                              <span class="visually-hidden">Previous</span>
+                                            </button>
+                                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                                              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                              <span class="visually-hidden">Next</span>
+                                            </button>
+                                          </div>
+                                        {% endif %}
+                                        
                                     </div>
                                 </div>
                                 {% endfor %}

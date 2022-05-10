@@ -7,6 +7,7 @@ class FactoryDao:
         self.__post = PostDao(server.db)
         self.__friend = FriendDao(server.db)
         self.__code = CodeDao(server.db)
+        self.__file = FileDao(server.db)
 
     @property
     def user(self):
@@ -24,6 +25,8 @@ class FactoryDao:
     def code(self):
         return self.__code
 
-
+    @property
+    def file(self):
+        return self.__file
 
 dao = FactoryDao()
