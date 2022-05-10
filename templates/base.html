@@ -954,7 +954,7 @@
                                                                     <div class="name">Título</div>
                                                                     <div class="value">
                                                                         <input class="input--style-6" type="text"
-                                                                            name="title">
+                                                                            name="title" required>
                                                                     </div>
                                                                 </div>
                                                                 <div class="form-row">
@@ -1016,7 +1016,7 @@
                                                         <div class="name">Título</div>
                                                         <div class="value">
                                                             <input class="input--style-6" id="title" type="text"
-                                                                name="title">
+                                                                name="title" required>
                                                         </div>
                                                     </div>
                                                     <div class="form-row">
@@ -1084,7 +1084,7 @@
                                     </div>
                                     <div>
                                         {% if post._files %}
-                                        <div id="carouselExampleControls" class="carousel carousel-dark slide" data-bs-ride="carousel">
+                                        <div id="carouselControls{{post._idPost}}" class="carousel carousel-dark slide" data-bs-ride="carousel">
                                             <div class="carousel-inner">
                                                 <div class="carousel-item active">
                                                     <img src="{{ url_for('uploads', filename=post.get_first_file()._filename ) }}" class="rounded mx-auto d-block" width="350" height="350" alt="...">
@@ -1095,11 +1095,11 @@
                                                 </div>
                                               {% endfor %}
                                             </div>
-                                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselControls{{post._idPost}}" data-bs-slide="prev">
                                               <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                               <span class="visually-hidden">Previous</span>
                                             </button>
-                                            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                                            <button class="carousel-control-next" type="button" data-bs-target="#carouselControls{{post._idPost}}" data-bs-slide="next">
                                               <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                               <span class="visually-hidden">Next</span>
                                             </button>

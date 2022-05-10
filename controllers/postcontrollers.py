@@ -16,7 +16,8 @@ class ControllerPost:
         post.set_idPost(dao.post.create_post(post) )
         code = Code(post_form['code'],post._idPost,session['user_id'])
         dao.code.create_code(code)
-        if post_files:
+        print(post_files.__dict__)
+        if len(post_files) > 0:
             for i in range(len(post_files)):
                 file_name = f'post_image{post._idPost}{i}.jpeg'
                 upload_folder = server.app.config['UPLOAD_FOLDER']
