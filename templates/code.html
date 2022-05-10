@@ -88,7 +88,41 @@
             {% endfor %}
         </div>
         <div class="comment">
-
+            <!-- cadastra comentario -->
+            <div class="m-2">
+                <p class="text-decoration-underline">Comentarios</p>
+                <form action="{{url_for('insert_comment', idPost=post_id)}}" method="POST">
+                    <div class="mb-3">
+                        <textarea class="form-control" rows="5" name="comment"
+                            placeholder="Escreva seu comentario"></textarea>
+                        <input type="submit" class="btn btn-primary mt-2" value="Post">
+                    </div>
+                </form>
+            </div>
+            <!-- cadastra comentario -->
+            <hr class="my-4">
+            <div class="m-2">
+                <div class="mb-3">
+                    <div class="list-group">
+                        {% if listComment %}
+                        {%for comment in listComment%}
+                        <div class="list-group-item list-group-item-action d-flex gap-2 py-1"
+                            aria-current="true">
+                            <a href="{{ url_for('user_profile' ,pag='view', id=comment._idUser._id) }}"><img src="{{ url_for('uploads', filename=comment._idUser.image)}}" width="32" height="32"
+                                class="rounded-circle flex-shrink-0"></a>
+                            <div class="d-flex gap-2 w-100 justify-content-between">
+                                <div>
+                                    <h6 class="mb-0">{{comment._idUser._name}}</h6>
+                                    <p class="mb-0 opacity-75">{{comment._Comment}}</p>
+                                </div>
+                                <small class="opacity-50 text-nowrap">now</small>
+                            </div>
+                        </div>
+                        {%endfor%}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </body>

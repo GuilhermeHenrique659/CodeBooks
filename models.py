@@ -82,3 +82,15 @@ class File:
         self._type = type
         self._id_post = id_post
     
+class Comment:
+    def __init__(self, Comment, idPost, idUser, idComment = None) -> None:
+        self._Comment = Comment
+        self._idPost = idPost
+        self._idUser = idUser
+        self._idComment = idComment
+
+
+
+        
+
+  
