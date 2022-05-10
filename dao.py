@@ -45,9 +45,12 @@ SQL_DELETE_POST = 'DELETE FROM Post WHERE idPost=? and User_idUser = ?'
 
 SQL_DELETE_CODE = 'DELETE FROM Code WHERE idCode = ? and User_id = ?'
 
-SQL_CREATE_IMAGE = 'INSERT INTO files (file,type,idPost) VALUES (?,?,?)'
+SQL_CREATE_FILE = 'INSERT INTO files (file,type,idPost) VALUES (?,?,?)'
 
-SQL_LIST_IMAGE = 'SELECT file, type, idPost FROM Files WHERE idPost = ?'
+SQL_LIST_FILE = 'SELECT file, type, idPost FROM Files WHERE idPost = ?'
+
+SQL_DELETE_FILE = 'DELETE FROM files WHERE idPost = ?'
+
 SQL_INSERT_COMMENT = 'INSERT INTO comment (Comment, Post_idPost, User_idUser) VALUES (?,?,?)'
 
 SQL_LIST_COMMENT = 'SELECT idComment, Comment, Post_idPost, User_idUser, name, image FROM Comment JOIN User ON User.idUser = Comment.User_idUser WHERE Post_idPost = ?'
@@ -214,17 +217,20 @@ class FileDao:
     
     def save_files(self, file:File):
         cursor = self.__db.cursor()
-        cursor.execute(SQL_CREATE_IMAGE,(file._filename,file._type,file._id_post) )
+        cursor.execute(SQL_CREATE_FILE,(file._filename,file._type,file._id_post) )
         self.__db.commit()
 
     def findall_files(self, idpost):
         cursor = self.__db.cursor()
-        cursor.execute(SQL_LIST_IMAGE,(idpost,))
+        cursor.execute(SQL_LIST_FILE,(idpost,))
         files_list = self.translate_to_list(cursor.fetchall())
         if len(files_list) == 0:
             return None
         return files_list
 
+    def delete_files(self, idpost):
+        self.__db.cursor().execute(SQL_DELETE_FILE,(idpost,))
+        self.__db.commit()
 
     def translate_to_list(self, files_db) -> list :
         def translate_to_object(file) -> File:
