@@ -1,7 +1,6 @@
 
 import sqlite3
-from typing import List
-from models import Code, User, Post
+from models import Code, User, Post, File, Comment
 
 
 SQL_FRIEND_LIST = '''
@@ -28,7 +27,7 @@ SQL_EDIT_USER = 'UPDATE user SET name=?,email=?,age=?,image=?,job=?,password=? W
 
 SQL_ADD_FRIEND = 'INSERT INTO Friendship (User_idUser,Friend_idUser) VALUES (?,?)'
 
-SQL_LIST_POST = 'SELECT * FROM Post LEFT JOIN User ON User.idUser = Post.User_idUser'
+SQL_LIST_POST = 'SELECT title, description,like_cont, created_at, updated_at,idPost, name, idUser,email, image  FROM Post LEFT JOIN User ON User.idUser = Post.User_idUser'
 
 SQL_CREATE_POST = 'INSERT INTO post (title, description, User_idUser) VALUES (?,?,?)'
 
@@ -45,6 +44,13 @@ SQL_DELETE_USER = 'DELETE FROM User WHERE idUser=? '
 SQL_DELETE_POST = 'DELETE FROM Post WHERE idPost=? and User_idUser = ?'
 
 SQL_DELETE_CODE = 'DELETE FROM Code WHERE idCode = ? and User_id = ?'
+
+SQL_CREATE_IMAGE = 'INSERT INTO files (file,type,idPost) VALUES (?,?,?)'
+
+SQL_LIST_IMAGE = 'SELECT file, type, idPost FROM Files WHERE idPost = ?'
+SQL_INSERT_COMMENT = 'INSERT INTO comment (Comment, Post_idPost, User_idUser) VALUES (?,?,?)'
+
+SQL_LIST_COMMENT = 'SELECT idComment, Comment, Post_idPost, User_idUser, name, image FROM Comment JOIN User ON User.idUser = Comment.User_idUser WHERE Post_idPost = ?'
 
 
 class FriendDao:
@@ -149,12 +155,7 @@ class PostDao:
     def list_post(self) -> list:
         cursor = self.__db.cursor()
         cursor.execute(SQL_LIST_POST,)
-        list_post_db = cursor.fetchall()        
-        try:
-            list_post = self.__translate_to_list(list_post_db)
-            return list_post
-        except:
-            return None
+        return  self.__translate_to_list(cursor.fetchall())        
 
     def delete_post(self, post_id,user_id):
         cursor = self.__db.cursor()
@@ -206,3 +207,51 @@ class CodeDao:
             user = User(code['name'],None,None,code['idUser'])
             return Code(code['code'],code['Post_idPost'],user,code['created_at'],code['idCode'])
         return list(map(translate_to_object, code_db))
+
+class FileDao:
+    def __init__(self,db) -> None:
+        self.__db = db
+    
+    def save_files(self, file:File):
+        cursor = self.__db.cursor()
+        cursor.execute(SQL_CREATE_IMAGE,(file._filename,file._type,file._id_post) )
+        self.__db.commit()
+
+    def findall_files(self, idpost):
+        cursor = self.__db.cursor()
+        cursor.execute(SQL_LIST_IMAGE,(idpost,))
+        files_list = self.translate_to_list(cursor.fetchall())
+        if len(files_list) == 0:
+            return None
+        return files_list
+
+
+    def translate_to_list(self, files_db) -> list :
+        def translate_to_object(file) -> File:
+            return File(file['file'],file['type'],file['idPost'])
+        file_list = list(map(translate_to_object, files_db))
+        return file_list
+
+        
+class CommentDao:
+    def __init__(self,db) -> None:
+        self.__db = db
+    def save_comment(self, comment):
+        cursor = self.__db.cursor()
+        if comment._idComment:
+            pass
+        else:
+            cursor.execute(SQL_INSERT_COMMENT, (comment._Comment, comment._idPost, comment._idUser))
+        self.__db.commit()
+    
+    def __translate_to_list(self, comment_db) -> list:
+        def translate_to_object(comment):
+            user = User(comment['name'], None, None, comment['User_idUser'], image=comment['image'])
+            return Comment(comment['Comment'], comment['Post_idPost'], user, comment['idComment'])
+        return list(map(translate_to_object, comment_db))
+    
+    def list_comment(self, id):
+        cursor = self.__db.cursor()
+        cursor.execute(SQL_LIST_COMMENT,(id,))
+        listDb = cursor.fetchall()
+        return self.__translate_to_list(listDb)

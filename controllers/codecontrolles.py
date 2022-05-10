@@ -8,8 +8,8 @@ class ControllerCode:
         pass
     def code_list(self, id):
         list_code = dao.code.list_code(id)
-        
-        return render_template('code.html', list_code = list_code,post_id=id)
+        listComment = dao.comment.list_comment(id)
+        return render_template('code.html', list_code = list_code,post_id=id, listComment = listComment)
     
     @server.loggin_required
     def add_code(self,id):
