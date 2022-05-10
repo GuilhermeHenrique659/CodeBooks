@@ -981,7 +981,7 @@
                                                                     <div class="name">Arquivos</div>
                                                                     <div class="value">
                                                                         <div class="input-group">
-                                                                            <input type="file" name="files" id="files" accept=".jpg, .mp4"  multiple>
+                                                                            <input type="file" name="files[]" id="files" accept=".jpg, .mp4"  multiple="true">
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -1086,13 +1086,33 @@
                                         {% if post._files %}
                                         <div id="carouselControls{{post._idPost}}" class="carousel carousel-dark slide" data-bs-ride="carousel">
                                             <div class="carousel-inner">
+                                                
+                                                {% if post._files[0]._type == 'video' %}
+                                                <div class="carousel-item active">
+                                                <video controls width="100%">
+                                                    <source src="{{ url_for('uploads', filename=post.get_first_file()._filename ) }}" class="rounded mx-auto d-block" width="350" height="350">
+                                                  </video>
+                                                </div>
+                                                {% else %}
                                                 <div class="carousel-item active">
                                                     <img src="{{ url_for('uploads', filename=post.get_first_file()._filename ) }}" class="rounded mx-auto d-block" width="350" height="350" alt="...">
                                                 </div>
+                                                {% endif %}
+
                                                 {% for file in post._files %}
+
+                                                {% if file._type == 'video' %}
+                                                <div class="carousel-item">
+                                                <video controls width="100%">
+                                                    <source src="{{ url_for('uploads', filename=file._filename ) }}" class="rounded mx-auto d-block" width="350" height="350">
+                                                  </video>
+                                                </div>
+                                                {% else %}
                                                 <div class="carousel-item">
                                                     <img src="{{ url_for('uploads', filename=file._filename ) }}" class="rounded mx-auto d-block" width="350"  height="350" alt="...">
                                                 </div>
+                                                {% endif %}
+
                                               {% endfor %}
                                             </div>
                                             <button class="carousel-control-prev" type="button" data-bs-target="#carouselControls{{post._idPost}}" data-bs-slide="prev">
