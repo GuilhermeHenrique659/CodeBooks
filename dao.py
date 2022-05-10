@@ -224,6 +224,7 @@ class FileDao:
         cursor = self.__db.cursor()
         cursor.execute(SQL_LIST_FILE,(idpost,))
         files_list = self.translate_to_list(cursor.fetchall())
+        
         if len(files_list) == 0:
             return None
         return files_list

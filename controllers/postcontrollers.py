@@ -9,8 +9,10 @@ class ControllerPost:
     def __init__(self) -> None:
         pass
         
+
     def type_file(self, filename:str):
         return filename.rsplit('.', 1)[1].lower()
+
 
     @server.loggin_required
     def create_post(self):
@@ -22,7 +24,7 @@ class ControllerPost:
         dao.code.create_code(code)
         if post_files[0].filename != '':
             for i in range(len(post_files)):
-                    if self.type_file(post_files[i].filename) == 'jpg':
+                    if self.type_file(post_files[i].filename) == 'jpg' or self.type_file(post_files[i].filename) == 'png':
                         self.save_image(post_files,post,i)
                     else:
                         self.save_movie(post_files,post,i)
@@ -45,7 +47,7 @@ class ControllerPost:
     def delete_files(self, filelist: list):
         if filelist:
             for file in filelist:
-                os.remove(os.path.join(server.app.config['UPLOAD_FOLDER'],file._filename))
+                os.remove(os.path.join(server.app.config['UPLOAD_FOLDER'], file._filename))
         
     @server.loggin_required
     def delete_post(self,id):
