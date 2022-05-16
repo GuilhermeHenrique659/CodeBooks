@@ -1168,22 +1168,28 @@
             a.appendChild(node)
             document.getElementById("user_list_iten").appendChild(li)
         }
+        function clear_list_friend(list){
+            for (i of list) {
+                    i.remove()
+             }
+        }
+
+        function users_not_found(){
+            const li = document.createElement('li');
+            const response = document.createTextNode("Nenhum usuario encontrado")
+            li.classList.add('line-friend')
+            li.appendChild(response)
+            document.getElementById("user_list_iten").appendChild(li)
+        }
 
         const input = document.getElementById("search_user");
         input.addEventListener("keyup", function (event) {
-            if (event.keyCode === 13) {
-                list = document.querySelectorAll('.line-friend')
-                for (i of list) {
-                    i.remove()
-                }
-                const xml = new XMLHttpRequest();
-                xml.open("POST", "{{url_for('search_user')}}", true);
+            const ENTER_KEY = 13
+            if (event.keyCode === ENTER_KEY) {
+                const xml = new XMLHttpRequest()
+                xml.open("POST", "{{url_for('search_user')}}", true)
                 xml.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                 xml.onload = function () {
-                    list = document.querySelectorAll('.line-friend')
-                    for (i of list) {
-                        i.remove()
-                    }
                     const SUCCESS_CODE = 200
                     if (this.status == SUCCESS_CODE) {
                         var dataReply = JSON.parse(this.responseText);
@@ -1191,11 +1197,7 @@
                             make_friend_list(dataReply[i])
                         }
                     } else {
-                        const li = document.createElement('li');
-                        const response = document.createTextNode("Nenhum usuario encontrado")
-                        li.classList.add('line-friend')
-                        li.appendChild(response)
-                        document.getElementById("user_list_iten").appendChild(li)
+                        users_not_found()
                     }
                 };
                 dataSend = JSON.stringify({
