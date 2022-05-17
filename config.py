@@ -29,7 +29,8 @@ class Server:
 
     def run(self):
         self.__app.run(
-            debug=True
+            debug=True,
+            port= 33507
             )
         self.__socketio.run(self.__app)
 
