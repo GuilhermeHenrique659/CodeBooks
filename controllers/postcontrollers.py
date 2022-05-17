@@ -20,6 +20,7 @@ class ControllerPost:
         post_files = request.files.getlist('files[]')
         post = Post(post_form['title'],post_form['description'],session['user_id']) 
         post.set_idPost(dao.post.create_post(post) )
+        print(post._idPost)
         code = Code(post_form['code'],post._idPost,session['user_id'])
         dao.code.create_code(code)
         if post_files[0].filename != '':

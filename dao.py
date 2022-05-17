@@ -1,59 +1,64 @@
 
 import sqlite3
+import psycopg2
 from models import Code, User, Post, File, Comment
 
 
 SQL_FRIEND_LIST = '''
-                SELECT idUser, name, image FROM Friendship 
-                join user on Friendship.Friend_idUser = user.idUser 
-                where ( User_idUser = :id_user or Friend_idUser = :id_user) and idUser != :id_user
+                SELECT iduser, name, image FROM Friendship 
+                join users on Friendship.Friend_iduser = users.iduser 
+                where ( User_idUser = %(id_user)s or Friend_idUser = %(id_user)s) and iduser != %(id_user)s
                 union
-                SELECT idUser, name,image FROM Friendship 
-                join user on Friendship.User_idUser = user.idUser 
-                where ( User_idUser = :id_user or Friend_idUser = :id_user) and idUser != :id_user
+                SELECT iduser, name,image FROM Friendship 
+                join users on Friendship.User_idUser = users.iduser 
+                where ( User_idUser = %(id_user)s or Friend_idUser = %(id_user)s) and iduser != %(id_user)s
 '''
 
-SQL_FRIEND_EXISTS = 'SELECT * FROM Friendship WHERE (User_idUser = :id_user and Friend_idUser = :id_friend) or ( User_idUser = :id_friend and Friend_idUser = :id_user) '
+SQL_FRIEND_EXISTS = 'SELECT * FROM Friendship WHERE (User_idUser = %(id_user)s and Friend_idUser = %(id_friend)s) or ( User_idUser = %(id_friend)s and Friend_idUser = %(id_user)s) '
 
-SQL_FRIEND_DELETE = 'DELETE FROM Friendship WHERE (User_idUser = :id_user and Friend_idUser = :id_friend) or ( User_idUser = :id_friend and Friend_idUser = :id_user) '
+SQL_FRIEND_DELETE = 'DELETE FROM Friendship WHERE (User_idUser = %(id_user)s and Friend_idUser = %(id_friend)s) or ( User_idUser = %(id_friend)s and Friend_idUser = %(id_user)s) '
 
-SQL_SEARCH_USER = 'select name, idUser, image from user where name=? and idUser !=?'
+SQL_SEARCH_USER = 'select name, iduser, image from users where name=%s and iduser !=%s'
 
-SQL_SEARCH_USER_LOGIN = 'select * from user where email=?'
+SQL_SEARCH_USER_LOGIN = 'select * from users where email=%s'
 
-SQL_CREATE_USER = 'INSERT INTO user (name, email, age, password) VALUES (?,?,0000-00-00,?)'
+SQL_CREATE_USER = "INSERT INTO users (name, email, age, password) VALUES (%s,%s,'1996-12-02',%s)"
 
-SQL_EDIT_USER = 'UPDATE user SET name=?,email=?,age=?,image=?,job=?,password=? WHERE idUser=?'
+SQL_EDIT_USER = 'UPDATE users SET name=%s,email=%s,age=%s,image=%s,job=%s,password=%s WHERE iduser=%s'
 
-SQL_ADD_FRIEND = 'INSERT INTO Friendship (User_idUser,Friend_idUser) VALUES (?,?)'
+SQL_ADD_FRIEND = 'INSERT INTO Friendship (User_iduser,Friend_iduser) VALUES (%s,%s)'
 
-SQL_LIST_POST = 'SELECT title, description,like_cont, created_at, updated_at,idPost, name, idUser,email, image  FROM Post LEFT JOIN User ON User.idUser = Post.User_idUser'
+SQL_LIST_POST = '''
+                SELECT title, description,like_cont, created_at, updated_at,idPost, name, idUser,email, image  
+                FROM Post 
+                LEFT JOIN users ON users.idUser = Post.User_idUser
+'''
 
-SQL_CREATE_POST = 'INSERT INTO post (title, description, User_idUser) VALUES (?,?,?)'
+SQL_CREATE_POST = 'INSERT INTO post (title, description, User_iduser) VALUES (%s,%s,%s) RETURNING idPost'
 
-SQL_EDIT_POST = 'UPDATE Post SET title=?, description=? WHERE idPost=? AND User_idUser = ?'
+SQL_EDIT_POST = 'UPDATE Post SET title=%s, description=%s WHERE idPost=%s AND User_iduser = %s RETURNING idPost'
 
-SQL_CREATE_CODE = 'INSERT INTO code (code, Post_idPost, User_id) VALUES (?,?,?) '
+SQL_CREATE_CODE = 'INSERT INTO code (code, Post_idPost, User_id) VALUES (%s,%s,%s) '
 
-SQL_SEARCH_USER_PROFILE = 'SELECT * FROM user where idUser = ?'
+SQL_SEARCH_USER_PROFILE = 'SELECT * FROM users where iduser = %s'
 
-SQL_SEARCH_CODE_LIST = 'SELECT code,Post_idPost,created_at,idCode,name,idUser FROM Code LEFT JOIN User ON User.idUser = code.User_id WHERE Post_idPost = ?'
+SQL_SEARCH_CODE_LIST = 'SELECT code,Post_idPost,created_at,idCode,name,iduser FROM Code LEFT JOIN users ON users.iduser = code.User_id WHERE Post_idPost = %s'
 
-SQL_DELETE_USER = 'DELETE FROM User WHERE idUser=? '
+SQL_DELETE_USER = 'DELETE FROM users WHERE iduser=%s '
 
-SQL_DELETE_POST = 'DELETE FROM Post WHERE idPost=? and User_idUser = ?'
+SQL_DELETE_POST = 'DELETE FROM Post WHERE idPost=%s and User_iduser = %s'
 
-SQL_DELETE_CODE = 'DELETE FROM Code WHERE idCode = ? and User_id = ?'
+SQL_DELETE_CODE = 'DELETE FROM Code WHERE idCode = %s and User_id = %s'
 
-SQL_CREATE_FILE = 'INSERT INTO files (file,type,idPost) VALUES (?,?,?)'
+SQL_CREATE_FILE = 'INSERT INTO files (file,type,idPost) VALUES (%s,%s,%s)'
 
-SQL_LIST_FILE = 'SELECT file, type, idPost FROM Files WHERE idPost = ?'
+SQL_LIST_FILE = 'SELECT file, type, idPost FROM Files WHERE idPost = %s'
 
-SQL_DELETE_FILE = 'DELETE FROM files WHERE idPost = ?'
+SQL_DELETE_FILE = 'DELETE FROM files WHERE idPost = %s'
 
-SQL_INSERT_COMMENT = 'INSERT INTO comment (Comment, Post_idPost, User_idUser) VALUES (?,?,?)'
+SQL_INSERT_COMMENT = 'INSERT INTO comment (Comment, Post_idPost, User_iduser) VALUES (%s,%s,%s)'
 
-SQL_LIST_COMMENT = 'SELECT idComment, Comment, Post_idPost, User_idUser, name, image FROM Comment JOIN User ON User.idUser = Comment.User_idUser WHERE Post_idPost = ?'
+SQL_LIST_COMMENT = 'SELECT idComment, Comment, Post_idPost, User_iduser, name, image FROM Comment JOIN users ON users.iduser = Comment.User_iduser WHERE Post_idPost = %s'
 
 
 class FriendDao:
@@ -62,16 +67,21 @@ class FriendDao:
 
     def user_search(self, name, iduser):
         cursor = self.__db.cursor()
-        cursor.execute(SQL_SEARCH_USER, (name, iduser))
-        users_data = self.__translate_to_list(cursor.fetchall())
-        return users_data
-
+        try:
+            cursor.execute(SQL_SEARCH_USER, (name, iduser))
+            users_data = self.__translate_to_list(cursor.fetchall())
+            return users_data
+        except:
+            return None
 
     def friend_list(self, user_id) -> list:
         cursor = self.__db.cursor()
-        cursor.execute(SQL_FRIEND_LIST, {'id_user':user_id})
-        friend_list = self.__translate_to_list(cursor.fetchall())
-        return friend_list
+        try:
+            cursor.execute(SQL_FRIEND_LIST, {'id_user': user_id})
+            friend_list = self.__translate_to_list(cursor.fetchall())
+            return friend_list
+        except:
+            return None
 
     def friend_exists(self, friend_id, user_id):
         cursor = self.__db.cursor()
@@ -95,23 +105,21 @@ class FriendDao:
 
     def __translate_to_list(self, user_dict) -> list:
         def translate_to_objects(user_dict) -> User:
-            return User(user_dict['name'], None, None, user_dict['idUser'],image=user_dict['image'])
+            return User(user_dict['name'], None, None, user_dict['iduser'],image=user_dict['image'])
         return list(map(translate_to_objects, user_dict) )
 
 class UserDao:
-    def __init__(self, db) -> None:
+    def __init__(self, db:psycopg2) -> None:
         self.__db = db
 
     def user_search_login(self, user_data) -> object:
         cursor = self.__db.cursor()
         cursor.execute(SQL_SEARCH_USER_LOGIN, (user_data,))
         data_user = cursor.fetchone()
-        try:
-            user = User(data_user['name'], data_user['email'],
-                        data_user['password'], data_user['idUser'], image=data_user['image'])
-            return user
-        except:
-            return None
+        user = User(data_user['name'], data_user['email'],
+                        data_user['password'], data_user['iduser'], image=data_user['image'])
+        return user
+
 
     def save_user(self, user:User):
         cursor = self.__db.cursor()
@@ -122,7 +130,7 @@ class UserDao:
             else:
                 cursor.execute(SQL_CREATE_USER, (user._name,
                                user._email, user._password,))
-        except sqlite3.IntegrityError:
+        except NameError:
             return "email not available"
         self.__db.commit()
         return cursor.lastrowid
@@ -132,7 +140,7 @@ class UserDao:
         try:
             cursor.execute(SQL_SEARCH_USER_PROFILE, (id,))
             data_user_db = cursor.fetchone()
-            return User(data_user_db['name'],data_user_db['email'],None,data_user_db['idUser'],
+            return User(data_user_db['name'],data_user_db['email'],None,data_user_db['iduser'],
                             data_user_db['age'],data_user_db['image'],data_user_db['job'])
         except:
             return None
@@ -145,20 +153,24 @@ class UserDao:
 
 
 class PostDao:
-    def __init__(self, db) -> None:
+    def __init__(self, db:psycopg2) -> None:
         self.__db = db
 
     def __translate_to_list(self, post_db) -> list:
         def translate_to_object(post) -> Post:
-            user = User(post['name'],post['email'], None, post['idUser'],image=post['image'])
+            user = User(post['name'],post['email'], None, post['iduser'],image=post['image'])
             return Post(post['title'], post['description'],user,post['created_at'], 
-                        post['updated_at'], post['like_cont'], post['idPost'])
+                        post['updated_at'], post['like_cont'], post['idpost'])
         return list(map(translate_to_object, post_db))
 
     def list_post(self) -> list:
         cursor = self.__db.cursor()
-        cursor.execute(SQL_LIST_POST,)
-        return  self.__translate_to_list(cursor.fetchall())        
+        try:
+            cursor.execute(SQL_LIST_POST)
+            post_list = self.__translate_to_list(cursor.fetchall())  
+        except:
+            post_list = None
+        return post_list
 
     def delete_post(self, post_id,user_id):
         cursor = self.__db.cursor()
@@ -170,15 +182,13 @@ class PostDao:
 
     def create_post(self,post:Post):
         cursor = self.__db.cursor()
-        try:
-            if post._idPost:
+        
+        if post._idPost:
                 cursor.execute(SQL_EDIT_POST, (post._title,post._description, post._idPost, post._user))
-            else:
+        else:
                 cursor.execute(SQL_CREATE_POST,(post._title, post._description, post._user,))
-        except NameError:
-            return None
         self.__db.commit()
-        post_id = cursor.lastrowid
+        post_id = cursor.fetchone()['idpost']
         return post_id
         
 class CodeDao:
@@ -202,13 +212,14 @@ class CodeDao:
         cursor = self.__db.cursor()
         cursor.execute(SQL_SEARCH_CODE_LIST,(id_post,))
         list_code_db = cursor.fetchall()
+        print(list_code_db)
         list_code = self.__translate_to_list(list_code_db)
         return list_code
     
     def __translate_to_list(self, code_db) -> list:
         def translate_to_object(code) -> Code:
-            user = User(code['name'],None,None,code['idUser'])
-            return Code(code['code'],code['Post_idPost'],user,code['created_at'],code['idCode'])
+            user = User(code['name'],None,None,code['iduser'])
+            return Code(code['code'],code['post_idpost'],user,code['created_at'],code['idcode'])
         return list(map(translate_to_object, code_db))
 
 class FileDao:
@@ -235,7 +246,7 @@ class FileDao:
 
     def translate_to_list(self, files_db) -> list :
         def translate_to_object(file) -> File:
-            return File(file['file'],file['type'],file['idPost'])
+            return File(file['file'],file['type'],file['idpost'])
         file_list = list(map(translate_to_object, files_db))
         return file_list
 
@@ -243,7 +254,7 @@ class FileDao:
 class CommentDao:
     def __init__(self,db) -> None:
         self.__db = db
-    def save_comment(self, comment):
+    def save_comment(self, comment: Comment):
         cursor = self.__db.cursor()
         if comment._idComment:
             pass
@@ -253,8 +264,8 @@ class CommentDao:
     
     def __translate_to_list(self, comment_db) -> list:
         def translate_to_object(comment):
-            user = User(comment['name'], None, None, comment['User_idUser'], image=comment['image'])
-            return Comment(comment['Comment'], comment['Post_idPost'], user, comment['idComment'])
+            user = User(comment['name'], None, None, comment['user_iduser'], image=comment['image'])
+            return Comment(comment['comment'], comment['post_idpost'], user, comment['idcomment'])
         return list(map(translate_to_object, comment_db))
     
     def list_comment(self, id):

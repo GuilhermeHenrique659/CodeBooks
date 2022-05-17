@@ -16,7 +16,9 @@ class ControllerFeed:
         else:
             friend_list = dao.friend.friend_list(session['user_id'])
             user = dao.user.search_user_profile(session['user_id'])
+        print(user)
         post_list = dao.post.list_post()
-        for post in post_list:
-            post.set_files(dao.file.findall_files(post._idPost))
+        if post_list:
+            for post in post_list:
+                post.set_files(dao.file.findall_files(post._idPost))
         return render_template('base.html', friend_list = friend_list,post_list = post_list, user = user)

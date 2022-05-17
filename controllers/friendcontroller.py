@@ -12,13 +12,14 @@ class ControllerFriend:
             users_find = dao.friend.friend_list(session['user_id'])
         else: 
             users_find = dao.friend.user_search(username['user'],session['user_id'])
+        
         return users_find
 
     @server.loggin_required
     def seach_user(self):
         username = request.get_json(force = True)
         users_find = self.users_list(username)
-        if len(users_find) > 0:
+        if users_find:
             users_list_json = [user.change_for_json() for user in users_find]
             return jsonify(users_list_json),200
         else:
