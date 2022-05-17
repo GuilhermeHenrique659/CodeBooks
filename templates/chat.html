@@ -57,12 +57,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js" integrity="sha512-MgkNs0gNdrnOM7k+0L+wgiRc5aLgl74sJQKbIWegVIMvVGPc1+gc1L2oK9Wf/D9pq58eqIJAxOonYPVE5UwUFA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         window.onload = function() {
-            const socket = io('http://127.0.0.1:5000');
-
+            const socket = io('http://' + document.domain + ':' + location.port)
             function addToChat(msg) {
                 const span = document.createElement("span");
                 const chat = document.querySelector(".chat");
-                span.innerHTML = `<strong>${msg.username}:</strong> ${msg.message}`;
+                span.innerHTML = `<strong>${msg.username}:</strong> ${msg.message}`
                 if (msg.username == '{{ session['user_name'] }}'){
                     span.style.cssText += 'margin-left: 400px;'
                 }

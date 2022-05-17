@@ -1197,7 +1197,13 @@
                             make_friend_list(dataReply[i])
                         }
                     } else {
-                        users_not_found()
+                    
+                        const li = document.createElement('li');
+                        const response = document.createTextNode("Nenhum usuario encontrado")
+                        li.classList.add('line-friend')
+                        li.appendChild(response)
+                        document.getElementById("user_list_iten").appendChild(li)
+                    
                     }
                 };
                 dataSend = JSON.stringify({
