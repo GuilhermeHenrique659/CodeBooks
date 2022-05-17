@@ -20,7 +20,7 @@ class Server:
             database = "dell6u1d84pea2",
             cursor_factory=psycopg2.extras.RealDictCursor
         )
-        #self.__socketio = SocketIO(self.__app)
+        self.__socketio = SocketIO(self.__app)
 
     def __dictionary_cursor(self, cursor, row):
         dictionary = {}
@@ -29,8 +29,7 @@ class Server:
         return dictionary
 
     def run(self):
-        self.__app.run()
-        #self.__socketio.run(self.__app)
+        self.__socketio.run(self.__app, debug=True, port=5004)
 
     def loggin_required(self, controller):
         def wrapper(*agrs, **kwargs):
