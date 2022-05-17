@@ -1,4 +1,5 @@
 import sqlite3
+import threading
 import psycopg2
 import psycopg2.extras
 from flask import Flask , session, redirect, url_for
@@ -30,7 +31,7 @@ class Server:
     def run(self):
         self.__app.run(
             debug=True,
-            port= 33507
+            port= 5000
             )
         self.__socketio.run(self.__app)
 
