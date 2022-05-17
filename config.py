@@ -30,7 +30,7 @@ class Server:
 
     def run(self):
         self.__app.run()
-        #self.__socketio.run(self.__app)
+        self.__socketio.run(self.__app)
 
     def loggin_required(self, controller):
         def wrapper(*agrs, **kwargs):
