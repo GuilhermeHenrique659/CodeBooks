@@ -29,7 +29,7 @@ class Server:
         return dictionary
 
     def run(self):
-        self.__socketio.run(self.__app, debug=True)
+        self.__socketio.run(self.__app)
 
     def loggin_required(self, controller):
         def wrapper(*agrs, **kwargs):
