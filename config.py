@@ -28,9 +28,6 @@ class Server:
         return dictionary
 
     def run(self):
-        self.__app.run(
-            debug=True
-            )
         self.__socketio.run(self.__app)
 
     def loggin_required(self, controller):
