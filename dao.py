@@ -1,4 +1,5 @@
 
+from shutil import ExecError
 import sqlite3
 import psycopg2
 from models import Code, User, Post, File, Comment
@@ -114,11 +115,14 @@ class UserDao:
 
     def user_search_login(self, user_data) -> object:
         cursor = self.__db.cursor()
-        cursor.execute(SQL_SEARCH_USER_LOGIN, (user_data,))
-        data_user = cursor.fetchone()
-        user = User(data_user['name'], data_user['email'],
+        try:
+            cursor.execute(SQL_SEARCH_USER_LOGIN, (user_data,))
+            data_user = cursor.fetchone()
+            user = User(data_user['name'], data_user['email'],
                         data_user['password'], data_user['iduser'], image=data_user['image'])
-        return user
+            return user
+        except psycopg2.DatabaseError:
+            self.__db.connection().rollback()
 
 
     def save_user(self, user:User):
@@ -167,10 +171,11 @@ class PostDao:
         cursor = self.__db.cursor()
         try:
             cursor.execute(SQL_LIST_POST)
-            post_list = self.__translate_to_list(cursor.fetchall())  
-        except:
-            post_list = None
-        return post_list
+            post_list = self.__translate_to_list(cursor.fetchall())
+            return post_list  
+        except psycopg2.DatabaseError:
+            self.__db.connection().rollback()
+        
 
     def delete_post(self, post_id,user_id):
         cursor = self.__db.cursor()
