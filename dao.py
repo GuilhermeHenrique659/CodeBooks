@@ -62,8 +62,9 @@ SQL_INSERT_COMMENT = 'INSERT INTO comment (Comment, Post_idPost, User_iduser) VA
 SQL_LIST_COMMENT = 'SELECT idComment, Comment, Post_idPost, User_iduser, name, image FROM Comment JOIN users ON users.iduser = Comment.User_iduser WHERE Post_idPost = %s'
 
 
+
 class FriendDao:
-    def __init__(self, db) -> None:
+    def __init__(self, db:psycopg2) -> None:
         self.__db = db
 
     def user_search(self, name, iduser):
@@ -72,8 +73,8 @@ class FriendDao:
             cursor.execute(SQL_SEARCH_USER, (name, iduser))
             users_data = self.__translate_to_list(cursor.fetchall())
             return users_data
-        except:
-            return None
+        except psycopg2.DatabaseError:
+            self.__db.connection().rollback
 
     def friend_list(self, user_id) -> list:
         cursor = self.__db.cursor()
@@ -81,8 +82,8 @@ class FriendDao:
             cursor.execute(SQL_FRIEND_LIST, {'id_user': user_id})
             friend_list = self.__translate_to_list(cursor.fetchall())
             return friend_list
-        except:
-            return None
+        except psycopg2.DatabaseError:
+            self.__db.connection().rollback
 
     def friend_exists(self, friend_id, user_id):
         cursor = self.__db.cursor()
@@ -146,8 +147,8 @@ class UserDao:
             data_user_db = cursor.fetchone()
             return User(data_user_db['name'],data_user_db['email'],None,data_user_db['iduser'],
                             data_user_db['age'],data_user_db['image'],data_user_db['job'])
-        except:
-            return None
+        except psycopg2.DatabaseError:
+            self.__db.connection().rollback
 
     def delete_user(self,id):
         cursor = self.__db.cursor()
@@ -228,7 +229,7 @@ class CodeDao:
         return list(map(translate_to_object, code_db))
 
 class FileDao:
-    def __init__(self,db) -> None:
+    def __init__(self,db:psycopg2) -> None:
         self.__db = db
     
     def save_files(self, file:File):
@@ -238,12 +239,14 @@ class FileDao:
 
     def findall_files(self, idpost):
         cursor = self.__db.cursor()
-        cursor.execute(SQL_LIST_FILE,(idpost,))
-        files_list = self.translate_to_list(cursor.fetchall())
-        
-        if len(files_list) == 0:
-            return None
-        return files_list
+        try:
+            cursor.execute(SQL_LIST_FILE,(idpost,))
+            files_list = self.translate_to_list(cursor.fetchall())
+            if len(files_list) == 0:
+                return None
+            return files_list
+        except psycopg2.DatabaseError:
+            self.__db.connection().rollback
 
     def delete_files(self, idpost):
         self.__db.cursor().execute(SQL_DELETE_FILE,(idpost,))
@@ -257,8 +260,9 @@ class FileDao:
 
         
 class CommentDao:
-    def __init__(self,db) -> None:
+    def __init__(self,db:psycopg2) -> None:
         self.__db = db
+
     def save_comment(self, comment: Comment):
         cursor = self.__db.cursor()
         if comment._idComment:
@@ -275,6 +279,9 @@ class CommentDao:
     
     def list_comment(self, id):
         cursor = self.__db.cursor()
-        cursor.execute(SQL_LIST_COMMENT,(id,))
-        listDb = cursor.fetchall()
-        return self.__translate_to_list(listDb)
+        try:
+            cursor.execute(SQL_LIST_COMMENT,(id,))
+            listDb = cursor.fetchall()
+            return self.__translate_to_list(listDb)
+        except psycopg2.DatabaseError:
+            self.__db.connection().rollback
