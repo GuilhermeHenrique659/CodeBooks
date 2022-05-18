@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS Post (
   like_cont INTEGER NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  User_idUser INT NOT NULL,
+  User_idUser INT NULL,
   CONSTRAINT fk_Post_User1
     FOREIGN KEY (User_idUser)
     REFERENCES users (idUser)
@@ -60,7 +60,11 @@ CREATE TABLE IF NOT EXISTS Code (
   code TEXT NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   Post_idPost INTEGER NOT NULL,
+<<<<<<< HEAD
   User_id INT NOT NULL,
+=======
+  User_id INT NULL,
+>>>>>>> c91d82bc19daa05441344e0fe7435a317f4a5369
   CONSTRAINT fk_Code_Post1
     FOREIGN KEY (Post_idPost)
     REFERENCES Post (idPost)

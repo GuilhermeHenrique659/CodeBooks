@@ -917,6 +917,10 @@
 
                     </li>
                     {% endfor %}
+                    <div class="d-flex justify-content-center" >
+                        <div class="spinner-border" role="status" id="loading" hidden>
+                        </div>
+                    </div>
                 </ul>
             </div>
             {% endif %}
@@ -949,7 +953,7 @@
                                                         </div>
                                                         <div class="card-body">
                                                             <form action="{{url_for('create_post')}}" method="POST"
-                                                            enctype="multipart/form-data">
+                                                                enctype="multipart/form-data">
                                                                 <div class="form-row">
                                                                     <div class="name">Título</div>
                                                                     <div class="value">
@@ -981,7 +985,8 @@
                                                                     <div class="name">Arquivos</div>
                                                                     <div class="value">
                                                                         <div class="input-group">
-                                                                            <input type="file" name="files[]" id="files" accept=".jpg, .mp4"  multiple="true">
+                                                                            <input type="file" name="files[]" id="files"
+                                                                                accept=".jpg, .mp4" multiple="true">
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -1084,18 +1089,23 @@
                                     </div>
                                     <div>
                                         {% if post._files %}
-                                        <div id="carouselControls{{post._idPost}}" class="carousel carousel-dark slide" data-bs-ride="carousel">
+                                        <div id="carouselControls{{post._idPost}}" class="carousel carousel-dark slide"
+                                            data-bs-ride="carousel">
                                             <div class="carousel-inner">
-                                                
+
                                                 {% if post._files[0]._type == 'video' %}
                                                 <div class="carousel-item active">
-                                                <video controls width="100%">
-                                                    <source src="{{ url_for('uploads', filename=post.get_first_file()._filename ) }}" class="rounded mx-auto d-block" width="350" height="350">
-                                                  </video>
+                                                    <video controls width="100%">
+                                                        <source
+                                                            src="{{ url_for('uploads', filename=post.get_first_file()._filename ) }}"
+                                                            class="rounded mx-auto d-block" width="350" height="350">
+                                                    </video>
                                                 </div>
                                                 {% else %}
                                                 <div class="carousel-item active">
-                                                    <img src="{{ url_for('uploads', filename=post.get_first_file()._filename ) }}" class="rounded mx-auto d-block" width="350" height="350" alt="...">
+                                                    <img src="{{ url_for('uploads', filename=post.get_first_file()._filename ) }}"
+                                                        class="rounded mx-auto d-block" width="350" height="350"
+                                                        alt="...">
                                                 </div>
                                                 {% endif %}
 
@@ -1103,29 +1113,34 @@
 
                                                 {% if file._type == 'video' %}
                                                 <div class="carousel-item">
-                                                <video controls width="100%">
-                                                    <source src="{{ url_for('uploads', filename=file._filename ) }}" class="rounded mx-auto d-block" width="350" height="350">
-                                                  </video>
+                                                    <video controls width="100%">
+                                                        <source src="{{ url_for('uploads', filename=file._filename ) }}"
+                                                            class="rounded mx-auto d-block" width="350" height="350">
+                                                    </video>
                                                 </div>
                                                 {% else %}
                                                 <div class="carousel-item">
-                                                    <img src="{{ url_for('uploads', filename=file._filename ) }}" class="rounded mx-auto d-block" width="350"  height="350" alt="...">
+                                                    <img src="{{ url_for('uploads', filename=file._filename ) }}"
+                                                        class="rounded mx-auto d-block" width="350" height="350"
+                                                        alt="...">
                                                 </div>
                                                 {% endif %}
 
-                                              {% endfor %}
+                                                {% endfor %}
                                             </div>
-                                            <button class="carousel-control-prev" type="button" data-bs-target="#carouselControls{{post._idPost}}" data-bs-slide="prev">
-                                              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                              <span class="visually-hidden">Previous</span>
+                                            <button class="carousel-control-prev" type="button"
+                                                data-bs-target="#carouselControls{{post._idPost}}" data-bs-slide="prev">
+                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Previous</span>
                                             </button>
-                                            <button class="carousel-control-next" type="button" data-bs-target="#carouselControls{{post._idPost}}" data-bs-slide="next">
-                                              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                              <span class="visually-hidden">Next</span>
+                                            <button class="carousel-control-next" type="button"
+                                                data-bs-target="#carouselControls{{post._idPost}}" data-bs-slide="next">
+                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                <span class="visually-hidden">Next</span>
                                             </button>
-                                          </div>
+                                        </div>
                                         {% endif %}
-                                        
+
                                     </div>
                                 </div>
                                 {% endfor %}
@@ -1150,108 +1165,76 @@
     <script src="{{url_for('static', filename='js/modal.js')}}"></script>
 
     <script>
-        function make_friend_list(dataReply) {
-            const li = document.createElement('li');
-            const img = document.createElement('img');
-            li.classList.add('line-friend')
-            const a = document.createElement('a');
-            a.classList.add("dropdown-item")
-            a.href = '/user_profile/' + dataReply.id + '?pag=view'
-            img.classList.add('rounded-circle')
-            img.style.cssText += 'margin: 5px;'
-            img.width = 32
-            img.height = 32
-            img.src = dataReply.image
-            li.appendChild(a)
-            a.appendChild(img)
-            const node = document.createTextNode(dataReply.name);
-            a.appendChild(node)
-            document.getElementById("user_list_iten").appendChild(li)
+        function remove_friendList(list) {
+            for (item of list) {
+                item.remove()
+            }
         }
 
-        const input = document.getElementById("search_user");
-        input.addEventListener("keyup", function (event) {
-            if (event.keyCode === 13) {
+        async function search_user() {
+            let username = document.querySelector('#search_user').value
+            const response = await fetch("{{url_for('search_user')}}", {
+                method: "POST",
+                body: JSON.stringify({
+                    'user': username
+                }),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+            })
+            if(response.status == 204)
+                return null
+            let users_response = await response.json()
+            return users_response
+        }
+
+        function make_friend_list(user_list) {
+            const friend_list = document.querySelector('#user_list_iten')
+    
+            user_list.forEach((user) => {
+                let li = document.createElement('li')
+                li.classList.add('line-friend')
+                li.innerHTML += `
+                        <a class="dropdown-item" href="/user_profile/${user.id}?pag=view">
+                            <img src="${user.image}" alt="" class="rounded-circle"
+                                width="32" height="32" alt="..." style="margin: 5px;">
+                                ${user.name}
+                        </a>
+                 `
+                friend_list.appendChild(li)
+            })
+            
+            hiddenspinner()
+        }
+
+        function buildspinner() {
+            const spinner = document.querySelector('#loading')
+            spinner.removeAttribute("hidden")
+        }
+        function hiddenspinner(){
+            let spinner = document.querySelector('#loading')
+            spinner.setAttribute("hidden",'')
+        }
+
+        document.querySelector('#search_user').addEventListener('keyup', async (event) => {
+            ENTER_KEY_ID = 13
+            if (event.keyCode == ENTER_KEY_ID) {
                 list = document.querySelectorAll('.line-friend')
-                for (i of list) {
-                    i.remove()
+                remove_friendList(list)
+                buildspinner()
+                const users_json = await search_user()
+                if(users_json)
+                    make_friend_list(users_json)
+                else{
+                    let li = document.createElement('li')
+                    li.classList.add('line-friend')
+                    li.appendChild(document.createTextNode("Usuario não encontrado"))
+                    document.querySelector("#user_list_iten").appendChild(li)
+                    hiddenspinner()
                 }
-                const xml = new XMLHttpRequest();
-                xml.open("POST", "{{url_for('search_user')}}", true);
-                xml.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                xml.onload = function () {
-                    list = document.querySelectorAll('.line-friend')
-                    for (i of list) {
-                        i.remove()
-                    }
-                    const SUCCESS_CODE = 200
-                    if (this.status == SUCCESS_CODE) {
-                        var dataReply = JSON.parse(this.responseText);
-                        for (var i = 0; i < dataReply.length; i++) {
-                            make_friend_list(dataReply[i])
-                        }
-                    } else {
-                        const li = document.createElement('li');
-                        const response = document.createTextNode("Nenhum usuario encontrado")
-                        li.classList.add('line-friend')
-                        li.appendChild(response)
-                        document.getElementById("user_list_iten").appendChild(li)
-                    }
-                };
-                dataSend = JSON.stringify({
-                    'user': input.value
-                });
-                xml.send(dataSend)
             }
-        });
-
-        (function ($) {
-            'use strict';
-
-            /*[ File Input Config ]
-            ===========================================================*/
-
-            try {
-
-                var file_input_container = $('.js-input-file');
-
-                if (file_input_container[0]) {
-
-                    file_input_container.each(function () {
-
-                        var that = $(this);
-
-                        var fileInput = that.find(".input-file");
-                        var info = that.find(".input-file__info");
-
-                        fileInput.on("change", function () {
-
-                            var fileName;
-                            fileName = $(this).val();
-
-                            if (fileName.substring(3, 11) == 'fakepath') {
-                                fileName = fileName.substring(12);
-                            }
-
-                            if (fileName == "") {
-                                info.text("No file chosen");
-                            } else {
-                                info.text(fileName);
-                            }
-
-                        })
-
-                    });
-
-                }
-
-
-
-            } catch (e) {
-                console.log(e);
-            }
-
-        })(jQuery);
+            
+        }, 5000)
     </script>
 </body>
 
