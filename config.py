@@ -1,5 +1,6 @@
 import sqlite3
 import threading
+from urllib import response
 import psycopg2
 import psycopg2.extras
 from flask import Flask , session, redirect, url_for
@@ -22,14 +23,16 @@ class Server:
         )
         self.__socketio = SocketIO(self.__app)
 
-    def __dictionary_cursor(self, cursor, row):
-        dictionary = {}
-        for index, col in enumerate(cursor.description):
-            dictionary[col[0]] = row[index]
-        return dictionary
+    def transaction(self, methotd):
+        def wrapper(*agrs, **kwargs):
+            try:
+                return methotd(*agrs, **kwargs)
+            except Exception as error:
+                self.__db.rollback()
+        return wrapper
 
     def run(self):
-        self.__app.run()
+        self.__app.run(debug=True)
 
     def loggin_required(self, controller):
         def wrapper(*agrs, **kwargs):
