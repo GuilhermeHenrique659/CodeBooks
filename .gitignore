@@ -1701,5 +1701,5 @@ controllers/__pycache__/feedcontrollers.cpython-310.pyc
 controllers/__pycache__/friendcontroller.cpython-310.pyc
 controllers/__pycache__/systemcontrollers.cpython-310.pyc
 controllers/__pycache__
-appvenv/
+env/
 __pycache__/
