@@ -1,6 +1,3 @@
-
-from re import A
-from turtle import right
 from psycopg2.errors import UniqueViolation
 import psycopg2
 from models import Code, User, Post, File, Comment
