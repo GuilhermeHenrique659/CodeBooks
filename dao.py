@@ -122,8 +122,13 @@ class UserDao:
         cursor = self.__db.cursor()
         cursor.execute(SQL_SEARCH_USER_LOGIN, (user_data,))
         data_user = cursor.fetchone()
+        user = self.create_user_object(data_user) if data_user else None
+        return user
+
+    def create_user_object(self, data_user):
         user = User(data_user['name'], data_user['email'],
                         data_user['password'], data_user['iduser'], image=data_user['image'])
+                        
         return user
 
 
