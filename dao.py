@@ -1,4 +1,6 @@
 
+from re import A
+from turtle import right
 from psycopg2.errors import UniqueViolation
 import psycopg2
 from models import Code, User, Post, File, Comment
@@ -18,7 +20,7 @@ SQL_FRIEND_EXISTS = 'SELECT * FROM Friendship WHERE (User_idUser = %(id_user)s a
 
 SQL_FRIEND_DELETE = 'DELETE FROM Friendship WHERE (User_idUser = %(id_user)s and Friend_idUser = %(id_friend)s) or ( User_idUser = %(id_friend)s and Friend_idUser = %(id_user)s) '
 
-SQL_SEARCH_USER = 'select name, iduser, image from users where name=%s and iduser !=%s'
+SQL_SEARCH_USER = 'select name, iduser, image from users where name ilike %s and iduser !=%s'
 
 SQL_SEARCH_USER_LOGIN = 'select * from users where email=%s'
 
@@ -136,6 +138,7 @@ class UserDao:
                 cursor.execute(SQL_CREATE_USER, (user._name,
                                user._email, user._password,))
         except UniqueViolation as error:
+            print(error)
             return "email not available"
         self.__db.commit()
         return cursor.lastrowid

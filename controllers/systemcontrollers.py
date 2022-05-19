@@ -14,7 +14,6 @@ class ControllerLogin:
     def authenticate(self):
         data = request.form
         user:User = dao.user.user_search_login(data['email'])
-        print(user._name)
         if user:
             if user._password == data['password']:
                 session['login_user'] = data['email']
