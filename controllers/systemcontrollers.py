@@ -13,7 +13,7 @@ class ControllerLogin:
  
     def authenticate(self):
         data = request.form
-        user = dao.user.user_search_login(data['email'])
+        user:User = dao.user.user_search_login(data['email'])
         if user:
             if user._password == data['password']:
                 session['login_user'] = data['email']

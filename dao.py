@@ -1,9 +1,10 @@
 
-from shutil import ExecError
-import sqlite3
+from re import A
+from turtle import right
+from psycopg2.errors import UniqueViolation
 import psycopg2
 from models import Code, User, Post, File, Comment
-
+from config import server
 
 SQL_FRIEND_LIST = '''
                 SELECT iduser, name, image FROM Friendship 
@@ -19,7 +20,7 @@ SQL_FRIEND_EXISTS = 'SELECT * FROM Friendship WHERE (User_idUser = %(id_user)s a
 
 SQL_FRIEND_DELETE = 'DELETE FROM Friendship WHERE (User_idUser = %(id_user)s and Friend_idUser = %(id_friend)s) or ( User_idUser = %(id_friend)s and Friend_idUser = %(id_user)s) '
 
-SQL_SEARCH_USER = 'select name, iduser, image from users where name=%s and iduser !=%s'
+SQL_SEARCH_USER = 'select name, iduser, image from users where name ilike %s and iduser !=%s'
 
 SQL_SEARCH_USER_LOGIN = 'select * from users where email=%s'
 
@@ -67,35 +68,36 @@ class FriendDao:
     def __init__(self, db:psycopg2) -> None:
         self.__db = db
 
+    @server.transaction
     def user_search(self, name, iduser):
         cursor = self.__db.cursor()
-        try:
-            cursor.execute(SQL_SEARCH_USER, (name, iduser))
-            users_data = self.__translate_to_list(cursor.fetchall())
-            return users_data
-        except psycopg2.DatabaseError:
-            self.__db.connection().rollback
+        cursor.execute(SQL_SEARCH_USER, (name, iduser))
+        users_data = self.__translate_to_list(cursor.fetchall())
+        return users_data
 
+
+    @server.transaction
     def friend_list(self, user_id) -> list:
         cursor = self.__db.cursor()
-        try:
-            cursor.execute(SQL_FRIEND_LIST, {'id_user': user_id})
-            friend_list = self.__translate_to_list(cursor.fetchall())
-            return friend_list
-        except psycopg2.DatabaseError:
-            self.__db.connection().rollback
+        cursor.execute(SQL_FRIEND_LIST, {'id_user': user_id})
+        friend_list = self.__translate_to_list(cursor.fetchall())
+        return friend_list
 
+
+    @server.transaction
     def friend_exists(self, friend_id, user_id):
         cursor = self.__db.cursor()
         cursor.execute(SQL_FRIEND_EXISTS, {'id_user':user_id, 'id_friend': friend_id})
         friend_list = cursor.fetchall()
         return friend_list
 
+    @server.transaction
     def remove_friend(self, friend_id, user_id):
         cursor = self.__db.cursor()
         cursor.execute(SQL_FRIEND_DELETE, {'id_user':user_id, 'id_friend': friend_id})
         self.__db.commit()
 
+    @server.transaction
     def add_friend_in_db(self, friend_id, user_id):
         cursor = self.__db.cursor()
         try:
@@ -114,18 +116,23 @@ class UserDao:
     def __init__(self, db:psycopg2) -> None:
         self.__db = db
 
-    def user_search_login(self, user_data) -> object:
+
+    @server.transaction
+    def user_search_login(self, user_data) -> User:
         cursor = self.__db.cursor()
-        try:
-            cursor.execute(SQL_SEARCH_USER_LOGIN, (user_data,))
-            data_user = cursor.fetchone()
-            user = User(data_user['name'], data_user['email'],
+        cursor.execute(SQL_SEARCH_USER_LOGIN, (user_data,))
+        data_user = cursor.fetchone()
+        user = self.create_user_object(data_user) if data_user else None
+        return user
+
+    def create_user_object(self, data_user):
+        user = User(data_user['name'], data_user['email'],
                         data_user['password'], data_user['iduser'], image=data_user['image'])
-            return user
-        except psycopg2.DatabaseError:
-            self.__db.connection().rollback()
+                        
+        return user
 
 
+    @server.transaction
     def save_user(self, user:User):
         cursor = self.__db.cursor()
         try:
@@ -135,21 +142,21 @@ class UserDao:
             else:
                 cursor.execute(SQL_CREATE_USER, (user._name,
                                user._email, user._password,))
-        except NameError:
+        except UniqueViolation as error:
+            print(error)
             return "email not available"
         self.__db.commit()
         return cursor.lastrowid
 
+    @server.transaction
     def search_user_profile(self, id) -> User:
         cursor = self.__db.cursor()
-        try:
-            cursor.execute(SQL_SEARCH_USER_PROFILE, (id,))
-            data_user_db = cursor.fetchone()
-            return User(data_user_db['name'],data_user_db['email'],None,data_user_db['iduser'],
+        cursor.execute(SQL_SEARCH_USER_PROFILE, (id,))
+        data_user_db = cursor.fetchone()
+        return User(data_user_db['name'],data_user_db['email'],None,data_user_db['iduser'],
                             data_user_db['age'],data_user_db['image'],data_user_db['job'])
-        except psycopg2.DatabaseError:
-            self.__db.connection().rollback
 
+    @server.transaction
     def delete_user(self,id):
         cursor = self.__db.cursor()
         cursor.execute(SQL_DELETE_USER, (id,))
@@ -168,16 +175,14 @@ class PostDao:
                         post['updated_at'], post['like_cont'], post['idpost'])
         return list(map(translate_to_object, post_db))
 
+    @server.transaction
     def list_post(self) -> list:
         cursor = self.__db.cursor()
-        try:
-            cursor.execute(SQL_LIST_POST)
-            post_list = self.__translate_to_list(cursor.fetchall())
-            return post_list  
-        except psycopg2.DatabaseError:
-            self.__db.connection().rollback()
-        
+        cursor.execute(SQL_LIST_POST)
+        post_list = self.__translate_to_list(cursor.fetchall())
+        return post_list  
 
+    @server.transaction
     def delete_post(self, post_id,user_id):
         cursor = self.__db.cursor()
         try:
@@ -186,6 +191,7 @@ class PostDao:
             return error
         self.__db.commit()
 
+    @server.transaction
     def create_post(self,post:Post):
         cursor = self.__db.cursor()
         
@@ -198,9 +204,10 @@ class PostDao:
         return post_id
         
 class CodeDao:
-    def __init__(self,db) -> None:
+    def __init__(self,db:psycopg2) -> None:
         self.__db = db
 
+    @server.transaction
     def create_code(self,code:Code):
         cursor = self.__db.cursor()
         try:
@@ -210,17 +217,19 @@ class CodeDao:
         self.__db.commit()   
         return cursor.lastrowid
 
+    @server.transaction
     def delete_code(self, id, user_id):
         self.__db.cursor().execute(SQL_DELETE_CODE,(id,user_id,))
         self.__db.commit()
     
+    @server.transaction
     def list_code(self, id_post) -> list:
         cursor = self.__db.cursor()
         cursor.execute(SQL_SEARCH_CODE_LIST,(id_post,))
         list_code_db = cursor.fetchall()
-        print(list_code_db)
         list_code = self.__translate_to_list(list_code_db)
         return list_code
+
     
     def __translate_to_list(self, code_db) -> list:
         def translate_to_object(code) -> Code:
@@ -232,25 +241,27 @@ class FileDao:
     def __init__(self,db:psycopg2) -> None:
         self.__db = db
     
+    @server.transaction
     def save_files(self, file:File):
         cursor = self.__db.cursor()
         cursor.execute(SQL_CREATE_FILE,(file._filename,file._type,file._id_post) )
         self.__db.commit()
 
+    @server.transaction
     def findall_files(self, idpost):
         cursor = self.__db.cursor()
-        try:
-            cursor.execute(SQL_LIST_FILE,(idpost,))
-            files_list = self.translate_to_list(cursor.fetchall())
-            if len(files_list) == 0:
-                return None
-            return files_list
-        except psycopg2.DatabaseError:
-            self.__db.connection().rollback
+        cursor.execute(SQL_LIST_FILE,(idpost,))
+        files_list = self.translate_to_list(cursor.fetchall())
+        if len(files_list) == 0:
+            return None
+        return files_list
 
+    @server.transaction
     def delete_files(self, idpost):
         self.__db.cursor().execute(SQL_DELETE_FILE,(idpost,))
         self.__db.commit()
+
+
 
     def translate_to_list(self, files_db) -> list :
         def translate_to_object(file) -> File:
@@ -263,12 +274,14 @@ class CommentDao:
     def __init__(self,db:psycopg2) -> None:
         self.__db = db
 
+
+    @server.transaction
     def save_comment(self, comment: Comment):
         cursor = self.__db.cursor()
         if comment._idComment:
             pass
         else:
-            cursor.execute(SQL_INSERT_COMMENT, (comment._Comment, comment._idPost, comment._idUser))
+            cursor.execute(SQL_INSERT_COMMENT, (comment._Comment, comment._idPost, comment._iduser))
         self.__db.commit()
     
     def __translate_to_list(self, comment_db) -> list:
@@ -277,11 +290,9 @@ class CommentDao:
             return Comment(comment['comment'], comment['post_idpost'], user, comment['idcomment'])
         return list(map(translate_to_object, comment_db))
     
+    @server.transaction
     def list_comment(self, id):
         cursor = self.__db.cursor()
-        try:
-            cursor.execute(SQL_LIST_COMMENT,(id,))
-            listDb = cursor.fetchall()
-            return self.__translate_to_list(listDb)
-        except psycopg2.DatabaseError:
-            self.__db.connection().rollback
+        cursor.execute(SQL_LIST_COMMENT,(id,))
+        listDb = cursor.fetchall()
+        return self.__translate_to_list(listDb)
