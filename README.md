@@ -134,21 +134,28 @@ A estrutura do projeto se dividi em 5 partes, views composta principalmente por 
 
   
   <h5>Chat  -> loggin_required</h5>
-  <p>Url para mostrar o chat. Espera id do usuario que deseja conversar como paramentro da rota e rederiza o chat de conversa. Exemplo: <code></code></p>
+  <p>Url para mostrar o chat. Espera id do usuario que deseja conversar como paramentro da rota e rederiza o chat de conversa. Exemplo: <code>chat/8</code> conversar com usuario de id = 8</p>
   <p><code></code>server.app.add_url_rule('/chat/<int:id>', endpoint='chat', 
                                     view_func=controllers.chat.chat)</p>  
-    <p>pelo url_for: <code>url_for('')</code> </p>
+    <p>pelo url_for: <code>url_for('chat', id='id do usuario')</code> </p>
 
 
   
-    <h5></h5>
-  <p></p>
-  <p><code></code></p>  
-  <p>pelo url_for: <code>url_for('')</code> </p>
+  <h5>Deleta o Post -> loggin_required</h5>
+  <p>Url para deletar o post. Espera um requisição com o id do post como parametro. Exemplo: <code>/delte_post/9</code> deleta a postagem com id 9. Url sem proteção</p>
+  <p><code>server.app.add_url_rule('/delte_post/<int:id>', endpoint='delete_post',
+                                    view_func=controllers.post.delete_post)</code></p>  
+  <p>pelo url_for: <code>url_for('delete_post', id='id do post')</code> </p>
 
   
-    <h5></h5>
-  <p></p>
-  <p><code></code></p>  
-  <p>pelo url_for: <code>url_for('')</code> </p>
+  <h5>Editar post -> loggin_required</h5>
+  <p>Url para salvar edição do post. Espera um requisição de um form com os 3 inputs com o seguintes nome: <code> name='title', name='description', name='idPost' -> hidden input </code></p>
+  <p><code>server.app.add_url_rule('/edit_post', endpoint='edit_post', 
+                                    view_func=controllers.post.edit_post, methods=['POST'])</code></p>  
+  <p>pelo url_for: <code>url_for('edit_post')</code> </p>
+  
+  <h5>Fazer comentario -> loggin_required</h5>
+  <p>Url para inserir comentario. Espera uma requisição como o id do post como argumento e venha de um formulario. Com um textarea com o name='comment'. Exemplo: <code> /insert_comment?idPost=5</code> faz um comentario na postagem com id 5</p>
+  <p><code>server.app.add_url_rule('/insert_comment', endpoint='insert_comment', view_func=controllers.comment.insertComment, methods=['POST'])</code></p>  
+  <p>pelo url_for: <code>url_for('insert_comment', idPost='id da postagem')</code> </p>
 
