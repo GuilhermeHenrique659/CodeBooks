@@ -2,20 +2,26 @@ import psycopg2
 import psycopg2.extras
 from flask import Flask , session, redirect, url_for
 import os
+from os import environ
+from dotenv import load_dotenv
 from flask_socketio import SocketIO
+
+
 
 
 class Server:
     def __init__(self) -> None:
-        self.__app = Flask(__name__)
-        self.__app.secret_key='Codebooks'
+        load_dotenv()
+        self.__app = Flask(environ.get("FLASK_APP"))
+        self.__app.secret_key=os.getenv("SECRET_KEY")
+        self.__app.config["DEBUG"] = os.getenv("FLASK_DEBUG")
         self.__app.config['UPLOAD_FOLDER'] = os.path.abspath(os.path.dirname(__file__))+'/uploads'
         self.__db = psycopg2.connect( 
-            host = "ec2-44-194-4-127.compute-1.amazonaws.com",
-            user = "ifcrdmlmixptjt",
-            password = "188cb6ba4bfe0100b1e1875c13df58a5368849ab59cda23fd3fa5505d5fcede5",
-            port = 5432,
-            database = "dell6u1d84pea2",
+            host = environ.get("POSTGRESQL_HOST"),
+            user =  environ.get("POSTGRESQL_USER"),
+            password =  environ.get("POSTGRESQL_PASSWORD"),
+            port =  environ.get("POSTGRESQL_PORT"),
+            database =  environ.get("POSTGRESQL_DATABASE"),
             cursor_factory=psycopg2.extras.RealDictCursor
         )
         self.__socketio = SocketIO(self.__app)
