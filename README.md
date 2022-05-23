@@ -21,6 +21,8 @@ A estrutura do projeto se dividi em 5 partes, views composta principalmente por 
   O endereço da rota é obrigratorio e o nome é opicional, entretanto devido ou uso de um decorector loggin_required o nome se torna obrigatorio, a view também é obrigatoria se não a rota não fará nada, o methods é opcional, pois por padrão é o metodo GET.
   
 ### Rotas do sistema
+
+#### Obs: para evitar erros com o decorector de login_required use sempre a função do flask url_for('nome da url','paramentros e argumentos'). Exemplo: <code> url_for('user_profile', id='id do usuario', pag='view')</code>
   <h5>Index</h5>
   <p>Url para requisitar a pagina principal. Chama o controller feed.index que vai comunicar com o banco de dados e buscar lista de postagem e caso usuario logado a lista de amigos.</p>
   <p><code>server.app.add_url_rule('/',endpoint='index',
