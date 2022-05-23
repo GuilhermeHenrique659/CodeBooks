@@ -1,7 +1,7 @@
 # CodeBooks
 
 ## Sobre
-<p>O projeto produzido por fins de estudo. Que consiste em uma rede social simples onde será possivel conversas, postagem, grupos e fazer amigos.
+<p>O projeto produzido por fins de estudo. Que consiste em uma rede social simples onde será possivel conversas, postagem, grupos e fazer amigos. O foco da rede social seria para programação e tecnologia, sendo possivel compartilhar codigos de qualquer linguagem.
 
 # Documentação
 ## Arquitetura
@@ -25,51 +25,62 @@ A estrutura do projeto se dividi em 5 partes, views composta principalmente por 
   <p>Url para requisitar a pagina principal. Chama o controller feed.index que vai comunicar com o banco de dados e buscar lista de postagem e caso usuario logado a lista de amigos.</p>
   <p><code>server.app.add_url_rule('/',endpoint='index',
                                view_func=controllers.feed.index)</code></p>
+  <p>pelo url_for: </p>
                                
   <h5>login</h5>
   <p>Url requisita pagina de login.</p>
   <p><code>server.app.add_url_rule('/login',endpoint='login',
                                     view_func=controllers.login.login)</code></p>  
+    <p>pelo url_for: <code> url_for('index') </code></p>
+
   
   <h5>Register</h5>
   <p>Url requisita pagina de registro de novo usuario</p>
   <p><code>server.app.add_url_rule('/register',endpoint='register',
                                     view_func=controllers.register.register)</code></p>  
+  <p>pelo url_for: <code> url_for('register')</code></p>
   
   <h5>Autenticação</h5>
-  <p>Url requisitada a partir de um form para autenticação de usuario. Usa o metodo post e espera um formulario com input com <code> name='email' </code> e input com <code>name='password'</code> </p>
+  <p>Url requisitada a partir de um form para autenticação de usuario. Usa o metodo post e requisição feita por um formulario com input com <code> name='email' </code> e input com <code>name='password'</code> </p>
   <p><code>server.app.add_url_rule('/authenticate',endpoint='authenticate',
                                     view_func=controllers.login.authenticate,methods=['POST'])</code></p>  
+  <p>pelo url_for: <code> url_for('authenticate') </code></p>
   
   <h5>Salva usuario </h5>
-  <p>Url requisitada a partir de um form. Usa metodo post e espera um form com 3 input com os seguintes names: <code> name='name', name='email', name='password'</code></p>
+  <p>Url requisitada a partir de um form. Usa metodo post e requisição feita por um form com 3 input com os seguintes names: <code> name='name', name='email', name='password'</code></p>
   <p><code>server.app.add_url_rule('/sing_in',endpoint='sing_in',
                                     view_func=controllers.register.sing_in,methods=['POST'])</code></p>  
+  <p>pelo url_for: <code> url_for('sing_in')</code></p>
   
   <h5>Logout -> loggin_required</h5>
   <p>Url requisita ao sevidor a exclusão da session do usuario</p>
   <p><code>server.app.add_url_rule('/logout', endpoint='logout',
                                     view_func=controllers.login.logout)</code></p>  
+  <p>pelo url_for: <code> url_for('logout')</code></p>
   
   <h5>Procura um usuario -> loggin_required</h5>
-  <p>Url com metodo get e post, espera receber um json com um registro com key 'user', que irá procurar todos os usuario no banco com nomes parecido e retornar uma lista de usuraio por meio de um json.</p>
+  <p>Url com metodo get e post, espera requisição com um json com um registro com key 'user', que irá procurar todos os usuario no banco com nomes parecido e retornar uma lista de usuraio por meio de um json.</p>
   <p><code>server.app.add_url_rule('/search_user', endpoint='search_user', 
                                     view_func=controllers.friend.seach_user, methods=['POST','GET'])</code></p>  
+  <p>pelo url_for: <code> url_for('search_user')</code></p>
   
    <h5>Adiciona amigo -> loggin_required</h5>
   <p>Url para adcionar usuario a lista de amigos. Espera um inteiro com o id do usuario que vai ser adcionado, inteiro passado através da url. Exemplo: /add_friend/5, irá acionar o usuario de id 5 a lista de amigos, se já for amigo ou o proprio usuario retonara um mensagem.</p>
   <p><code>server.app.add_url_rule('/add_friend/<int:id>',endpoint='add_friend',
                                     view_func= controllers.friend.add_friend, methods=['GET'])</code></p>  
+  <p>pelo url_for: <code> url_for('add_friend', id='id do usuario')</code></p>
   
   <h5>Remove amigo -> loggin_required</h5>
   <p>Url para excluir amigo da lista. Espera o id do amigo passado na url como o "add_friend" e caso seja amigo será excluido da lista e retonara um mensagem, se não for ou for o proprio usuario retonara uma mensagem.</p>
   <p><code>server.app.add_url_rule('/remove_friend/<int:id>', endpoint='remove_friend',
                                     view_func= controllers.friend.remove_friend)</code></p>  
+  <p>pelo url_for: <code> url_for('remove_friend', id='id do usuario')</code></p>
   
   <h5>Fazer um post -> loggin_required</h5>
-  <p>Url para salvar postagem e compartilhar. Espera vir de um formulario com enctype="multipart/form-data". Espera receber 4 input <code>input name='tilte', textarea name='description', textare name='code', input file name='files[]' accept=".jpg, .mp4" multiple="true"</code> </p>
+  <p>Url para salvar postagem e compartilhar. Espera requisição feita por  um formulario com enctype="multipart/form-data". Espera receber 4 input <code>input name='tilte', textarea name='description', textare name='code', input file name='files[]' accept=".jpg, .mp4" multiple="true"</code> </p>
   <p><code>server.app.add_url_rule('/create_post', endpoint='create_post', 
                                     view_func= controllers.post.create_post,methods = ['POST'])</code></p>  
+  <p>pelo url_for: <code> url_for('create_post')</code></p>
   
   <h5>Ver perfil de usuario -> loggin_required</h5>
   <p>Url para visualizar perfil e caso o usuario logado seja o dono edita-lo também. Espera um junto a url e um argumeto pag='edit' ou pag='view'. Exemplos:
@@ -78,11 +89,66 @@ A estrutura do projeto se dividi em 5 partes, views composta principalmente por 
   Se o usuario tentar colocar edit em um perfil alheio ou não for colocado nenhum argumento, ele será redirecionado para a pagina do perfil colocado na url</p>
   <p><code>server.app.add_url_rule('/user_profile/<int:id>',endpoint='user_profile', 
                                     view_func =  controllers.user.user_profile)</code></p>  
+  <p>pelo url_for: <code> url_for('user_profile', id='id do usuario', pag='view')</code></p>
+  <p>pelo url_for: <code> url_for('user_profile', id='id do usuario', pag='edit')</code></p>
+  
+  <h5>Salva edição do usauario -> loggin_required</h5>
+  <p>Url para salvar as alterações do uruario. Espera requisição feita por um form com os inputs com os seguintes nomes: <code>name = 'name', name='email', name='job', name='age', name='password', input type='file' name='image'</code> na url deve conter um argumento com o id do usuario. Exemplo: <code>/user_edit_save?id=3</code> requistar o servidor editar o registro de usuario com id = 3, essa rota não tem proteção.</p>
+  <p><code>server.app.add_url_rule('/user_edit_save', endpoint='user_save',
+                                    view_func = controllers.user.user_edit_save,methods = ['POST'])</code></p>  
+  <p>pelo url_for: <code>url_for('user_save', id='id do usuario')</code> </p>
+  
+  <h5>Rota de arquivos</h5>
+  <p>Url para servir ao sistema, ela deve ser usada caso precise requisitar um aquivo que foi feito upload pelo usario. Exemplo:
+  <code>img src='{{url_for('uploads', filename='user_image4.jpg')}}'</code></p>
+  <p><code>server.app.add_url_rule('/uploads/<filename>',endpoint='uploads',
+                                    view_func =  controllers.uploads.upload_folder)</code></p>  
+  <p>pelo url_for: <code>url_for('uploads',filename='nome do arquivo')</code> </p>
+    
+  <h5>Visuslizar post</h5>
+  <p>URl para visualizar um postagem com mais detalhes. Espera um requisição com o id do post passado na url. Exemplo: <code>/post/16</code> mostra os comentarios e os tropicos compartilhado da postagem</p>
+  <p><code>server.app.add_url_rule('/post/<int:id>', endpoint='post', 
+                      view_func =  controllers.code.code_list,methods = ['GET']  )</code></p>  
+  <p>pelo url_for: <code>url_for('post', id='id do post')</code> </p>
+
+  
+  <h5>Adicionar codigo -> loggin_required</h5>
+  <p>Url para adcionar codigo a um postagem. Espera receber uma requisição por um form, o form deve 1 textare com <code>name='code'</code>, e deve ser passado no paramentro o id do post. Exemplo: <code>/add_code/8</code> adciona um novo codigo na postagem com id = 8 </p>
+  <p><code>server.app.add_url_rule('/add_code/<int:id>', endpoint='add_code', 
+                                    view_func =  controllers.code.add_code,methods=['POST'])</code></p>  
+  <p>pelo url_for: <code>url_for('add_code', id='id da postagem')</code> </p>
+
+  
+  <h5>Deletar codigo -> loggin_required</h5>
+  <p>Url para deletar um codigo pulicado em um postagem. Espera receber o id do codigo como paramentro e o id da postagem como argumento, se o usuario logado não for autor vai aparecer um mensagem de erro. Exemplo: <code>/delete_code/8?post_id=3</code> deleta o codigo com id 8 da postagem de id 3.</p>
+  <p><code>server.app.add_url_rule('/delete_code/<int:id>', endpoint='delete_code', 
+                                    view_func = controllers.code.delete_code)</code></p>  
+  <p>pelo url_for: <code>url_for('delete_code', id = 'id do codigo', post_id='id do post')</code> </p>
+
+  
+  <h5>Deleta conta -> loggin_required</h5>
+  <p>Url para deletar conta do usuario. Espera requisição com id do usuario como paramentro. Exemplo: <code>/delete_account/35</code> deleta usuario 35. Url não protegida.</p>
+  <p><code>server.app.add_url_rule('/delete_account/<int:id>',endpoint='delete_account',
+                    view_func=controllers.user.delete_account)</code></p>  
+  <p>pelo url_for: <code>url_for('delete_account', id='id do usuario')</code> </p>
+
+  
+  <h5>Chat  -> loggin_required</h5>
+  <p>Url para mostrar o chat. Espera id do usuario que deseja conversar como paramentro da rota e rederiza o chat de conversa. Exemplo: <code></code></p>
+  <p><code></code>server.app.add_url_rule('/chat/<int:id>', endpoint='chat', 
+                                    view_func=controllers.chat.chat)</p>  
+    <p>pelo url_for: <code>url_for('')</code> </p>
+
+
   
     <h5></h5>
   <p></p>
   <p><code></code></p>  
+  <p>pelo url_for: <code>url_for('')</code> </p>
+
   
     <h5></h5>
   <p></p>
   <p><code></code></p>  
+  <p>pelo url_for: <code>url_for('')</code> </p>
+
