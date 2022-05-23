@@ -1,7 +1,7 @@
 # CodeBooks
 
 ## Sobre
-<p>O projeto produzido por fins de estudo. Que consiste em uma rede social simples onde será possivel conversas, postagem, grupos e fazer amigos. O foco da rede social seria para programação e tecnologia, sendo possivel compartilhar codigos de qualquer linguagem.
+<p>O projeto consiste em uma rede social simples onde será possivel conversas, postagem, grupos e fazer amigos. O foco da rede social seria para programação e tecnologia, sendo possivel compartilhar codigos de qualquer linguagem.
 
 # Documentação
 ## Arquitetura
