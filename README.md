@@ -160,4 +160,9 @@ A estrutura do projeto se dividi em 5 partes, views composta principalmente por 
   <p>Url para inserir comentario. Espera uma requisição como o id do post como argumento e venha de um formulario. Com um textarea com o name='comment'. Exemplo: <code> /insert_comment?idPost=5</code> faz um comentario na postagem com id 5</p>
   <p><code>server.app.add_url_rule('/insert_comment', endpoint='insert_comment', view_func=controllers.comment.insertComment, methods=['POST'])</code></p>  
   <p>pelo url_for: <code>url_for('insert_comment', idPost='id da postagem')</code> </p>
+  
+  
+  
+ ## Fluxo da arquitetura do sistema
+![diagrama drawio](https://user-images.githubusercontent.com/76654459/169879941-f180681c-95ca-4764-ae62-9403df4833bd.png)
 
