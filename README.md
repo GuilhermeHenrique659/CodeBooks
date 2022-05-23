@@ -163,6 +163,6 @@ A estrutura do projeto se dividi em 5 partes, views composta principalmente por 
   
   
   
- ## Fluxo da arquitetura do sistema
+ ## Estrutura do sistema
 ![diagrama drawio](https://user-images.githubusercontent.com/76654459/169879941-f180681c-95ca-4764-ae62-9403df4833bd.png)
 
