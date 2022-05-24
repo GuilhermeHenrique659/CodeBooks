@@ -21,4 +21,4 @@ class ControllerFeed:
         if post_list:
             for post in post_list:
                 post.set_files(dao.file.findall_files(post._idPost))
-        return render_template('base.html', friend_list = friend_list,post_list = post_list, user = user)
+        return render_template('index.html', friend_list = friend_list,post_list = post_list, user = user)
