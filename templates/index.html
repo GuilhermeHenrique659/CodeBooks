@@ -4,8 +4,8 @@
 
 {% if session['login_user'] %}
 <div class="btn-group dropup" id="friend-list" style="align-items: flex-end;">
-    <button type="button" class="btn btn-secondary fixed-bottom" id="friend-list-btn"
-        data-bs-toggle="dropdown" aria-expanded="false">
+    <button type="button" class="btn btn-secondary fixed-bottom" id="friend-list-btn" data-bs-toggle="dropdown"
+        aria-expanded="false">
         Lista de amigos
     </button>
 
@@ -15,94 +15,95 @@
         {% for friend in friend_list %}
         <li class="line-friend">
             <a class="dropdown-item" href="{{ url_for('user_profile' ,pag='view', id=friend.id) }}">
-                <img src="{{ url_for('uploads', filename=friend.image ) }}" alt="" class="rounded-circle"
-                    width="32" height="32" alt="..." style="margin: 5px;">
+                <img src="{{ url_for('uploads', filename=friend.image ) }}" alt="" class="rounded-circle" width="32"
+                    height="32" alt="..." style="margin: 5px;">
                 {{ friend.name }}
             </a>
 
 
         </li>
         {% endfor %}
-        <div class="d-flex justify-content-center" >
+        <div class="d-flex justify-content-center">
             <div class="spinner-border" role="status" id="loading" hidden>
             </div>
         </div>
     </ul>
 </div>
-            {% endif %}
+{% endif %}
 
 
-            <script>
-                function remove_friendList(list) {
-                    for (item of list) {
-                        item.remove()
-                    }
-                }
-        
-                async function search_user() {
-                    let username = document.querySelector('#search_user').value
-                    const response = await fetch("{{url_for('search_user')}}", {
-                        method: "POST",
-                        body: JSON.stringify({
-                            'user': username
-                        }),
-                        headers: {
-                            "Content-type": "application/json; charset=UTF-8"
-                        }
-                    })
-                    if(response.status == 204)
-                        return null
-                    let users_response = await response.json()
-                    return users_response
-                }
-        
-                function make_friend_list(user_list) {
-                    const friend_list = document.querySelector('#user_list_iten')
-            
-                    user_list.forEach((user) => {
-                        let li = document.createElement('li')
-                        li.classList.add('line-friend')
-                        li.innerHTML += `
+<script>
+    function remove_friendList(list) {
+        for (item of list) {
+            item.remove()
+        }
+    }
+
+    async function search_user() {
+        let username = document.querySelector('#search_user').value
+        const response = await fetch("{{url_for('search_user')}}", {
+            method: "POST",
+            body: JSON.stringify({
+                'user': username
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+        if (response.status == 204)
+            return null
+        let users_response = await response.json()
+        return users_response
+    }
+
+    function make_friend_list(user_list) {
+        const friend_list = document.querySelector('#user_list_iten')
+
+        user_list.forEach((user) => {
+            let li = document.createElement('li')
+            li.classList.add('line-friend')
+            li.innerHTML += `
                                 <a class="dropdown-item" href="/user_profile/${user.id}?pag=view">
                                     <img src="${user.image}" alt="" class="rounded-circle"
                                         width="32" height="32" alt="..." style="margin: 5px;">
                                         ${user.name}
                                 </a>
                          `
-                        friend_list.appendChild(li)
-                    })
-                    
-                    hiddenspinner()
-                }
-        
-                function buildspinner() {
-                    const spinner = document.querySelector('#loading')
-                    spinner.removeAttribute("hidden")
-                }
-                function hiddenspinner(){
-                    let spinner = document.querySelector('#loading')
-                    spinner.setAttribute("hidden",'')
-                }
-        
-                document.querySelector('#search_user').addEventListener('keyup', async (event) => {
-                    ENTER_KEY_ID = 13
-                    if (event.keyCode == ENTER_KEY_ID) {
-                        list = document.querySelectorAll('.line-friend')
-                        remove_friendList(list)
-                        buildspinner()
-                        const users_json = await search_user()
-                        if(users_json)
-                            make_friend_list(users_json)
-                        else{
-                            let li = document.createElement('li')
-                            li.classList.add('line-friend')
-                            li.appendChild(document.createTextNode("Usuario não encontrado"))
-                            document.querySelector("#user_list_iten").appendChild(li)
-                            hiddenspinner()
-                        }
-                    }
-                    
-                }, 5000)
-            </script>
-                
+            friend_list.appendChild(li)
+        })
+
+        hiddenspinner()
+    }
+
+    function buildspinner() {
+        const spinner = document.querySelector('#loading')
+        spinner.removeAttribute("hidden")
+    }
+
+    function hiddenspinner() {
+        let spinner = document.querySelector('#loading')
+        spinner.setAttribute("hidden", '')
+    }
+
+    document.querySelector('#search_user').addEventListener('keyup', async (event) => {
+        ENTER_KEY_ID = 13
+        if (event.keyCode == ENTER_KEY_ID) {
+            list = document.querySelectorAll('.line-friend')
+            remove_friendList(list)
+            buildspinner()
+            const users_json = await search_user()
+            if (users_json)
+                make_friend_list(users_json)
+            else {
+                let li = document.createElement('li')
+                li.classList.add('line-friend')
+                li.appendChild(document.createTextNode("Usuario não encontrado"))
+                document.querySelector("#user_list_iten").appendChild(li)
+                hiddenspinner()
+            }
+        }
+
+    }, 5000)
+</script>
+
 {% endblock %}

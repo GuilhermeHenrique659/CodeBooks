@@ -2,6 +2,7 @@ from flask import render_template,redirect,session,url_for
 from factoryDao import dao
 from config import server
 from controllers.postcontrollers import ControllerPost
+from models import Post
 
 
 
@@ -14,11 +15,11 @@ class ControllerFeed:
             friend_list = None
             user = None
         else:
-            friend_list = dao.friend.friend_list(session['user_id'])
+            friend_list:list = dao.friend.friend_list(session['user_id'])
             user = dao.user.search_user_profile(session['user_id'])
-        print(user)
-        post_list = dao.post.list_post()
+        post_list:list = dao.post.list_post()
         if post_list:
             for post in post_list:
+                post:Post
                 post.set_files(dao.file.findall_files(post._idPost))
         return render_template('index.html', friend_list = friend_list,post_list = post_list, user = user)

@@ -23,8 +23,6 @@
                 <hr class="sidebar-divider my-0">
                 <ul class="navbar-nav text-light" id="accordionSidebar">
                     <li class="nav-item"><a class="nav-link active" href="{{url_for('index')}}"><i class="fas fa-home"></i><span>Home</span></a></li>
-                    <li class="nav-item"></li>
-                    <li class="nav-item"><a class="nav-link" href="register.html"></a></li>
                 </ul>
                 <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"><i class="bi bi-arrow-left" id="arrow"></i></button></div>
             </div>
@@ -36,6 +34,7 @@
                         <form class="d-none d-sm-inline-block me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
                             <div class="input-group"><input class="form-control border-0 small" type="text" placeholder="Search for ..." style="border-style: none;background: rgb(32,33,43);--bs-body-bg: rgb(32,33,43);"><button class="btn btn-primary py-0" type="button" style="background: rgb(32,33,43);border-style: none;"><i class="fas fa-search"></i></button></div>
                         </form>
+                        {% if session['login_user'] %}
                         <ul class="navbar-nav flex-nowrap ms-auto">
                             <li class="nav-item dropdown d-sm-none no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-search"></i></a>
                                 <div class="dropdown-menu dropdown-menu-end p-3 animated--grow-in" aria-labelledby="searchDropdown">
@@ -74,6 +73,11 @@
                                 </div>
                             </li>
                         </ul>
+                        {% else %}
+                        <ul class="navbar-nav flex-nowrap ms-auto">
+                            <li class="nav-item"><a class="nav-link active" href="{{url_for('login')}}"><i class="fas fa-home"></i><span>Log In</span></a></li>
+                        </ul>
+                        {% endif %}
                     </div>
                 </nav>
             </div>

@@ -26,11 +26,11 @@ class Server:
         )
         self.__socketio = SocketIO(self.__app)
 
-    def transaction(self, methotd):
+    def transaction(self, method):
         def wrapper(*agrs, **kwargs):
             try:
-                return methotd(*agrs, **kwargs)
-            except Exception as error:
+                return method(*agrs, **kwargs)
+            except Exception:
                 self.__db.rollback()
         return wrapper
 
