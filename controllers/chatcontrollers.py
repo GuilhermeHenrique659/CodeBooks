@@ -3,7 +3,6 @@ from flask_socketio import emit,send, join_room,leave_room
 from flask import render_template, session,request
 from factoryDao import dao
 
-
 class ControllerChat:
 
     @server.loggin_required

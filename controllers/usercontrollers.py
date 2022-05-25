@@ -12,21 +12,21 @@ class ControllerUser:
 
     def __render_profile(self, pag, User_profile, id):
         if pag == 'edit' and id == session['user_id']:
-            return render_template('profile_edit.html', user_profile = User_profile )
+            return render_template('profile_edit.html', user = User_profile )
         else:
             friend_exists = dao.friend.friend_exists(id,session['user_id'])
-            return render_template('profile.html', user_profile = User_profile,friend_exists = friend_exists )
+            return render_template('profile.html', user = User_profile,friend_exists = friend_exists )
 
     @server.loggin_required
     def user_profile(self,id):
-        User_profile = dao.user.search_user_profile(id)
-        if not User_profile:
+        user = dao.user.search_user_profile(id)
+        if not user:
             return redirect(url_for('index'))
         try:
             pag = request.args['pag']
         except:
             pag = 'view'
-        return self.__render_profile(pag, User_profile, id)
+        return self.__render_profile(pag, user, id)
 
     @server.loggin_required
     def user_edit_save(self):

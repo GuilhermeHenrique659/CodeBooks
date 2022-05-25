@@ -58,10 +58,11 @@
     <script>
         window.onload = function() {
             const socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port)
+
             function addToChat(msg) {
                 const span = document.createElement("span");
                 const chat = document.querySelector(".chat");
-                span.innerHTML = `<strong>${msg.username}:</strong> ${msg.message}`
+                span.innerHTML = `<strong>${msg.username}:</strong> ${msg.message}`;
                 if (msg.username == '{{ session['user_name'] }}'){
                     span.style.cssText += 'margin-left: 400px;'
                 }
