@@ -31,4 +31,4 @@ class ControllerChat:
     @server.socketio.on("send message")
     def message(data):
         room = data['channel']
-        emit('getMessage',data, to=room)
+        emit('getMessage',data, room=room)
