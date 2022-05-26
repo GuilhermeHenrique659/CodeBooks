@@ -63,7 +63,5 @@ class Routes:
 
         server.app.add_url_rule('/edit_post', endpoint='edit_post', 
                                     view_func=controllers.post.edit_post, methods=['POST'])
-        
-        server.app.add_url_rule('/chat/<int:id>', endpoint='chat', view_func=controllers.chat.chat)
-        
+
         server.app.add_url_rule('/insert_comment', endpoint='insert_comment', view_func=controllers.comment.insertComment, methods=['POST'])
