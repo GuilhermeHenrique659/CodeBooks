@@ -2,7 +2,7 @@
   "use strict"; // Start of use strict
 
   var sidebar = document.querySelector('.sidebar');
-  var sidebarToggles = document.querySelectorAll('#sidebarToggle, #sidebarToggleTop');
+  var sidebarToggles = document.querySelectorAll('#sideToggle, #sidebarToggleTop');
   
   if (sidebar) {
     
