@@ -1,134 +1,117 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
+{% block conteudo %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/code_style.css')}}">
-    <title>Document</title>
-</head>
+<style>
+    #wrapper #content-wrapper #content {
+    flex: 0;
+}
+</style>
 
-<body style="background-color: #220018;">
-    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="{{url_for('index')}}">Company name</a>
-        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
-            data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
-            aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search"
-            style="background-color: #20212B; border: none;">
-        <div class="navbar-nav">
-            <div class="nav-item text-nowrap">
-                <a class="nav-link px-3" href="{{url_for('logout')}}">Sign out</a>
-            </div>
-        </div>
-    </header>
-    <div class="conteiner">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/code_style.css')}}">
 
-        <div class="post">
+
+<div  id="container" class="container-xl">
+    <div class="row">
+        <div class="col-sm-8" style="background-color: #f7f4f3;">
+        <br>
+            <div class="p-2">
             <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                Adicionar novo codigo
-            </button>
-
-            <!-- Modal -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Adicione um codigo a postagem</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="{{url_for('add_code', id=post_id)}}" method="post">
-                                <div class="form-row">
-                                    <div class="name">Digite seu código</div>
-                                    <div class="value">
-                                        <div class="input-group">
-                                            <textarea class="textarea--style-6" name="code"
-                                                placeholder="Cole seu código aqui!"></textarea>
-                                        </div>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            Adicionar novo codigo
+        </button>
+    </div>
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Adicione um codigo a postagem</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{url_for('add_code', id=post_id)}}" method="post">
+                            <div class="form-row">
+                                <div class="name">Digite seu código</div>
+                                <div class="value">
+                                    <div class="input-group">
+                                        <textarea class="textarea--style-6" name="code"
+                                            placeholder="Cole seu código aqui!"></textarea>
                                     </div>
                                 </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save changes</button>
-                            </form>
-                        </div>
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        </form>
                     </div>
                 </div>
             </div>
-            <hr>
-            {% for code in list_code %}
-            <div class="code">
-                <div class="code-header">
-                    <h4><a href="{{ url_for('user_profile',id=code._user.id) }}">{{code._user.name}}</a></h4>
-                    <h5>{{code._created_at}}</h5>
-                    {% if session['user_id'] == code._user.id %}
-                    <div class="trash-icon" style="margin-left: 50px;">
-                        
-                        <a href="{{url_for('delete_code', id=code._idcode, post_id=post_id)}}">
-                            <button type="button" class="btn"><img src="{{ url_for('static', filename = 'img/icon/trash.svg') }}"
-                                alt=""></button>
-                        </a>
+        </div>
+        <hr>
+        {% for code in list_code %}
+        <div class="code overflow-auto d-grid gap-3" >
+            <div class="code-header">
+                <h4><a href="{{ url_for('user_profile',id=code._user.id) }}">{{code._user.name}}</a></h4>
+                <h5>{{code._created_at}}</h5>
+                {% if session['user_id'] == code._user.id %}
+                <div class="trash-icon" style="margin-left: 50px;">
+                    
+                    <a href="{{url_for('delete_code', id=code._idcode, post_id=post_id)}}">
+                        <button type="button" class="btn"><img src="{{ url_for('static', filename = 'img/icon/trash.svg') }}"
+                            alt=""></button>
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="code-body">
+                <code><textarea name="" id="" class="code-area"
+                        readonly>{{code._code}}</textarea></code>
+            </div>
+        </div>
+        {% endfor %}
+            </div>
+        <div class="col-sm-4" style="background-color: #f7f4f3;">
+                    <!-- cadastra comentario -->
+        <div class="m-2">
+            <p class="text-decoration-underline">Comentarios</p>
+            <form action="{{url_for('insert_comment', idPost=post_id)}}" method="POST">
+                <div class="mb-3">
+                    <textarea class="form-control" rows="5" name="comment"
+                        placeholder="Escreva seu comentario" required></textarea>
+                    <button type="submit" class="btn"><i class="fal fa-comment-plus"></i></button>
+                </div>
+            </form>
+        </div>
+        <!-- cadastra comentario -->
+        <hr class="my-4">
+        <div class="m-2">
+            <div class="mb-3">
+                <div class="list-group overflow-auto" >
+                    {% if listComment %}
+                    {%for comment in listComment%}
+                    <div class="list-group-item list-group-item-action d-flex gap-2 py-1"
+                        aria-current="true">
+                        <a href="{{ url_for('user_profile' ,pag='view', id=comment._idUser._id) }}"><img src="{{ url_for('uploads', filename=comment._idUser.image)}}" width="32" height="32"
+                            class="rounded-circle flex-shrink-0"></a>
+                        <div class="d-flex gap-2 w-100 justify-content-between">
+                            <div>
+                                <h6 class="mb-0">{{comment._idUser._name}}</h6>
+                                <p class="mb-0 opacity-75">{{comment._Comment}}</p>
+                            </div>
+                            <small class="opacity-50 text-nowrap">now</small>
+                        </div>
                     </div>
+                    {%endfor%}
                     {% endif %}
                 </div>
-                <div class="code-body">
-                    <code><textarea name="" id="" class="code-area"
-                            readonly>{{code._code}}</textarea></code>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        <div class="comment">
-            <!-- cadastra comentario -->
-            <div class="m-2">
-                <p class="text-decoration-underline">Comentarios</p>
-                <form action="{{url_for('insert_comment', idPost=post_id)}}" method="POST">
-                    <div class="mb-3">
-                        <textarea class="form-control" rows="5" name="comment"
-                            placeholder="Escreva seu comentario"></textarea>
-                        <input type="submit" class="btn btn-primary mt-2" value="Post">
-                    </div>
-                </form>
-            </div>
-            <!-- cadastra comentario -->
-            <hr class="my-4">
-            <div class="m-2">
-                <div class="mb-3">
-                    <div class="list-group">
-                        {% if listComment %}
-                        {%for comment in listComment%}
-                        <div class="list-group-item list-group-item-action d-flex gap-2 py-1"
-                            aria-current="true">
-                            <a href="{{ url_for('user_profile' ,pag='view', id=comment._idUser._id) }}"><img src="{{ url_for('uploads', filename=comment._idUser.image)}}" width="32" height="32"
-                                class="rounded-circle flex-shrink-0"></a>
-                            <div class="d-flex gap-2 w-100 justify-content-between">
-                                <div>
-                                    <h6 class="mb-0">{{comment._idUser._name}}</h6>
-                                    <p class="mb-0 opacity-75">{{comment._Comment}}</p>
-                                </div>
-                                <small class="opacity-50 text-nowrap">now</small>
-                            </div>
-                        </div>
-                        {%endfor%}
-                        {% endif %}
-                    </div>
-                </div>
             </div>
         </div>
-    </div>
-</body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
-</script>
+        </div>
+      </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 </html>
 
@@ -140,3 +123,5 @@
         this.style.height = (this.scrollHeight) + 'px';
     });
 </script>
+
+{% endblock %}
