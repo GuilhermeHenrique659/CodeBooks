@@ -1,3 +1,4 @@
+from os import curdir
 from psycopg2.errors import UniqueViolation
 import psycopg2
 from models import Code, User, Post, File, Comment
@@ -31,6 +32,12 @@ SQL_LIST_POST = '''
                 SELECT title, description,like_cont, created_at, updated_at,idPost, name, idUser,email, image  
                 FROM Post 
                 LEFT JOIN users ON users.idUser = Post.User_idUser
+'''
+SQL_LIST_POST_BY_USER = '''
+                SELECT title, description,like_cont, created_at, updated_at,idPost, name, idUser,email, image  
+                FROM Post 
+                LEFT JOIN users ON users.idUser = Post.User_idUser
+                WHERE User_idUser = %s
 '''
 
 SQL_CREATE_POST = 'INSERT INTO post (title, description, User_iduser) VALUES (%s,%s,%s) RETURNING idPost'
@@ -171,6 +178,12 @@ class PostDao:
             return Post(post['title'], post['description'],user,post['created_at'], 
                         post['updated_at'], post['like_cont'], post['idpost'])
         return list(map(translate_to_object, post_db))
+
+
+    def list_by_user(self,iduser):
+        cursor = self.__db.cursor()
+        cursor.execute(SQL_LIST_POST_BY_USER, (iduser,))
+        return self.__translate_to_list(cursor.fetchall())
 
     @server.transaction
     def list_post(self) -> list:

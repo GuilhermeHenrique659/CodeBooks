@@ -14,8 +14,12 @@ class ControllerUser:
         if pag == 'edit' and id == session['user_id']:
             return render_template('profile_edit.html', user = User_profile )
         else:
+            post_list:list = dao.post.list_by_user(id)
+            if post_list:
+                for post in post_list:
+                    post.set_files(dao.file.findall_files(post._idPost))
             friend_exists = dao.friend.friend_exists(id,session['user_id'])
-            return render_template('profile.html', user = User_profile,friend_exists = friend_exists )
+            return render_template('profile.html', user = User_profile,friend_exists = friend_exists,post_list=post_list)
 
     @server.loggin_required
     def user_profile(self,id):

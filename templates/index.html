@@ -103,13 +103,17 @@
         <div class="post" style="padding: 6vh;">
             <div class="row">
                 <div class="col-sm-1">
+                    <a href="{{url_for('user_profile' ,pag='view', id=post._user.id)}}">
                     <img src="{{url_for('uploads', filename=post._user.image)}}" width="75" height="75"
                         class="img-fluid rounded-circle" alt="">
+                    </a>
                 </div>
                 <div class="col-sm-11" style="align-self: center;">
                     <div class="row">
                         <div class="col-10 col-sm-6">
+                            <a href="{{url_for('user_profile' ,pag='view', id=post._user.id)}}" style="text-decoration: none; color: #858796;">
                             <h3>{{post._user.name}}</h3>
+                        </a>
                         </div>
                         <div class="col-2 col-sm-6" style="display: flex; justify-content: flex-end;">
                             {% if session['user_id'] == post._user.id %}
@@ -231,7 +235,6 @@
 </div>
 {% endif %}
 
-<script src="{{url_for('static', filename='js/script.js')}}"></script>
 <script>
     function remove_friendList(list) {
         for (item of list) {
