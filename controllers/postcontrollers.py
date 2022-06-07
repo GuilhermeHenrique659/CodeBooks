@@ -16,7 +16,7 @@ class ControllerPost:
 
 
     def isImage(self, file) -> bool:
-        if file == 'png' or file == 'jpg' or file == 'jfif' or file =='gif':
+        if file == 'png' or file == 'jpg' or file == 'jfif' or file =='gif' or file=='jpeg':
             return True
         else:
             return False
@@ -55,7 +55,7 @@ class ControllerPost:
         dao.file.save_files(file)
 
     def save_image(self, post_files, post:Post, i):
-        file_name = f'post_image{post._idPost}{i}.jpeg'
+        file_name = f'post_image{post._idPost}{i}.jpg'
         upload_folder = server.app.config['UPLOAD_FOLDER']
         post_files[i].save(f'{upload_folder}/{file_name}')
         file = File(file_name,'image',post._idPost)

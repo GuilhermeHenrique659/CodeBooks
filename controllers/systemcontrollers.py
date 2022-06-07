@@ -19,6 +19,7 @@ class ControllerLogin:
                 session['login_user'] = data['email']
                 session['user_id'] = user._id
                 session['user_name'] = user._name
+                session['user_image'] = user.image
                 return redirect(url_for('index'))
             else:
                 flash('senha errada')

@@ -4,6 +4,7 @@
     #friend-list-btn {
         margin: 1rem;
         width: 11rem;
+        z-index: 5;
     }
 
     #container {
@@ -216,6 +217,7 @@
     <ul class="dropdown-menu" id="user_list_iten">
         <input type="text" id="search_user" name="user" autocomplete="off" placeholder="Procure um usuario">
         <hr>
+        {% if friend_list %}
         {% for friend in friend_list %}
         <li class="line-friend">
             <a class="dropdown-item" href="{{ url_for('user_profile' ,pag='view', id=friend.id) }}">
@@ -227,6 +229,7 @@
 
         </li>
         {% endfor %}
+        {% endif %}
         <div class="d-flex justify-content-center">
             <div class="spinner-border" role="status" id="loading" hidden>
             </div>

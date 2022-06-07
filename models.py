@@ -3,14 +3,20 @@ from flask import url_for
 FIRST_FILE = 0
 
 class User:
-    def __init__(self,name,email,password,id  =None, age = None, image = None, job = None) -> None:
+    def __init__(self,username,email,password, name=None, 
+                  id = None, age = None, image = None, job = None,
+                  city=None, state=None, bibliografy=None) -> None:
         self._id = id
+        self._username = username
         self._name = name
         self._email = email
         self._password = password
         self._age = age
         self._image = image
         self._job = job
+        self._city = city
+        self._state = state
+        self._bibliografy = bibliografy
 
     def change_for_json(self):
       return {
@@ -89,7 +95,13 @@ class Comment:
         self._idUser = idUser
         self._idComment = idComment
 
-
+class Notification:
+    def __init__(self, action, type,iduser,idnoti=None, message=None) -> None:
+       self._action = action
+       self._type = type
+       self._iduser = iduser
+       self._idnoti = idnoti
+       self._message = message
 
         
 

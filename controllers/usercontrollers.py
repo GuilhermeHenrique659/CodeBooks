@@ -39,13 +39,18 @@ class ControllerUser:
         user_image_file = request.files['image']
         image_filename = f'user_image_profile{id}.jpg'
         
-        user = User(user_data_form['name'],user_data_form['email'],user_data_form['password'],id,
-                    user_data_form['age'],image_filename,user_data_form['job'])
+        user = User(user_data_form['name'],user_data_form['email'],user_data_form['password'],
+                    user_data_form['name_complete'],id,user_data_form['age'],
+                    image_filename,user_data_form['job'], 
+                    user_data_form['city'], user_data_form['state'],
+                    user_data_form['bibliografy'])
 
         if user_image_file:
             upload_folder = server.app.config['UPLOAD_FOLDER']
             user_image_file.save(f'{upload_folder}/{image_filename}')
         dao.user.save_user(user)
+        session['user_name'] = user._name
+        session['user_image'] = user.image
         return redirect(url_for('user_profile',pag='view', id=id))
 
     @server.loggin_required

@@ -1,18 +1,19 @@
 from os import curdir
 from psycopg2.errors import UniqueViolation
 import psycopg2
-from models import Code, User, Post, File, Comment
+from models import Code, Notification, User, Post, File, Comment
 from config import server
 
 SQL_FRIEND_LIST = '''
                 SELECT iduser, name, image FROM Friendship 
                 join users on Friendship.Friend_iduser = users.iduser 
-                where ( User_idUser = %(id_user)s or Friend_idUser = %(id_user)s) and iduser != %(id_user)s
+                where ( User_idUser = %(id_user)s or Friend_idUser = %(id_user)s) and iduser != %(id_user)s and friend_confirm = 1
                 union
                 SELECT iduser, name,image FROM Friendship 
                 join users on Friendship.User_idUser = users.iduser 
-                where ( User_idUser = %(id_user)s or Friend_idUser = %(id_user)s) and iduser != %(id_user)s
+                where ( User_idUser = %(id_user)s or Friend_idUser = %(id_user)s) and iduser != %(id_user)s and friend_confirm = 1
 '''
+SQL_FRIEND_ACCEPT = 'UPDATE Friendship SET friend_confirm=1 WHERE idfriendship = %s '
 
 SQL_FRIEND_EXISTS = 'SELECT * FROM Friendship WHERE (User_idUser = %(id_user)s and Friend_idUser = %(id_friend)s) or ( User_idUser = %(id_friend)s and Friend_idUser = %(id_user)s) '
 
@@ -22,11 +23,11 @@ SQL_SEARCH_USER = 'select name, iduser, image from users where name ilike %s and
 
 SQL_SEARCH_USER_LOGIN = 'select * from users where email=%s'
 
-SQL_CREATE_USER = "INSERT INTO users (name, email, age, password) VALUES (%s,%s,'1996-12-02',%s)"
+SQL_CREATE_USER = "INSERT INTO users (username, name, email, age, password) VALUES (%s,%s,%s,'1996-12-02',%s)"
 
-SQL_EDIT_USER = 'UPDATE users SET name=%s,email=%s,age=%s,image=%s,job=%s,password=%s WHERE iduser=%s'
+SQL_EDIT_USER = 'UPDATE users SET username=%s,email=%s,name=%s,age=%s,image=%s,job=%s,city=%s,state=%s,bibliografy=%s,password=%s WHERE iduser=%s'
 
-SQL_ADD_FRIEND = 'INSERT INTO Friendship (User_iduser,Friend_iduser) VALUES (%s,%s)'
+SQL_ADD_FRIEND = 'INSERT INTO friendship (user_iduser,friend_iduser,friend_confirm) VALUES (%s,%s,0) RETURNING idfriendship;'
 
 SQL_LIST_POST = '''
                 SELECT title, description,like_cont, created_at, updated_at,idPost, name, idUser,email, image  
@@ -66,7 +67,11 @@ SQL_INSERT_COMMENT = 'INSERT INTO comment (Comment, Post_idPost, User_iduser) VA
 
 SQL_LIST_COMMENT = 'SELECT idComment, Comment, Post_idPost, User_iduser, name, image FROM Comment JOIN users ON users.iduser = Comment.User_iduser WHERE Post_idPost = %s'
 
+SQL_INSERT_NOTIFICATION = 'INSERT INTO notifications (action, type, message , iduser) VALUES (%s,%s,%s,%s)'
 
+SQL_LIST_NOTIFICATION = 'SELECT * FROM notifications WHERE iduser = %s'
+
+SQL_DELETE_NOTIFICATION = 'DELETE FROM notifications WHERE idnoti = %s'
 
 class FriendDao:
     def __init__(self, db:psycopg2) -> None:
@@ -87,6 +92,11 @@ class FriendDao:
         friend_list = self.__translate_to_list(cursor.fetchall())
         return friend_list
 
+    @server.transaction
+    def confirm_friend(self, friendship_id):
+        cursor = self.__db.cursor()
+        cursor.execute(SQL_FRIEND_ACCEPT, (friendship_id,))
+        self.__db.commit()
 
     @server.transaction
     def friend_exists(self, friend_id, user_id):
@@ -109,11 +119,11 @@ class FriendDao:
         except NameError:
             return NameError
         self.__db.commit()
-        return cursor.lastrowid
+        return cursor.fetchone()['idfriendship']
 
     def __translate_to_list(self, user_dict) -> list:
         def translate_to_objects(user_dict) -> User:
-            return User(user_dict['name'], None, None, user_dict['iduser'],image=user_dict['image'])
+            return User(user_dict['name'], None, None,user_dict['name'], user_dict['iduser'],image=user_dict['image'])
         return list(map(translate_to_objects, user_dict) )
 
 class UserDao:
@@ -130,25 +140,24 @@ class UserDao:
         return user
 
     def create_user_object(self, data_user):
-        user = User(data_user['name'], data_user['email'],
-                        data_user['password'], data_user['iduser'], image=data_user['image'])
+        user = User(data_user['username'], data_user['email'],
+                        data_user['password'],name=data_user['name'], id=data_user['iduser'], image=data_user['image'])
                         
         return user
 
 
-    @server.transaction
     def save_user(self, user:User):
         cursor = self.__db.cursor()
         try:
             if user._id:
-                cursor.execute(SQL_EDIT_USER, (user._name,user._email,user._age,user._image,
-                                                user._job,user._password,user._id))
+                cursor.execute(SQL_EDIT_USER, (user._username,user._email,user._name,user._age,user._image,
+                                                user._job,user._city,user._state,user._bibliografy,user._password,user._id))
             else:
-                cursor.execute(SQL_CREATE_USER, (user._name,
+                cursor.execute(SQL_CREATE_USER, (user._username, user._username,
                                user._email, user._password,))
         except UniqueViolation as error:
             print(error)
-            return "email not available"
+            return "email or username not available"
         self.__db.commit()
         return cursor.lastrowid
 
@@ -157,8 +166,9 @@ class UserDao:
         cursor = self.__db.cursor()
         cursor.execute(SQL_SEARCH_USER_PROFILE, (id,))
         data_user_db = cursor.fetchone()
-        return User(data_user_db['name'],data_user_db['email'],None,data_user_db['iduser'],
-                            data_user_db['age'],data_user_db['image'],data_user_db['job'])
+        return User(data_user_db['username'],data_user_db['email'],None,data_user_db['name'],data_user_db['iduser'],
+                            data_user_db['age'],data_user_db['image'],data_user_db['job'],
+                            data_user_db['city'],data_user_db['state'], data_user_db['bibliografy'])
 
     @server.transaction
     def delete_user(self,id):
@@ -174,7 +184,7 @@ class PostDao:
 
     def __translate_to_list(self, post_db) -> list:
         def translate_to_object(post) -> Post:
-            user = User(post['name'],post['email'], None, post['iduser'],image=post['image'])
+            user = User(post['name'],post['email'], None,post['name'], post['iduser'],image=post['image'])
             return Post(post['title'], post['description'],user,post['created_at'], 
                         post['updated_at'], post['like_cont'], post['idpost'])
         return list(map(translate_to_object, post_db))
@@ -243,7 +253,7 @@ class CodeDao:
     
     def __translate_to_list(self, code_db) -> list:
         def translate_to_object(code) -> Code:
-            user = User(code['name'],None,None,code['iduser'])
+            user = User(code['name'],None,None,code['name'],code['iduser'])
             return Code(code['code'],code['post_idpost'],user,code['created_at'],code['idcode'])
         return list(map(translate_to_object, code_db))
 
@@ -291,12 +301,11 @@ class CommentDao:
             pass
         else:
             sql = cursor.execute(SQL_INSERT_COMMENT, (comment._Comment, comment._idPost, comment._idUser))
-            print(sql)
         self.__db.commit()
     
     def __translate_to_list(self, comment_db) -> list:
         def translate_to_object(comment):
-            user = User(comment['name'], None, None, comment['user_iduser'], image=comment['image'])
+            user = User(comment['name'], None, None,comment['name'], comment['user_iduser'], image=comment['image'])
             return Comment(comment['comment'], comment['post_idpost'], user, comment['idcomment'])
         return list(map(translate_to_object, comment_db))
     
@@ -306,3 +315,28 @@ class CommentDao:
         cursor.execute(SQL_LIST_COMMENT,(id,))
         listDb = cursor.fetchall()
         return self.__translate_to_list(listDb)
+
+class NotificationDao:
+    def __init__(self, db:psycopg2) -> None:
+        self.__db = db
+
+    
+    def store(self, notification:Notification):
+        cursor = self.__db.cursor()
+        cursor.execute(SQL_INSERT_NOTIFICATION, (notification._action, notification._type,notification._message, notification._iduser))
+        self.__db.commit()
+
+    def find_all(self, user_id):
+        cursor = self.__db.cursor()
+        cursor.execute(SQL_LIST_NOTIFICATION, (user_id,))
+        return self.__translate_to_list(cursor.fetchall())
+
+    def delete(self, noti_id):
+        cursor = self.__db.cursor()
+        cursor.execute(SQL_DELETE_NOTIFICATION, (noti_id,))
+        self.__db.commit()
+
+    def __translate_to_list(self, dict_list) -> list:
+        def translate_to_object(dict) -> Notification:
+            return Notification(dict['action'],dict['type'],dict['iduser'],dict['idnoti'],dict['message'])
+        return list(map(translate_to_object, dict_list))

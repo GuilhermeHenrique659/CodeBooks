@@ -53,11 +53,7 @@
                     </div>
                 </div>
             </div>
-            <div class="card shadow mb-4">
-              <div class="card-header py-3" style="height: 55.5px;">
-                <label class="form-label" for="address" style="color: rgb(0,0,0);font-size: 21px;"><strong>Biografia</strong><br></label></div>
-              <div class="card-body"><textarea style="width: 100%;height: 156px;" ></textarea></div>
-          </div>
+
         </div>
         <div class="col-lg-8">
             <div class="row mb-3 d-none">
@@ -99,7 +95,7 @@
                           enctype="multipart/form-data">
                             <div class="row">
                                     <div class="col">
-                                        <div class="mb-3"><label class="form-label" for="name"><strong>Username</strong></label><input class="form-control" type="text" id="username" value="{{user._name}}" name="name" ></div>
+                                        <div class="mb-3"><label class="form-label" for="name"><strong>Username</strong></label><input class="form-control" type="text" id="username" value="{{user._username}}" name="name" ></div>
                                     </div>
                                     <div class="col">
                                         <div class="mb-3"><label class="form-label" for="email"><strong>Email Address</strong></label><input class="form-control" type="email" id="email" value="{{user._email}}" name="email" ></div>
@@ -116,16 +112,20 @@
                                 <div class="row">
                                   <div class="col">
                                     <div class="mb-3"><label class="form-label" for="job"><strong>Profissão</strong></label><input class="form-control" type="text" id="job" value="{{user._job}}" name="job" ></div>
-                                    <div class="mb-3"><label class="form-label" for="Cidade"><strong>Cidade</strong></label><input class="form-control" type="text" id="Cidade" value="USA" name="Cidade" ></div>
+                                    <div class="mb-3"><label class="form-label" for="Cidade"><strong>Cidade</strong></label><input class="form-control" type="text" id="Cidade" value="{{user._city}}" name="city" ></div>
                                   </div>
                                   <div class="col">
                                     <div class="mb-3"><label class="form-label" for="age"><strong>Data de Nascimento</strong></label><input class="form-control" type="date" id="Data de Nascimento" value="{{user._age}}" name="age" ></div>
-                                    <div class="mb-3"><label class="form-label" for="Estado"><strong>Estado</strong></label><input class="form-control" type="text" id="Estado" value="USA" name="Estado" ></div>
+                                    <div class="mb-3"><label class="form-label" for="Estado"><strong>Estado</strong></label><input class="form-control" type="text" id="Estado" value="{{user._state}}" name="state" ></div>
                                     <div class="mb-3"><label class="form-label" for="password"><strong>Senha</strong></label><input class="form-control" type="password" id="password" name="password" required></div>
                                     
                                   </div>
                               </div>
-                            
+                              <div class="card shadow mb-4">
+                                <div class="card-header py-3" style="height: 55.5px;">
+                                  <label class="form-label" for="address" style="color: rgb(0,0,0);font-size: 21px;"><strong>Biografia</strong><br></label></div>
+                                <div class="card-body"><textarea style="width: 100%;height: 156px;" name="bibliografy" >{{user._bibliografy}}</textarea></div>
+                            </div>
                             <div class="mb-3">
                               <Button class="btn btn-primary btn-sm"type="submit" style="background: rgb(0,0,0);border-radius: 14px;border-style: none;height: 35px;">Salvar</Button>
 

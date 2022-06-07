@@ -1,6 +1,7 @@
 from flask import flash, redirect,request,url_for,jsonify,session
 from factoryDao import dao
 from config import server
+from models import Notification
 
 
 class ControllerFriend:
@@ -25,13 +26,15 @@ class ControllerFriend:
             return jsonify({'message':'nenhum usuario encontrado'}),204
 
     @server.loggin_required
-    def add_friend(self,id):
+    def add_friend(self,id,name):
         friend_exists = dao.friend.friend_exists(id,session['user_id'])
         if friend_exists or id == session['user_id']:
             flash("voce já é amigo dessa pessoa")
             return redirect(url_for('user_profile',pag='view', id=id))
         else:
-            dao.friend.add_friend_in_db(id,session['user_id'])
+            friendship_id = dao.friend.add_friend_in_db(id,session['user_id'])
+            print(name)
+            dao.notification.store(Notification(friendship_id,'friend',id, message=f"{name} lhe enviou um pedido de amizade"))
             return redirect(url_for('user_profile',pag='view', id=id))
 
     @server.loggin_required
@@ -44,3 +47,9 @@ class ControllerFriend:
         else:
             flash("usuario nao é seu amigo")
             return redirect(url_for('user_profile',pag='view', id=id))
+
+    @server.loggin_required
+    def confirm_friend(self, id_friendship, id_notification):
+        dao.friend.confirm_friend(id_friendship)
+        dao.notification.delete(id_notification)
+        return redirect(url_for('index'))

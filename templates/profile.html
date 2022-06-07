@@ -20,7 +20,7 @@
                           <p>{{user._name}}</p>
                           {% if user._id != session['user_id'] %}
                           {% if not friend_exists %}
-                          <a href="{{ url_for('add_friend', id=user._id) }}"><Button
+                          <a href="{{ url_for('add_friend', id=user._id, name=user._name) }}"><Button
                               class="btn btn-primary btn-sm" type="submit" style="background: rgb(0,0,0);border-radius: 14px;border-style: none;height: 35px;">Seguir</Button></a>
                           {% else %}
                           <a href="{{ url_for('remove_friend', id=user._id) }}"><Button class="btn btn-primary btn-sm" type="submit" style="background: rgb(0,0,0);border-radius: 14px;border-style: none;height: 35px;">Remover
@@ -34,7 +34,7 @@
                 <div class="card shadow mb-4">
                   <div class="card-header py-3" style="height: 55.5px;">
                     <label class="form-label" for="address" style="color: rgb(0,0,0);font-size: 21px;"><strong>Biografia</strong><br></label></div>
-                  <div class="card-body"><textarea style="width: 100%;height: 156px; border: none" disabled></textarea></div>
+                  <div class="card-body"><textarea style="width: 100%;height: 156px; border: none" disabled>{{user._bibliografy}}</textarea></div>
               </div>
             </div>
             <div class="col-lg-8">
@@ -76,7 +76,7 @@
                                 <form>
                                     <div class="row">
                                         <div class="col">
-                                            <div class="mb-3"><label class="form-label" for="username"><strong>Username</strong></label><input class="form-control" type="text" id="username" placeholder="{{user._name}}" name="username" disabled></div>
+                                            <div class="mb-3"><label class="form-label" for="username"><strong>Username</strong></label><input class="form-control" type="text" id="username" placeholder="{{user._username}}" name="username" disabled></div>
                                         </div>
                                         <div class="col">
                                             <div class="mb-3"><label class="form-label" for="email"><strong>Email Address</strong></label><input class="form-control" type="email" id="email" placeholder="{{user._email}}" name="email" disabled></div>
@@ -90,11 +90,11 @@
                                     <div class="row">
                                       <div class="col">
                                         <div class="mb-3"><label class="form-label" for="job"><strong>job</strong></label><input class="form-control" type="text" id="job" placeholder="{{user._job}}" name="job" disabled></div>
-                                        <div class="mb-3"><label class="form-label" for="Cidade"><strong>Cidade</strong></label><input class="form-control" type="text" id="Cidade" placeholder="USA" name="Cidade" disabled></div>
+                                        <div class="mb-3"><label class="form-label" for="Cidade"><strong>Cidade</strong></label><input class="form-control" type="text" id="Cidade" placeholder="{{user._city}}" name="Cidade" disabled></div>
                                       </div>
                                       <div class="col">
                                         <div class="mb-3"><label class="form-label" for="Data de Nascimento"><strong>Data de Nascimento</strong></label><input class="form-control" type="date" id="Data de Nascimento" value="{{user._age}}" name="Data de Nascimento" disabled></div>
-                                        <div class="mb-3"><label class="form-label" for="Estado"><strong>Estado</strong></label><input class="form-control" type="text" id="Estado" placeholder="USA" name="Estado" disabled></div>
+                                        <div class="mb-3"><label class="form-label" for="Estado"><strong>Estado</strong></label><input class="form-control" type="text" id="Estado" placeholder="{{user._state}}" name="Estado" disabled></div>
                                         
                                       </div>
                                   </div>

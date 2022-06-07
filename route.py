@@ -25,7 +25,7 @@ class Routes:
         server.app.add_url_rule('/search_user', endpoint='search_user', 
                                     view_func=controllers.friend.seach_user, methods=['POST','GET'])
 
-        server.app.add_url_rule('/add_friend/<int:id>',endpoint='add_friend',
+        server.app.add_url_rule('/add_friend/<int:id>/<string:name>',endpoint='add_friend',
                                     view_func= controllers.friend.add_friend, methods=['GET'])
 
         server.app.add_url_rule('/remove_friend/<int:id>', endpoint='remove_friend',
@@ -65,3 +65,7 @@ class Routes:
                                     view_func=controllers.post.edit_post, methods=['POST'])
 
         server.app.add_url_rule('/insert_comment', endpoint='insert_comment', view_func=controllers.comment.insertComment, methods=['POST'])
+
+        server.app.add_url_rule('/notification', endpoint='notification', view_func=controllers.notification.find_all)
+
+        server.app.add_url_rule('/confirm_friend/<int:id_friendship>/<int:id_notification>', endpoint='confirm_friend', view_func=controllers.friend.confirm_friend)
