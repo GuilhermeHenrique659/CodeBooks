@@ -26,12 +26,8 @@
             bsCollapse.hide();
           }
         };
-        if(sidebar.classList.contains('toggled') == true){
-          document.getElementById('container').style.left = '10vw'
-        }
 
         if(sidebar.classList.contains('toggled') == false) {
-          document.getElementById('container').style.left = '17.5vw'
           document.getElementById("arrow").classList.add('bi-arrow-left');
           document.getElementById("arrow").classList.remove('bi-arrow-right');
         }
