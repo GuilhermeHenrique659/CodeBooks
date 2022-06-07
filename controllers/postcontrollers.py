@@ -1,4 +1,4 @@
-from turtle import pos
+
 from flask import flash, render_template,request,redirect, session,url_for
 from config import server
 from factoryDao import dao

@@ -1,7 +1,6 @@
 from flask import render_template,redirect,session,url_for
 from factoryDao import dao
 from config import server
-from controllers.postcontrollers import ControllerPost
 from models import Post
 
 
