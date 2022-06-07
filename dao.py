@@ -55,7 +55,7 @@ SQL_LIST_FILE = 'SELECT file, type, idPost FROM Files WHERE idPost = %s'
 
 SQL_DELETE_FILE = 'DELETE FROM files WHERE idPost = %s'
 
-SQL_INSERT_COMMENT = 'INSERT INTO comment (Comment, Post_idPost, User_iduser) VALUES (%s,%s,%s)'
+SQL_INSERT_COMMENT = 'INSERT INTO comment (Comment, Post_idPost, User_iduser) VALUES (%s,%s,%s) RETURNING idcomment'
 
 SQL_LIST_COMMENT = 'SELECT idComment, Comment, Post_idPost, User_iduser, name, image FROM Comment JOIN users ON users.iduser = Comment.User_iduser WHERE Post_idPost = %s'
 
@@ -271,14 +271,14 @@ class CommentDao:
     def __init__(self,db:psycopg2) -> None:
         self.__db = db
 
-
     @server.transaction
     def save_comment(self, comment: Comment):
         cursor = self.__db.cursor()
         if comment._idComment:
             pass
         else:
-            cursor.execute(SQL_INSERT_COMMENT, (comment._Comment, comment._idPost, comment._iduser))
+            sql = cursor.execute(SQL_INSERT_COMMENT, (comment._Comment, comment._idPost, comment._idUser))
+            print(sql)
         self.__db.commit()
     
     def __translate_to_list(self, comment_db) -> list:
