@@ -1,3 +1,4 @@
+from turtle import pos
 from flask import flash, render_template,request,redirect, session,url_for
 from config import server
 from factoryDao import dao
@@ -14,6 +15,18 @@ class ControllerPost:
         return filename.rsplit('.', 1)[1].lower()
 
 
+    def isImage(self, file) -> bool:
+        if file == 'png' or file == 'jpg' or file == 'jfif' or file =='gif':
+            return True
+        else:
+            return False
+
+    def isVideo(self, file) -> bool:
+        if file == 'mp4':
+            return True
+        else:
+            return False
+
     @server.loggin_required
     def create_post(self):
         post_form = request.form
@@ -25,10 +38,13 @@ class ControllerPost:
         dao.code.create_code(code)
         if post_files[0].filename != '':
             for i in range(len(post_files)):
-                    if self.type_file(post_files[i].filename) == 'jpg' or self.type_file(post_files[i].filename) == 'png':
+                    print(self.type_file(post_files[i].filename))
+                    if self.isImage(self.type_file(post_files[i].filename)): 
                         self.save_image(post_files,post,i)
-                    else:
+                    elif self.isVideo(self.type_file(post_files[i].filename)):
                         self.save_movie(post_files,post,i)
+                    else:
+                        flash('Arquivo não aceita')
         return redirect(url_for('index'))
 
     def save_movie(self, post_files, post:Post, i):

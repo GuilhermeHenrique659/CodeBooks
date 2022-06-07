@@ -15,6 +15,7 @@
 </head>
 
 <body id="page-top" style="background: rgb(255, 255, 255);  height: 100%;" >
+    
     <div id="wrapper">
         <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark  accordion bg-gradient-primary p-0" style="color: rgb(19,30,115);background: rgb(32,33,43);">
             <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="{{url_for('index')}}">
@@ -24,7 +25,9 @@
                 <hr class="sidebar-divider my-0">
                 <ul class="navbar-nav text-light" id="accordionSidebar">
                     <li class="nav-item"><a class="nav-link active" href="{{url_for('index')}}"><i class="fas fa-home"></i><span>Home</span></a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#" id="new-publication"><i class="fas fa-plus-circle"></i><span>Nova publicação</span></a></li>     
                 </ul>
+
                 <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-1" id="sideToggle" type="button"><i class="bi bi-arrow-left" id="arrow"></i></button></div>
             </div>
         </nav>
@@ -82,6 +85,16 @@
                     </div>
                 </nav>
             </div>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-light alert-dismissible fade show" role="alert" style="z-index: 1; position:absolute;">
+                {{ message}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
 
             {% block conteudo %}
             {% endblock %}
@@ -93,7 +106,11 @@
 
     <script src="{{url_for('static', filename='js/modal.js')}}"></script>
 
-    
+    <script>
+        document.querySelector('#new-publication').addEventListener('click',()=>{
+            document.querySelector('.form-publication').removeAttribute("hidden")
+        } )
+    </script>
 </body>
 
 </html>
