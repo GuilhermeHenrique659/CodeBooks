@@ -9,8 +9,7 @@ class ControllerCode:
     def code_list(self, id):
         list_code = dao.code.list_code(id)
         listComment = dao.comment.list_comment(id)
-        user = dao.user.search_user_profile(session['user_id'])
-        return render_template('code.html', list_code = list_code,post_id=id, listComment = listComment, user=user)
+        return render_template('code.html', list_code = list_code,post_id=id, listComment = listComment)
     
     @server.loggin_required
     def add_code(self,id):
