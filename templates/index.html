@@ -9,7 +9,7 @@
 
     #container {
         position: relative;
-        overflow:auto;
+        overflow: auto;
         height: 40rem;
     }
 </style>
@@ -21,8 +21,7 @@
             <h2>Nova pulbicação</h2>
             <div class="mb-3">
                 <label for="exampleFormControlInput1" class="form-label"> <strong>Titulo</strong> </label>
-                <input type="text" name="title" class="form-control" id="exampleFormControlInput1"
-                    placeholder="Titulo">
+                <input type="text" name="title" class="form-control" id="exampleFormControlInput1" placeholder="Titulo">
             </div>
             <div class="row">
                 <div class="col-6">
@@ -52,15 +51,16 @@
                         <button type="submit" class="btn btn-outline-primary" data-bs-toggle="tooltip"
                             data-bs-placement="bottom" title="Publicar"><i class="bi bi-send-plus-fill"></i></button>
                         <button type="button" class="btn btn-outline-danger" data-bs-toggle="tooltip"
-                            data-bs-placement="bottom" title="Cancelar" id="btn-close"><i class="bi bi-x-lg"></i></button>
+                            data-bs-placement="bottom" title="Cancelar" id="btn-close"><i
+                                class="bi bi-x-lg"></i></button>
 
                     </div>
                 </div>
             </div>
         </form>
-  
-    <hr>
-</div>
+
+        <hr>
+    </div>
 
     <div class="modal fade" id="editmodal" tabindex="-1" aria-labelledby="editmodalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -105,24 +105,28 @@
             <div class="row">
                 <div class="col-sm-1">
                     <a href="{{url_for('user_profile' ,pag='view', id=post._user.id)}}">
-                    <img src="{{url_for('uploads', filename=post._user.image)}}" width="75" height="75"
-                        class="img-fluid rounded-circle" alt="">
+                        <img src="{{url_for('uploads', filename=post._user.image)}}" width="75" height="75"
+                            class="img-fluid rounded-circle" alt="">
                     </a>
                 </div>
                 <div class="col-sm-11" style="align-self: center;">
                     <div class="row">
                         <div class="col-10 col-sm-6">
-                            <a href="{{url_for('user_profile' ,pag='view', id=post._user.id)}}" style="text-decoration: none; color: #858796;">
-                            <h3>{{post._user.name}}</h3>
-                        </a>
+                            <a href="{{url_for('user_profile' ,pag='view', id=post._user.id)}}"
+                                style="text-decoration: none; color: #858796;">
+                                <h3>{{post._user.name}}</h3>
+                            </a>
                         </div>
                         <div class="col-2 col-sm-6" style="display: flex; justify-content: flex-end;">
-                            {% if session['user_id'] == post._user.id %}
+
                             <div class="row" style="align-self: center;">
                                 <div class="col">
-                                    <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#editmodal"
-                                        data-id="{{ post._idPost}}" data-title="{{post._title}}"
-                                        data-desc="{{post._description}}">
+                                    <a href="{{ url_for('post', id=post._idPost) }}"><button class="btn"><i
+                                                class="bi bi-eye"></i></button></a>
+                                </div>
+                                {% if session['user_id'] == post._user.id %}
+                                <div class="col">
+                                    <button type="button" class="btn" id="post-edit">
                                         <i class="bi bi-pencil"></i>
                                     </button>
                                 </div>
@@ -132,20 +136,19 @@
                                         </button>
                                     </a>
                                 </div>
+                                {% endif %}
                             </div>
-                            {% endif %}
+
                         </div>
                     </div>
                 </div>
             </div>
             <div style="padding: 2vh;">
-                <div class="title">
+                <div class="title" >
                     <h4 style="color: black;">{{ post._title}}</h4>
                 </div>
                 <div class="post_desc">
-                    <a href="{{ url_for('post', id=post._idPost) }}" style="text-decoration: none; color: black;">
-                        <p>{{ post._description}} </p>
-                    </a>
+                    <p>{{ post._description}} </p>
                 </div>
             </div>
             <div>

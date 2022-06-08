@@ -80,7 +80,7 @@
                                             style="color: rgb(255,255,255);background: #080d40;border-radius: 2px;border-style: none;border-color: rgb(0,0,0);border-top-style: none;border-right-style: none;border-bottom-style: none;">
                                             alerts center</h6>
                                         <div class="dropdown-item d-flex align-items-center"
-                                            style="color: rgb(0,21,234);background: rgb(32,33,43);border-style: none;"
+                                            style="color: rgb(0,21,234);background: rgb(32,33,43);border-style: none;display: flex;flex-direction: column;"
                                             id="list-notification">
 
                                         </div>
@@ -181,7 +181,7 @@
                 const notification_dropbox = document.querySelector('#list-notification')
                 console.log(json_notification)
                 json_notification.forEach((notification) => {
-                    notification_dropbox.innerHTML += ` <div class="row align-items-center" id="notification-item">
+                    notification_dropbox.innerHTML +=` <div class="row align-items-center" id="notification-item">
                                                 <div class="col-8">
                                                     <span style="color:white;">${notification._message}</span>
                                                 </div>
@@ -190,7 +190,8 @@
                                                 </div>
                                                 <div class="col-2">
                                                     <a href=""><button class="btn"><i class="bi bi-x-circle-fill"></i></button></a>
-                                                </div></div> `
+                                                </div>
+                                                <hr></div>`
                 })
             }
 

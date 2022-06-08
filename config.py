@@ -7,8 +7,6 @@ from dotenv import load_dotenv
 from flask_socketio import SocketIO
 
 
-
-
 class Server:
     def __init__(self) -> None:
         load_dotenv()
