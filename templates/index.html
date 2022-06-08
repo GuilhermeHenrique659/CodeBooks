@@ -62,40 +62,6 @@
         <hr>
     </div>
 
-    <div class="modal fade" id="editmodal" tabindex="-1" aria-labelledby="editmodalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editmodalLabel">Atualização do post</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form action="{{url_for('edit_post')}}" method="POST">
-                        <input type="hidden" id="idpost" name="idpost">
-                        <div class="form-row">
-                            <div class="name">Título</div>
-                            <div class="value">
-                                <input class="input--style-6" id="title" type="text" name="title" required>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="name">Descrição</div>
-                            <div class="value">
-                                <div class="input-group">
-                                    <textarea class="textarea--style-6" id="description" name="description"
-                                        placeholder="Coloque a descrção da sua publicação aqui! ;)"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                </div>
-            </div>
-        </div>
-    </div>
-
 
     {% endif %}
     <div class="post_list">

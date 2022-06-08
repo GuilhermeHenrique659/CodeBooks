@@ -31,8 +31,10 @@
                 <ul class="navbar-nav text-light" id="accordionSidebar">
                     <li class="nav-item"><a class="nav-link active" href="{{url_for('index')}}"><i
                                 class="fas fa-home"></i><span>Home</span></a></li>
+                    {% if session['login_user'] %}
                     <li class="nav-item"><a class="nav-link active" href="#top" id="new-publication"><i
                                 class="fas fa-plus-circle"></i><span>Nova publicação</span></a></li>
+                    {% endif %}
                 </ul>
 
                 <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-1" id="sideToggle"
@@ -209,12 +211,12 @@
                 make_notification_list(json_notification)
             })
 
-            async function confirm_friend(action,idnoti){
+            async function confirm_friend(action, idnoti) {
                 const response = await fetch(`confirm_friend/${action}/${idnoti}`)
                 let response_json = await response.json()
                 console.log(response_json.message)
             }
-            async function reject_friend(action,idnoti){
+            async function reject_friend(action, idnoti) {
                 const response = await fetch(`reject_friend/${action}/${idnoti}`)
                 let response_json = await response.json()
                 console.log(response_json.message)
