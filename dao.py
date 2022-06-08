@@ -15,7 +15,7 @@ SQL_FRIEND_LIST = '''
 '''
 SQL_FRIEND_ACCEPT = 'UPDATE Friendship SET friend_confirm=1 WHERE idfriendship = %s '
 
-SQL_FRIEND_EXISTS = 'SELECT * FROM Friendship WHERE (User_idUser = %(id_user)s and Friend_idUser = %(id_friend)s) or ( User_idUser = %(id_friend)s and Friend_idUser = %(id_user)s) '
+SQL_FRIEND_EXISTS = 'SELECT idfriendship FROM Friendship WHERE (User_idUser = %(id_user)s and Friend_idUser = %(id_friend)s) or ( User_idUser = %(id_friend)s and Friend_idUser = %(id_user)s)'
 
 SQL_FRIEND_DELETE = 'DELETE FROM Friendship WHERE (User_idUser = %(id_user)s and Friend_idUser = %(id_friend)s) or ( User_idUser = %(id_friend)s and Friend_idUser = %(id_user)s) '
 
@@ -29,10 +29,13 @@ SQL_EDIT_USER = 'UPDATE users SET username=%s,email=%s,name=%s,age=%s,image=%s,j
 
 SQL_ADD_FRIEND = 'INSERT INTO friendship (user_iduser,friend_iduser,friend_confirm) VALUES (%s,%s,0) RETURNING idfriendship;'
 
+SQL_REJECT_FRIEND = 'DELETE FROM Friendship WHERE idfriendship=%s'
+
 SQL_LIST_POST = '''
                 SELECT title, description,like_cont, created_at, updated_at,idPost, name, idUser,email, image  
                 FROM Post 
                 LEFT JOIN users ON users.idUser = Post.User_idUser
+                ORDER BY created_at ASC
 '''
 SQL_LIST_POST_BY_USER = '''
                 SELECT title, description,like_cont, created_at, updated_at,idPost, name, idUser,email, image  
@@ -102,13 +105,13 @@ class FriendDao:
     def friend_exists(self, friend_id, user_id):
         cursor = self.__db.cursor()
         cursor.execute(SQL_FRIEND_EXISTS, {'id_user':user_id, 'id_friend': friend_id})
-        friend_list = cursor.fetchall()
-        return friend_list
+        friend = cursor.fetchone()['idfriendship']
+        return friend
 
     @server.transaction
-    def remove_friend(self, friend_id, user_id):
+    def remove_friend(self, friendship_id):
         cursor = self.__db.cursor()
-        cursor.execute(SQL_FRIEND_DELETE, {'id_user':user_id, 'id_friend': friend_id})
+        cursor.execute(SQL_REJECT_FRIEND, (friendship_id,))
         self.__db.commit()
 
     @server.transaction

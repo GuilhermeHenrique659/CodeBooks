@@ -23,7 +23,7 @@
                           <a href="{{ url_for('add_friend', id=user._id, name=user._name) }}"><Button
                               class="btn btn-primary btn-sm" type="submit" style="background: rgb(0,0,0);border-radius: 14px;border-style: none;height: 35px;">Seguir</Button></a>
                           {% else %}
-                          <a href="{{ url_for('remove_friend', id=user._id) }}"><Button class="btn btn-primary btn-sm" type="submit" style="background: rgb(0,0,0);border-radius: 14px;border-style: none;height: 35px;">Remover
+                          <a href="{{ url_for('remove_friend', id=friend_exists) }}"><Button class="btn btn-primary btn-sm" type="submit" style="background: rgb(0,0,0);border-radius: 14px;border-style: none;height: 35px;">Remover
                               amigo</Button></a>
                           {% endif %}
                           <a href="{{url_for('chat', id=user._id)}}"><Button class="btn btn-primary btn-sm" type="submit" style="background: rgb(0,0,0);border-radius: 14px;border-style: none;height: 35px;">Mensagem</Button></a>

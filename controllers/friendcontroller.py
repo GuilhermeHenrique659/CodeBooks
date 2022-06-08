@@ -34,22 +34,22 @@ class ControllerFriend:
         else:
             friendship_id = dao.friend.add_friend_in_db(id,session['user_id'])
             print(name)
-            dao.notification.store(Notification(friendship_id,'friend',id, message=f"{name} lhe enviou um pedido de amizade"))
+            dao.notification.store(Notification(friendship_id,'friend',id, message=f"{session['user_name']} lhe enviou um pedido de amizade"))
             return redirect(url_for('user_profile',pag='view', id=id))
 
     @server.loggin_required
     def remove_friend(self,id):
-        friend_exists = dao.friend.friend_exists(id,session['user_id'])
-        if friend_exists:
-            flash("Amizade desfeita")
-            dao.friend.remove_friend(id,session['user_id'])
-            return redirect(url_for('user_profile',pag='view', id=id))
-        else:
-            flash("usuario nao é seu amigo")
-            return redirect(url_for('user_profile',pag='view', id=id))
+        dao.friend.remove_friend(id)
+        return redirect(url_for('index'))
 
     @server.loggin_required
     def confirm_friend(self, id_friendship, id_notification):
         dao.friend.confirm_friend(id_friendship)
         dao.notification.delete(id_notification)
-        return redirect(url_for('index'))
+        return jsonify({'message':'friend confirm with success'}),200
+
+    @server.loggin_required
+    def reject_friend(self, id_friendship, id_notification):
+        dao.friend.remove_friend(id_friendship)
+        dao.notification.delete(id_notification)
+        return jsonify({'message':'friend reject with success'}),200

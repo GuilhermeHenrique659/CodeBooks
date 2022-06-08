@@ -80,7 +80,7 @@
                                             style="color: rgb(255,255,255);background: #080d40;border-radius: 2px;border-style: none;border-color: rgb(0,0,0);border-top-style: none;border-right-style: none;border-bottom-style: none;">
                                             alerts center</h6>
                                         <div class="dropdown-item d-flex align-items-center"
-                                            style="color: rgb(0,21,234);background: rgb(32,33,43);border-style: none;"
+                                            style="color: rgb(0,21,234);background: rgb(32,33,43);border-style: none;display: flex;flex-direction: column;"
                                             id="list-notification">
 
                                         </div>
@@ -181,16 +181,19 @@
                 const notification_dropbox = document.querySelector('#list-notification')
                 console.log(json_notification)
                 json_notification.forEach((notification) => {
-                    notification_dropbox.innerHTML += ` <div class="row align-items-center" id="notification-item">
-                                                <div class="col-8">
-                                                    <span style="color:white;">${notification._message}</span>
-                                                </div>
-                                                <div class="col-2">
-                                                    <a href="confirm_friend/${notification._action}/${notification._idnoti}"><button class="btn"><i class="bi bi-check-circle-fill"></i></button></a>
-                                                </div>
-                                                <div class="col-2">
-                                                    <a href=""><button class="btn"><i class="bi bi-x-circle-fill"></i></button></a>
-                                                </div></div> `
+                    if (notification._type == 'friend') {
+                        notification_dropbox.innerHTML += `<div class="row align-items-center" id="notification-item">
+                                                                <div class="col-8">
+                                                                    <span style="color:white;">${notification._message}</span>
+                                                                </div>
+                                                                <div class="col-2">
+                                                                    <button class="btn" onclick="confirm_friend(${notification._action},${notification._idnoti})"><i class="bi bi-check-circle-fill"></i></button>
+                                                                </div>
+                                                                <div class="col-2">
+                                                                    <a href=""><button class="btn" onclick="reject_friend(${notification._action},${notification._idnoti})"><i class="bi bi-x-circle-fill"></i></button></a>
+                                                                </div>
+                                                            <hr></div>`
+                    }
                 })
             }
 
@@ -205,6 +208,17 @@
                 remove_notification(document.querySelectorAll('#notification-item'))
                 make_notification_list(json_notification)
             })
+
+            async function confirm_friend(action,idnoti){
+                const response = await fetch(`confirm_friend/${action}/${idnoti}`)
+                let response_json = await response.json()
+                console.log(response_json.message)
+            }
+            async function reject_friend(action,idnoti){
+                const response = await fetch(`reject_friend/${action}/${idnoti}`)
+                let response_json = await response.json()
+                console.log(response_json.message)
+            }
         </script>
 </body>
 
