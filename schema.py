@@ -3,94 +3,111 @@ from config import server
 cursor = server.db.cursor()
 
 cursor.execute(''' 
-CREATE TABLE IF NOT EXISTS users (
-  idUser serial PRIMARY KEY,
-  name VARCHAR(45) NOT NULL,
-  email VARCHAR(65) NOT NULL UNIQUE,
-  age DATE NOT NULL,
-  image VARCHAR(360),
-  job VARCHAR(55),
-  password VARCHAR(128) NOT NULL
+create table if not exists users (
+  iduser serial primary key,
+  username varchar(45) not null unique,
+  name varchar(55) not null,
+  email varchar(65) not null unique,
+  city varchar(65) null,
+  state varchar(55) null,
+  bibliografy text null,
+  age date not null,
+  image varchar(360),
+  job varchar(55),
+  password varchar(128) not null
 );
 
+drop table friendship;
+create table if not exists friendship (
+  idfriendship serial primary key,
+  user_iduser integer not null,
+  friend_iduser integer not null,
+  friend_confirm integer not null,
+  constraint fk_user_has_user_user
+    foreign key (user_iduser)
+    references users (iduser)
+    on delete cascade
+    on update cascade,
+  constraint fk_user_has_user_user1
+    foreign key (friend_iduser)
+    references users (iduser)
+    on delete cascade
+    on update cascade);
 
-CREATE TABLE IF NOT EXISTS Friendship (
-  User_idUser INTEGER NOT NULL,
-  Friend_idUser INTEGER NOT NULL,
-  PRIMARY KEY (User_idUser, Friend_idUser),
-  CONSTRAINT fk_User_has_User_User
-    FOREIGN KEY (User_idUser)
-    REFERENCES users (idUser)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_User_has_User_User1
-    FOREIGN KEY (Friend_idUser)
-    REFERENCES users (idUser)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE);
+drop table notifications;
+create table if not exists notifications (
+    idnoti serial primary key,
+    action varchar(128) not null,
+    type varchar(45) not null,
+    message varchar(128) null,
+    iduser int null,
+    constraint fk_notfi_user
+      foreign key (iduser)
+      references users (iduser)
+      on delete cascade
+      on update cascade
+);
 
-CREATE TABLE IF NOT EXISTS Post (
-  idPost serial PRIMARY KEY,
-  title VARCHAR(45) NOT NULL,
-  description TEXT NOT NULL,
-  like_cont INTEGER NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  User_idUser INT NULL,
-  CONSTRAINT fk_Post_User1
-    FOREIGN KEY (User_idUser)
-    REFERENCES users (idUser)
-    ON DELETE SET NULL
-    ON UPDATE CASCADE);
+create table if not exists post (
+  idpost serial primary key,
+  title varchar(45) not null,
+  description text not null,
+  like_cont integer null,
+  created_at timestamp default current_timestamp not null,
+  updated_at timestamp default current_timestamp not null,
+  user_iduser int null,
+  constraint fk_post_user1
+    foreign key (user_iduser)
+    references users (iduser)
+    on delete set null
+    on update cascade);
 
-CREATE TABLE IF NOT EXISTS Files (
-  idFile serial PRIMARY KEY,
-  file VARCHAR(155) NOT NULL,
-  type VARCHAR(15) NOT NULL,
-  idPost INT NOT NULL,
-  CONSTRAINT fk_Files_Post1
-    FOREIGN KEY (idPost)
-    REFERENCES Post (idPost)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE);
-
-
-CREATE TABLE IF NOT EXISTS Code (
-  idCode serial PRIMARY KEY,
-  code TEXT NOT NULL,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-  Post_idPost INTEGER NOT NULL,
-<<<<<<< HEAD
-  User_id INT NOT NULL,
-=======
-  User_id INT NULL,
->>>>>>> c91d82bc19daa05441344e0fe7435a317f4a5369
-  CONSTRAINT fk_Code_Post1
-    FOREIGN KEY (Post_idPost)
-    REFERENCES Post (idPost)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_Code_User
-    FOREIGN KEY (User_id)
-    REFERENCES users (idUser)
-    ON DELETE SET NULL
-    ON UPDATE CASCADE);
+create table if not exists files (
+  idfile serial primary key,
+  file varchar(155) not null,
+  type varchar(15) not null,
+  idpost int not null,
+  constraint fk_files_post1
+    foreign key (idpost)
+    references post (idpost)
+    on delete cascade
+    on update cascade);
 
 
-CREATE TABLE IF NOT EXISTS Comment (
-  idComment serial PRIMARY KEY,
-  Comment TEXT NOT NULL,
-  like_cont INTEGER NULL,
-  Post_idPost INTEGER NOT NULL,
-  User_idUser INTEGER NOT NULL,
-  CONSTRAINT fk_Comment_Post1
-    FOREIGN KEY (Post_idPost)
-    REFERENCES Post (idPost)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
-  CONSTRAINT fk_Comment_User1
-    FOREIGN KEY (User_idUser)
-    REFERENCES users (idUser)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE);
+create table if not exists code (
+  idcode serial primary key,
+  code text not null,
+  created_at timestamp default current_timestamp not null,
+  post_idpost integer not null,
+  user_id int null,
+  constraint fk_code_post1
+    foreign key (post_idpost)
+    references post (idpost)
+    on delete cascade
+    on update cascade,
+  constraint fk_code_user
+    foreign key (user_id)
+    references users (iduser)
+    on delete set null
+    on update cascade);
+
+
+create table if not exists comment (
+  idcomment serial primary key,
+  comment text not null,
+  created_at timestamp default current_timestamp not null,
+  post_idpost integer not null,
+  user_iduser integer not null,
+  constraint fk_comment_post1
+    foreign key (post_idpost)
+    references post (idpost)
+    on delete cascade
+    on update cascade,
+  constraint fk_comment_user1
+    foreign key (user_iduser)
+    references users (iduser)
+    on delete cascade
+    on update cascade);
 ''')
+
+server.db.commit()

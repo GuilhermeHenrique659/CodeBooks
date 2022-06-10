@@ -6,6 +6,7 @@ from .usercontrollers import ControllerUser
 from .codecontrolles import  ControllerCode
 from .chatcontrollers import ControllerChat
 from .commentcontroller import ControllerComment
+from .notificationcontrollers import ControllerNotification
 
 class FactoryController:
     def __init__(self) -> None:
@@ -19,6 +20,7 @@ class FactoryController:
         self.__code = ControllerCode()
         self.__chat = ControllerChat()
         self.__comment = ControllerComment()
+        self.__notification = ControllerNotification()
 
     @property
     def login(self):
@@ -63,6 +65,10 @@ class FactoryController:
     @property
     def comment(self):
         return self.__comment
+
+    @property
+    def notification(self):
+        return self.__notification    
 
 controllers = FactoryController()
 

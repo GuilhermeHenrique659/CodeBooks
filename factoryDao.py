@@ -9,6 +9,7 @@ class FactoryDao:
         self.__code = CodeDao(server.db)
         self.__file = FileDao(server.db)
         self.__comment = CommentDao(server.db)
+        self.__notification = NotificationDao(server.db)
 
     @property
     def user(self):
@@ -34,6 +35,8 @@ class FactoryDao:
     def comment(self):
         return self.__comment
 
-
+    @property 
+    def notification(self):
+        return self.__notification
 
 dao = FactoryDao()

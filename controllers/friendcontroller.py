@@ -1,6 +1,7 @@
 from flask import flash, redirect,request,url_for,jsonify,session
 from factoryDao import dao
 from config import server
+from models import Notification
 
 
 class ControllerFriend:
@@ -9,9 +10,9 @@ class ControllerFriend:
 
     def users_list(self, username):
         if username['user'] == '':
-            users_find = dao.friend.friend_list(session['user_id'])
+            users_find = dao.friend.findAll_by_user(session['user_id'])
         else: 
-            users_find = dao.friend.user_search(username['user'] + "%",session['user_id'])
+            users_find = dao.friend.user_search("%" + username['user'] + "%",session['user_id'])
         return users_find
 
     @server.loggin_required
@@ -26,21 +27,23 @@ class ControllerFriend:
 
     @server.loggin_required
     def add_friend(self,id):
-        friend_exists = dao.friend.friend_exists(id,session['user_id'])
-        if friend_exists or id == session['user_id']:
-            flash("voce já é amigo dessa pessoa")
-            return redirect(url_for('user_profile',pag='view', id=id))
-        else:
-            dao.friend.add_friend_in_db(id,session['user_id'])
+            friendship_id = dao.friend.store(id,session['user_id'])
+            dao.notification.store(Notification(friendship_id,'friend',id, message=f"{session['user_name']} lhe enviou um pedido de amizade"))
             return redirect(url_for('user_profile',pag='view', id=id))
 
     @server.loggin_required
     def remove_friend(self,id):
-        friend_exists = dao.friend.friend_exists(id,session['user_id'])
-        if friend_exists:
-            flash("Amizade desfeita")
-            dao.friend.remove_friend(id,session['user_id'])
-            return redirect(url_for('user_profile',pag='view', id=id))
-        else:
-            flash("usuario nao é seu amigo")
-            return redirect(url_for('user_profile',pag='view', id=id))
+        dao.friend.remove(id)
+        return redirect(url_for('index'))
+
+    @server.loggin_required
+    def confirm_friend(self, id_friendship, id_notification):
+        dao.friend.confirm(id_friendship)
+        dao.notification.delete(id_notification)
+        return jsonify({'message':'friend confirm with success'}),200
+
+    @server.loggin_required
+    def reject_friend(self, id_friendship, id_notification):
+        dao.friend.remove(id_friendship)
+        dao.notification.delete(id_notification)
+        return jsonify({'message':'friend reject with success'}),200

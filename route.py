@@ -65,3 +65,9 @@ class Routes:
                                     view_func=controllers.post.edit_post, methods=['POST'])
 
         server.app.add_url_rule('/insert_comment', endpoint='insert_comment', view_func=controllers.comment.insertComment, methods=['POST'])
+
+        server.app.add_url_rule('/notification', endpoint='notification', view_func=controllers.notification.find_all)
+
+        server.app.add_url_rule('/confirm_friend/<int:id_friendship>/<int:id_notification>', endpoint='confirm_friend', view_func=controllers.friend.confirm_friend)
+
+        server.app.add_url_rule('/reject_friend/<int:id_friendship>/<int:id_notification>', endpoint='reject_friend', view_func=controllers.friend.reject_friend)

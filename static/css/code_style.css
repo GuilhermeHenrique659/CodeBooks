@@ -18,12 +18,6 @@ a {
     resize: vertical;
 }
 
-.conteiner{
-    padding: 100px;
-    height: 100%;
-    display: grid;
-    grid-template-columns: 80% 20%;
-}
 .post{
     border-top-left-radius: 8px;
     grid-column: 1;

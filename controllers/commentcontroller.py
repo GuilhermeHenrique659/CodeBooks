@@ -10,7 +10,7 @@ class ControllerComment:
         dataComment = request.form
         dataIdPost = request.args['idPost']
         comment = Comment(dataComment['comment'], dataIdPost, session['user_id'])
-        dao.comment.save_comment(comment)
+        dao.comment.store(comment)
         return redirect(url_for('post', id=dataIdPost))
         
         

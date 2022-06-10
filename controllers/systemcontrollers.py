@@ -13,12 +13,13 @@ class ControllerLogin:
  
     def authenticate(self):
         data = request.form
-        user:User = dao.user.user_search_login(data['email'])
+        user:User = dao.user.find_by_email(data['email'])
         if user:
             if user._password == data['password']:
                 session['login_user'] = data['email']
                 session['user_id'] = user._id
                 session['user_name'] = user._name
+                session['user_image'] = user.image
                 return redirect(url_for('index'))
             else:
                 flash('senha errada')
@@ -44,7 +45,7 @@ class ControllerRegister:
     def sing_in(self):
         data = request.form
         user = User(data['name'],data['email'],data['password'])
-        result = dao.user.save_user(user)
+        result = dao.user.store(user)
         if result == "email not available":
             flash('email ja ultilizado')
             return redirect(url_for('register'))

@@ -7,7 +7,7 @@ class ControllerChat:
 
     @server.loggin_required
     def chat(self,id):
-        user_chat = dao.user.search_user_profile(id)
+        user_chat = dao.user.find_by_id(id)
         friend_hash = hash(user_chat._email)
         user_hash = hash(session['login_user'])
         room_hash = user_hash + friend_hash

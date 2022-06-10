@@ -7,93 +7,221 @@
     <title>CodeBooks</title>
     <link rel="icon" type="image/x-icon" href="{{url_for('static', filename='img/favicon.ico')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
     <link rel="stylesheet" href="{{url_for('static', filename='css/fontawesome-all.min.css')}}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
 
 </head>
 
-<body id="page-top" style="background: rgb(255, 255, 255);  height: 100%;" >
+<body id="page-top" style="background: rgb(255, 255, 255);  height: 100%;">
     <div id="wrapper">
-        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark  accordion bg-gradient-primary p-0" style="color: rgb(19,30,115);background: rgb(32,33,43);">
-            <div class="container-fluid d-flex flex-column p-0"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="{{url_for('index')}}">
+
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark  accordion bg-gradient-primary p-0"
+            style="color: rgb(19,30,115);background: rgb(32,33,43);">
+            <div class="container-fluid d-flex flex-column p-0"><a
+                    class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0"
+                    href="{{url_for('index')}}">
                     <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-code"></i></div>
                     <div class="sidebar-brand-text mx-3"><span>Codebooks</span></div>
                 </a>
                 <hr class="sidebar-divider my-0">
                 <ul class="navbar-nav text-light" id="accordionSidebar">
-                    <li class="nav-item"><a class="nav-link active" href="{{url_for('index')}}"><i class="fas fa-home"></i><span>Home</span></a></li>
+                    <li class="nav-item"><a class="nav-link active" href="{{url_for('index')}}"><i
+                                class="fas fa-home"></i><span>Home</span></a></li>
+                    {% if session['login_user'] %}
+                    <li class="nav-item"><a class="nav-link active" href="#top" id="new-publication"><i
+                                class="fas fa-plus-circle"></i><span>Nova publicação</span></a></li>
+                    {% endif %}
                 </ul>
-                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-1" id="sideToggle" type="button"><i class="bi bi-arrow-left" id="arrow"></i></button></div>
+
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-1" id="sideToggle"
+                        type="button"><i class="bi bi-arrow-left" id="arrow"></i></button></div>
             </div>
         </nav>
-        <div class="d-flex flex-column" id="content-wrapper" style="background-color: #220018;">
-            <div id="content" style="color: var(--bs-blue);background: #220018;">
-                <nav class="navbar navbar-light navbar-expand shadow mb-4 topbar static-top" style="background: #080d40;color: #20212B;border-color: #1d2aad;">
-                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+        <div class="d-flex flex-column" id="content-wrapper" style="background-color: #f7f4f3;">
+            <div id="content" style="color: var(--bs-blue);background: #f7f4f3;">
+                <nav class="navbar navbar-light navbar-expand shadow mb-4 topbar static-top"
+                    style="background: #080d40;color: #20212B;border-color: #1d2aad;">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle me-3"
+                            id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
                         <form class="d-none d-sm-inline-block me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
-                            <div class="input-group"><input class="form-control border-0 small" type="text" placeholder="Search for ..." style="border-style: none;background: rgb(32,33,43);--bs-body-bg: rgb(32,33,43);"><button class="btn btn-primary py-0" type="button" style="background: rgb(32,33,43);border-style: none;"><i class="fas fa-search"></i></button></div>
+                            <div class="input-group"><input class="form-control border-0 small" type="text"
+                                    placeholder="Search for ..."
+                                    style="border-style: none;background: rgb(32,33,43);--bs-body-bg: rgb(32,33,43);"><button
+                                    class="btn btn-primary py-0" type="button"
+                                    style="background: rgb(32,33,43);border-style: none;"><i
+                                        class="fas fa-search"></i></button></div>
                         </form>
                         {% if session['login_user'] %}
                         <ul class="navbar-nav flex-nowrap ms-auto">
-                            <li class="nav-item dropdown d-sm-none no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><i class="fas fa-search"></i></a>
-                                <div class="dropdown-menu dropdown-menu-end p-3 animated--grow-in" aria-labelledby="searchDropdown">
+                            <li class="nav-item dropdown d-sm-none no-arrow"><a class="dropdown-toggle nav-link"
+                                    aria-expanded="false" data-bs-toggle="dropdown" href="#"><i
+                                        class="fas fa-search"></i></a>
+                                <div class="dropdown-menu dropdown-menu-end p-3 animated--grow-in"
+                                    aria-labelledby="searchDropdown">
                                     <form class="me-auto navbar-search w-100">
-                                        <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search for ...">
-                                            <div class="input-group-append"><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
+                                        <div class="input-group"><input class="bg-light form-control border-0 small"
+                                                type="text" placeholder="Search for ...">
+                                            <div class="input-group-append"><button class="btn btn-primary py-0"
+                                                    type="button"><i class="fas fa-search"></i></button></div>
                                         </div>
                                     </form>
                                 </div>
                             </li>
                             <li class="nav-item dropdown no-arrow mx-1">
-                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><span class="badge bg-danger badge-counter"></span><i class="bi bi-bell" style="--bs-dark: #220018;--bs-dark-rgb: 34,0,24;"></i></a>
-                                    <div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in" style="background: rgba(255,255,255,0);">
-                                        <h6 class="dropdown-header" style="color: rgb(255,255,255);background: #080d40;border-radius: 2px;border-style: none;border-color: rgb(0,0,0);border-top-style: none;border-right-style: none;border-bottom-style: none;">alerts center</h6><a class="dropdown-item d-flex align-items-center" href="#" style="color: rgb(0,21,234);background: rgb(32,33,43);border-style: none;">
-                                                                                    </a><a class="dropdown-item text-center small text-gray-500" href="#" style="background: #080d40;color: rgb(46,49,72);filter: brightness(95%);border-style: none;border-top-style: none;border-right-style: none;border-right-color: var(--bs-red);border-bottom-style: none;border-bottom-color: rgb(0,22,96);border-left-style: none;">Show All Alerts</a>
+                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link"
+                                        aria-expanded="false" data-bs-toggle="dropdown" id="notification" href="#"><span
+                                            class="badge bg-danger badge-counter"></span><i class="bi bi-bell"
+                                            style="--bs-dark: #220018;--bs-dark-rgb: 34,0,24;"></i></a>
+                                    <div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in"
+                                        style="background: rgba(255,255,255,0);">
+                                        <h6 class="dropdown-header"
+                                            style="color: rgb(255,255,255);background: #080d40;border-radius: 2px;border-style: none;border-color: rgb(0,0,0);border-top-style: none;border-right-style: none;border-bottom-style: none;">
+                                            alerts center</h6>
+                                        <div class="dropdown-item d-flex align-items-center"
+                                            style="color: rgb(0,21,234);background: rgb(32,33,43);border-style: none;display: flex;flex-direction: column;"
+                                            id="list-notification">
+
+                                        </div>
                                     </div>
                                 </div>
                             </li>
                             <li class="nav-item dropdown no-arrow mx-1">
-                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><span class="badge bg-danger badge-counter"></span><i class="bi bi-envelope"></i></a>
-                                    <div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in" style="background: rgba(255,255,255,0);">
-                                        <h6 class="dropdown-header" style="background: #080d40;border-style: none;border-top-style: none;border-bottom-style: none;">alerts center</h6>
-                                        <a class="dropdown-item d-flex align-items-center" href="#" style="background: rgb(32,33,43);border-style: none;border-top-style: none;">
-                                            
-                                        </a><a class="dropdown-item text-center small text-gray-500" href="#" style="background: #080d40;border-style: none;border-top-style: none;">Show All Alerts</a>
+                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link"
+                                        aria-expanded="false" data-bs-toggle="dropdown" href="#"><span
+                                            class="badge bg-danger badge-counter"></span><i
+                                            class="bi bi-envelope"></i></a>
+                                    <div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in"
+                                        style="background: rgba(255,255,255,0);">
+                                        <h6 class="dropdown-header"
+                                            style="background: #080d40;border-style: none;border-top-style: none;border-bottom-style: none;">
+                                            alerts center</h6>
+                                        <a class="dropdown-item d-flex align-items-center" href="#"
+                                            style="background: rgb(32,33,43);border-style: none;border-top-style: none;">
+
+                                        </a><a class="dropdown-item text-center small text-gray-500" href="#"
+                                            style="background: #080d40;border-style: none;border-top-style: none;">Show
+                                            All Alerts</a>
                                     </div>
                                 </div>
-                                <div class="shadow dropdown-list dropdown-menu dropdown-menu-end" aria-labelledby="alertsDropdown"></div>
+                                <div class="shadow dropdown-list dropdown-menu dropdown-menu-end"
+                                    aria-labelledby="alertsDropdown"></div>
                             </li>
                             <div class="d-none d-sm-block topbar-divider"></div>
                             <li class="nav-item dropdown no-arrow">
-                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-bs-toggle="dropdown" href="#"><span class="d-none d-lg-inline me-2 text-gray-600 small">{{session['user_name'] }}</span><img class="border rounded-circle img-profile" src="{{ url_for('uploads', filename=user.image ) }}"></a>
-                                    <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in" style="background: rgb(32,33,43);color: rgb(183,192,255);"><a class="dropdown-item" href="{{ url_for('user_profile' ,pag='view', id=session['user_id']) }}" style="color: rgb(234,234,234);border-style: none;"><i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Profile</a><a class="dropdown-item" href="{{url_for('user_profile' ,pag='edit', id=session['user_id'])}}" style="color: rgb(242,242,242);border-style: none;"><i class="fas fa-cogs fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Settings</a><a class="dropdown-item" href="#" style="color: rgb(249,249,255);border-style: none;"><i class="fas fa-list fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Activity log</a>
-                                        <div class="dropdown-divider"></div><a class="dropdown-item visible" href="{{url_for('logout')}}" style="color: rgb(193,7,7);border-style: none;"><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Logout</a>
+                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link"
+                                        aria-expanded="false" data-bs-toggle="dropdown" href="#"><span
+                                            class="d-none d-lg-inline me-2 text-gray-600 small">{{session['user_name'] }}</span><img
+                                            class="border rounded-circle img-profile"
+                                            src="{{ url_for('uploads', filename=session['user_image'] ) }}"></a>
+                                    <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in"
+                                        style="background: rgb(32,33,43);color: rgb(183,192,255);"><a
+                                            class="dropdown-item"
+                                            href="{{ url_for('user_profile' ,pag='view', id=session['user_id']) }}"
+                                            style="color: rgb(234,234,234);border-style: none;"><i
+                                                class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Profile</a><a
+                                            class="dropdown-item"
+                                            href="{{url_for('user_profile' ,pag='edit', id=session['user_id'])}}"
+                                            style="color: rgb(242,242,242);border-style: none;"><i
+                                                class="fas fa-cogs fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Settings</a><a
+                                            class="dropdown-item" href="#"
+                                            style="color: rgb(249,249,255);border-style: none;"><i
+                                                class="fas fa-list fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Activity
+                                            log</a>
+                                        <div class="dropdown-divider"></div><a class="dropdown-item visible"
+                                            href="{{url_for('logout')}}"
+                                            style="color: rgb(193,7,7);border-style: none;"><i
+                                                class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Logout</a>
                                     </div>
                                 </div>
                             </li>
                         </ul>
                         {% else %}
                         <ul class="navbar-nav flex-nowrap ms-auto">
-                            <li class="nav-item"><a class="nav-link active" href="{{url_for('login')}}"><i class="fas fa-sign-in"></i><span>Log In</span></a></li>
+                            <li class="nav-item"><a class="nav-link active" href="{{url_for('login')}}"><i
+                                        class="fas fa-sign-in"></i><span>Log In</span></a></li>
                         </ul>
                         {% endif %}
                     </div>
                 </nav>
             </div>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-light alert-dismissible fade show" role="alert"
+                style="z-index: 1; position:absolute;">
+                {{ message}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
 
             {% block conteudo %}
             {% endblock %}
 
 
-    </div>
-    <script src="{{url_for('static', filename='js/theme.js')}}"></script>
-    <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
+        </div>
+        <script src="{{url_for('static', filename='js/theme.js')}}"></script>
+        <script src="{{url_for('static', filename='js/bootstrap.min.js')}}"></script>
 
-    <script src="{{url_for('static', filename='js/modal.js')}}"></script>
+        <script src="{{url_for('static', filename='js/modal.js')}}"></script>
 
-    
+
+        <script src="{{url_for('static', filename='js/script.js')}}"></script>
+        <script>
+            async function find_notifications() {
+                const response = await fetch("{{url_for('notification')}}")
+                let json_notification = await response.json()
+                return json_notification
+            }
+
+            function make_notification_list(json_notification) {
+                const notification_dropbox = document.querySelector('#list-notification')
+                console.log(json_notification)
+                json_notification.forEach((notification) => {
+                    if (notification._type == 'friend') {
+                        notification_dropbox.innerHTML += `<div class="row align-items-center" id="notification-item">
+                                                                <div class="col-8">
+                                                                    <span style="color:white;">${notification._message}</span>
+                                                                </div>
+                                                                <div class="col-2">
+                                                                    <button class="btn" onclick="confirm_friend(${notification._action},${notification._idnoti})"><i class="bi bi-check-circle-fill"></i></button>
+                                                                </div>
+                                                                <div class="col-2">
+                                                                    <a href=""><button class="btn" onclick="reject_friend(${notification._action},${notification._idnoti})"><i class="bi bi-x-circle-fill"></i></button></a>
+                                                                </div>
+                                                            <hr></div>`
+                    }
+                })
+            }
+
+            function remove_notification(list) {
+                for (item of list) {
+                    item.remove()
+                }
+            }
+
+            document.querySelector('#notification').addEventListener('click', async () => {
+                let json_notification = await find_notifications()
+                remove_notification(document.querySelectorAll('#notification-item'))
+                make_notification_list(json_notification)
+            })
+
+            async function confirm_friend(action, idnoti) {
+                const response = await fetch(`confirm_friend/${action}/${idnoti}`)
+                let response_json = await response.json()
+                console.log(response_json.message)
+            }
+            async function reject_friend(action, idnoti) {
+                const response = await fetch(`reject_friend/${action}/${idnoti}`)
+                let response_json = await response.json()
+                console.log(response_json.message)
+            }
+        </script>
 </body>
 
 </html>
