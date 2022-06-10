@@ -66,7 +66,7 @@ class ControllerPost:
     def delete_files(self, filelist: list):
         if filelist:
             for file in filelist:
-                os.remove(os.path.join(server.app.config['UPLOAD_FOLDER'], file._filename))
+                os.remove(os.path.join(server.app.config['UPLOAD_FOLDER'], f'{file._filename}'))
         
     @server.loggin_required
     def delete_post(self,id):
