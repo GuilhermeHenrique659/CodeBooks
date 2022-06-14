@@ -47,8 +47,9 @@
                       {% else %}
                       <a href="{{ url_for('remove_friend', id=user._id) }}"><Button class="btn btn-primary btn-sm" type="submit" style="background: rgb(0,0,0);border-radius: 14px;border-style: none;height: 35px;">Remover
                           amigo</Button></a>
-                      {% endif %}
                       <a href="{{url_for('chat', id=user._id)}}"><Button class="btn btn-primary btn-sm" type="submit" style="background: rgb(0,0,0);border-radius: 14px;border-style: none;height: 35px;">Mensagem</Button></a>
+
+                      {% endif %}
                       {% endif %}
                     </div>
                 </div>

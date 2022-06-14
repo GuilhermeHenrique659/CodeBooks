@@ -44,7 +44,15 @@
         <div class="body-chat">
 
             <div class="chat">
+                {%if messages_list %}
+                {% for msg in messages_list %}
+                    <span>{{ msg['message']._message }}</span>
+                {% endfor %}
+            {% else %}
+                <span>envie uma messagem</span>
+            {% endif %}
             </div>
+
             <div>
                 <form>
                     <input type="text" id="message" placeholder="insira sua mensagem">
@@ -62,28 +70,28 @@
             function addToChat(msg) {
                 const span = document.createElement("span");
                 const chat = document.querySelector(".chat");
-                span.innerHTML = `<strong>${msg.username}:</strong> ${msg.message}`;
-                if (msg.username == '{{ session['user_name'] }}'){
+                span.innerHTML = `${msg.message}`;
+                if (msg.user_id == '{{ session['user_id'] }}'){
                     span.style.cssText += 'margin-left: 400px;'
                 }
                 chat.append(span);
             }
 
             socket.on('connect', () => {
-                socket.emit('join',{"channel": {{room_hash}}, "username": '{{session['user_name']}}' });
+                socket.emit('join',{"channel": {{room_hash}}, "user_id": '{{session['user_id']}}' });
             });
 
             document.querySelector("form").addEventListener("submit", function(event) {
                 event.preventDefault();
                 message = document.getElementById('message').value
-                socket.emit('send message', {'message': message , 'channel': {{room_hash}}, 'username':  '{{session['user_name']}}' });
+                socket.emit('send message', {'message': message , 'channel': {{room_hash}}, 'user_id':  '{{session['user_id']}}' });
             })
 
             socket.on('getMessage', (msg) => {
                 addToChat(msg)
             })
             socket.on('disconnect', () => {
-                     socket.emit('join',{"channel": {{room_hash}}, "username": '{{session['user_name']}}' });
+                     socket.emit('join',{"channel": {{room_hash}}, "user_id": '{{session['user_id']}}' });
             })
         }
     </script>
