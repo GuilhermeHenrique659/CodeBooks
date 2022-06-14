@@ -2,7 +2,9 @@ from config import server
 
 cursor = server.db.cursor()
 
+print("make migrations")
 cursor.execute(''' 
+drop table if exists users;
 create table if not exists users (
   iduser serial primary key,
   username varchar(45) not null unique,
@@ -17,7 +19,7 @@ create table if not exists users (
   password varchar(128) not null
 );
 
-drop table friendship;
+drop table if exists friendship;
 create table if not exists friendship (
   idfriendship serial primary key,
   user_iduser integer not null,
@@ -34,7 +36,7 @@ create table if not exists friendship (
     on delete cascade
     on update cascade);
 
-drop table notifications;
+drop table if exists notifications;
 create table if not exists notifications (
     idnoti serial primary key,
     action varchar(128) not null,
@@ -47,7 +49,7 @@ create table if not exists notifications (
       on delete cascade
       on update cascade
 );
-
+drop table if exists post;
 create table if not exists post (
   idpost serial primary key,
   title varchar(45) not null,
@@ -62,6 +64,7 @@ create table if not exists post (
     on delete set null
     on update cascade);
 
+drop table if exists files;
 create table if not exists files (
   idfile serial primary key,
   file varchar(155) not null,
@@ -73,7 +76,7 @@ create table if not exists files (
     on delete cascade
     on update cascade);
 
-
+drop table if exists code;
 create table if not exists code (
   idcode serial primary key,
   code text not null,
@@ -91,7 +94,7 @@ create table if not exists code (
     on delete set null
     on update cascade);
 
-
+drop table if exists comment;
 create table if not exists comment (
   idcomment serial primary key,
   comment text not null,
@@ -110,4 +113,5 @@ create table if not exists comment (
     on update cascade);
 ''')
 
+print("migrations done!")
 server.db.commit()
