@@ -36,7 +36,7 @@ SQL_LIST_POST = '''
                 SELECT title, description,like_cont, created_at, updated_at,idPost, name, idUser,email, image  
                 FROM Post 
                 LEFT JOIN users ON users.idUser = Post.User_idUser
-                ORDER BY created_at ASC
+                ORDER BY created_at DESC
 '''
 SQL_LIST_POST_BY_USER = '''
                 SELECT title, description,like_cont, created_at, updated_at,idPost, name, idUser,email, image  
