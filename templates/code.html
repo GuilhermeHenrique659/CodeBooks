@@ -28,7 +28,7 @@
             <form action="{{url_for('add_code', id=post_id)}}" method="post">
                 <div class="mb-3">
                     <label for="exampleFormControlTextarea1" class="form-label">Digite um codigo para contriuir</label>
-                    <textarea class="form-control" id="exampleFormControlTextarea1" name="code" rows="3"></textarea>
+                    <code-input style="resize: both; overflow: hidden; width: 100%;" id="code-input" lang="Python" name="code"></code-input>
                 </div>
                 <button type="submit" class="btn btn-outline-primary" data-bs-toggle="tooltip"
                     data-bs-placement="bottom" title="Salvar codigo"><i class="bi bi-node-plus-fill"></i></button>
@@ -50,7 +50,7 @@
                     {% endif %}
                 </div>
                 <div class="code-body">
-                    <code><textarea name="" id="" class="code-area" readonly>{{code._code}}</textarea></code>
+                    <code-input style="resize: both; overflow: hidden; width: 100%;" id="code-input" lang="Python" name="code" value="{{code._code}}"></code-input>
                 </div>
             </div>
             {% endfor %}
