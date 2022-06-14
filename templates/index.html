@@ -184,11 +184,11 @@
 {% if session['login_user'] %}
 <div class="btn-group dropup" id="friend-list">
     <button type="button" class="btn btn-secondary bottom-right col-1 p-2 position-fixed bottom-0 end-0"
-        id="friend-list-btn" data-bs-toggle="dropdown" aria-expanded="false">
-        Lista de amigos
+        id="friend-list-btn" data-bs-toggle="dropdown" aria-expanded="false" style="background-color: rgb(32,33,43);">
+        <i class="bi bi-people-fill"></i>
     </button>
     <ul class="dropdown-menu" id="user_list_iten">
-        <input type="text" id="search_user" name="user" autocomplete="off" placeholder="Procure um usuario">
+        <input type="text" id="search_user" name="user" autocomplete="off" placeholder="Procure um usuario" style="border:none;">
         <hr>
         {% if friend_list %}
         {% for friend in friend_list %}

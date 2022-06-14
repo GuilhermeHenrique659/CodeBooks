@@ -1,91 +1,108 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
+{% block conteudo %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chat_style.css') }}">
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong> {{ message }}.</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% endif %}
+{% endwith %}
+<div class="container">
 
-<head>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/chat_style.css') }}">
-</head>
-
-<body>
-
-    <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="{{url_for('index')}}">Company name</a>
-        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
-            data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
-            aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search"
-            style="background-color: #20212B; border: none;">
-        <div class="navbar-nav">
-            <div class="nav-item text-nowrap">
-                <a class="nav-link px-3" href="{{url_for('logout')}}">Sign out</a>
-            </div>
-        </div>
-    </header>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    {% for message in messages %}
-    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-        <strong> {{ message }}.</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
-    <div class="container">
-        <div class="header-chat">
+    <div class="row">
+        <div class="col-md-3 header-chat">
             <img src="{{ url_for('uploads', filename=friend.image ) }}" class="rounded-circle" alt="" width="50"
                 height="50">
             <h3>{{friend._name}}</h3>
         </div>
-        <div class="body-chat">
-
-            <div class="chat">
+        <div class="col-md-8">
+            <div class="chat col">
+                {%if messages_list %}
+                    {% for msg in messages_list %}
+                    {% if msg['message']._id_user == session['user_id'] %}
+                        <span style="margin-left: 50%; border-bottom-left-radius: 7%; border-top-left-radius: 7%; border-top-right-radius: 7%; border-bottom-right-radius: 0%;">{{ msg['message']._message }}</span>
+                    {% else %}
+                        <span>{{ msg['message']._message }}</span>
+                    {% endif %}
+                        {% endfor %}
+                {% endif %}
             </div>
             <div>
                 <form>
-                    <input type="text" id="message" placeholder="insira sua mensagem">
-                    <button class="btn btn-primary" type="submit">Enviar</button>
+                    <textarea id="message" placeholder="insira sua mensagem"></textarea>
+                    <button class="btn btn-primary" id="btn-submit" type="submit"><i class="bi bi-send"></i>
+                    </button>
                 </form>
             </div>
         </div>
     </div>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js" integrity="sha512-MgkNs0gNdrnOM7k+0L+wgiRc5aLgl74sJQKbIWegVIMvVGPc1+gc1L2oK9Wf/D9pq58eqIJAxOonYPVE5UwUFA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script>
-        window.onload = function() {
-            const socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port)
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.1/socket.io.js"
+    integrity="sha512-MgkNs0gNdrnOM7k+0L+wgiRc5aLgl74sJQKbIWegVIMvVGPc1+gc1L2oK9Wf/D9pq58eqIJAxOonYPVE5UwUFA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    window.onload = function () {
+        const socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port)
 
-            function addToChat(msg) {
-                const span = document.createElement("span");
-                const chat = document.querySelector(".chat");
-                span.innerHTML = `<strong>${msg.username}:</strong> ${msg.message}`;
-                if (msg.username == '{{ session['user_name'] }}'){
-                    span.style.cssText += 'margin-left: 400px;'
-                }
-                chat.append(span);
+        function addToChat(msg) {
+            const span = document.createElement("span");
+            const chat = document.querySelector(".chat");
+            span.innerHTML = `${msg.message}`;
+            if (msg.user_id == '{{ session['user_id'] }}') {
+                span.style.cssText += 'margin-left: 50%;'
+                span.style.cssText += 'border-bottom-left-radius: 7%;'
+                span.style.cssText += 'border-top-left-radius: 7%;'
+                span.style.cssText += 'border-top-right-radius: 7%;'
+                span.style.cssText += 'border-bottom-right-radius: 0%;'
             }
+            chat.append(span);
+        }
 
-            socket.on('connect', () => {
-                socket.emit('join',{"channel": {{room_hash}}, "username": '{{session['user_name']}}' });
+        socket.on('connect', () => {
+            socket.emit('join', { "channel": {{ room_hash }}, "user_id": '{{session['user_id']}}' });
             });
 
-            document.querySelector("form").addEventListener("submit", function(event) {
-                event.preventDefault();
-                message = document.getElementById('message').value
-                socket.emit('send message', {'message': message , 'channel': {{room_hash}}, 'username':  '{{session['user_name']}}' });
+    document.querySelector("#btn-submit").addEventListener("click", function (event) {
+        event.preventDefault();
+        message = document.getElementById('message').value
+        if (message !== "") {
+            socket.emit('send message', { 'message': message, 'channel': {{ room_hash }}, 'user_id': '{{session['user_id']}}'
+    });
+    document.getElementById('message').value = '';
+                }
+                
             })
 
-            socket.on('getMessage', (msg) => {
-                addToChat(msg)
-            })
-            socket.on('disconnect', () => {
-                     socket.emit('join',{"channel": {{room_hash}}, "username": '{{session['user_name']}}' });
+    document.addEventListener("keypress", function (e) {
+        if (e.key === 'Enter') {
+            event.preventDefault();
+            message = document.getElementById('message').value
+            if (message !== "") {
+                socket.emit('send message', { 'message': message, 'channel': {{ room_hash }}, 'user_id': '{{session['user_id']}}'
+        });
+    document.getElementById('message').value = '';
+                    }
+                }
+            });
+
+    socket.on('getMessage', (msg) => {
+        addToChat(msg)
+        $().ready(function () {
+            $(".chat").animate({ scrollTop: 100000 }, 0);
+        });
+    })
+    socket.on('disconnect', () => {
+        socket.emit('join', { "channel": {{ room_hash }}, "user_id": '{{session['user_id']}}' });
             })
         }
-    </script>
+</script>
 </body>
+
 </html>
+
+{% endblock %}

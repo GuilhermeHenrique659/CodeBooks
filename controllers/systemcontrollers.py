@@ -45,12 +45,13 @@ class ControllerRegister:
     def sing_in(self):
         data = request.form
         user = User(data['name'],data['email'],data['password'])
-        result = dao.user.store(user)
-        if result == "email not available":
-            flash('email ja ultilizado')
-            return redirect(url_for('register'))
-        else:
+        try:
+            dao.user.store(user)
             return redirect(url_for('login'))
+        except Exception:
+            flash("Email ou usuario nao disponivel")
+            return redirect(url_for('register'))
+            
 
 
 class ControllerUploads:

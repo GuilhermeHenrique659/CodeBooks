@@ -29,10 +29,11 @@
                                   class="btn btn-primary btn-sm" type="submit"
                                   style="background: rgb(0,0,0);border-radius: 14px;border-style: none;height: 35px;">Remover
                                   amigo</Button></a>
+                        <a href="{{url_for('chat', id=user._id)}}"><Button class="btn btn-primary btn-sm"
+                                    type="submit"
+                                    style="background: rgb(0,0,0);border-radius: 14px;border-style: none;height: 35px;">Mensagem</Button></a>
                           {% endif %}
-                          <a href="{{url_for('chat', id=user._id)}}"><Button class="btn btn-primary btn-sm"
-                                  type="submit"
-                                  style="background: rgb(0,0,0);border-radius: 14px;border-style: none;height: 35px;">Mensagem</Button></a>
+
                           {% endif %}
                       </div>
                   </div>

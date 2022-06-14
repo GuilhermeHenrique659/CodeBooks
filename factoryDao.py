@@ -2,14 +2,14 @@ from dao import *
 from config import server
 
 class FactoryDao:
-    def __init__(self) -> None:
-        self.__user = UserDao(server.db)
-        self.__post = PostDao(server.db)
-        self.__friend = FriendDao(server.db)
-        self.__code = CodeDao(server.db)
-        self.__file = FileDao(server.db)
-        self.__comment = CommentDao(server.db)
-        self.__notification = NotificationDao(server.db)
+    def __init__(self, db) -> None:
+        self.__user = UserDao(db)
+        self.__post = PostDao(db)
+        self.__friend = FriendDao(db)
+        self.__code = CodeDao(db)
+        self.__file = FileDao(db)
+        self.__comment = CommentDao(db)
+        self.__notification = NotificationDao(db)
 
     @property
     def user(self):
@@ -39,4 +39,4 @@ class FactoryDao:
     def notification(self):
         return self.__notification
 
-dao = FactoryDao()
+dao = FactoryDao(server.db)
