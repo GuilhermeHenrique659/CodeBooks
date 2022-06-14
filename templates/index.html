@@ -180,7 +180,16 @@
         {% endfor %}
         {% else %}
 
-        <h4>Não possui nenhuma postagem para visualizar</h4>
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border" style="width: 20rem; height: 20rem;" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+
+          </div>
+          <div class="justify-content-center" style="display: flex; justify-content: space-evenly;">
+            <h4>Loading Forever</h4>
+        </div>
+        
         {% endif %}
     </div>
 </div>
