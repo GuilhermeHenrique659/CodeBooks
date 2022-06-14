@@ -45,7 +45,7 @@ class ControllerChat:
     @server.socketio.on("send message")
     def message(data):
         room = data['channel']
-        chat_history.append({'room':data['channel'],'message':Message(data['user_id'],data['message'])})
+        chat_history.append({'room':data['channel'],'message':Message(int(data['user_id']),data['message'])})
         emit('getMessage',data, room=room)
 
 

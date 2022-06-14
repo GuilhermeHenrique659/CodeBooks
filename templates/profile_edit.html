@@ -96,15 +96,15 @@
                           enctype="multipart/form-data">
                             <div class="row">
                                     <div class="col">
-                                        <div class="mb-3"><label class="form-label" for="name"><strong>Username</strong></label><input class="form-control" type="text" id="username" value="{{user._username}}" name="name" ></div>
+                                        <div class="mb-3"><label class="form-label" for="name"><strong>Username</strong></label><input class="form-control" type="text" id="username" value="{{user._username}}" name="name" required></div>
                                     </div>
                                     <div class="col">
-                                        <div class="mb-3"><label class="form-label" for="email"><strong>Email Address</strong></label><input class="form-control" type="email" id="email" value="{{user._email}}" name="email" ></div>
+                                        <div class="mb-3"><label class="form-label" for="email"><strong>Email Address</strong></label><input class="form-control" type="email" id="email" value="{{user._email}}" name="email" required></div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col">
-                                        <div class="mb-3"><label class="form-label" for="name_complete"><strong>Name Complete</strong></label><input class="form-control" type="text" id="name_complete" value="{{user._name}}" name="name_complete" ></div>
+                                        <div class="mb-3"><label class="form-label" for="name_complete"><strong>Name Complete</strong></label><input class="form-control" type="text" id="name_complete" value="{{user._name}}" name="name_complete" required></div>
                                     </div>
                                     <div class="col">
                                       <div class="mb-3"><label class="form-label" for="image"><strong>Foto</strong></label><input class="form-control" type="file" name="image" id="image" onchange="previewImage()" accept="image/*"></div>

@@ -1,4 +1,4 @@
-from flask import render_template,request,redirect, session,url_for
+from flask import flash, render_template,request,redirect, session,url_for
 from config import server
 from factoryDao import dao
 from models import User 
@@ -37,7 +37,7 @@ class ControllerUser:
         id = request.args['id']
         user_data_form = request.form
         user_image_file = request.files['image']
-        image_filename = f'user_image_profile{id}.jpg'
+        image_filename = self.image_save(id, user_image_file)
         
         user = User(user_data_form['name'],user_data_form['email'],user_data_form['password'],
                     user_data_form['name_complete'],id,user_data_form['age'],
@@ -45,13 +45,23 @@ class ControllerUser:
                     user_data_form['city'], user_data_form['state'],
                     user_data_form['bibliografy'])
 
-        if user_image_file:
-            upload_folder = server.app.config['UPLOAD_FOLDER']
-            user_image_file.save(f'{upload_folder}/{image_filename}')
-        dao.user.store(user)
+        try:
+            dao.user.store(user)
+        except:
+            flash("usuario ou email indisponivel")
+            return redirect(url_for('user_profile',pag='edit', id=id))
         session['user_name'] = user._name
         session['user_image'] = user.image
         return redirect(url_for('user_profile',pag='view', id=id))
+
+    def image_save(self, id, user_image_file):
+        if user_image_file:
+            image_filename = f'user_image_profile{id}.jpg'
+            upload_folder = server.app.config['UPLOAD_FOLDER']
+            user_image_file.save(f'{upload_folder}/{image_filename}')
+        else:
+            image_filename = session['user_image']
+        return image_filename
 
     @server.loggin_required
     def delete_account(self,id):

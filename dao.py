@@ -161,7 +161,7 @@ class UserDao:
                                user._email, user._password,))
         except UniqueViolation as error:
             print(error)
-            return "email or username not available"
+            raise Exception("User or Email not available.")
         self.__db.commit()
         return cursor.lastrowid
 

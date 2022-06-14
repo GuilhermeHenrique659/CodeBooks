@@ -2,26 +2,42 @@
 {% block conteudo %}
 
 
-<div class="container" id="container">
-	<div class="form-container sign-in-container">
+<div class="row">
+	<div class="col-md-6"><strong
+			style="color:#000000; font-size: 34px;width: 0px;min-width: 0px;height: 0px;border-bottom-width: 2px;border-bottom-style: solid;">Login</strong>
 		<form action="{{url_for('authenticate',previous='login')}}" method="POST">
-			<h1>Log in</h1>
-			<span>or use your account</span>
-			<input type="email" placeholder="Email" name="email"  required/>
-			<input type="password" placeholder="Password" name="password"  required/>
-			<a href="{{ url_for('register')}}">Sing in</a>
-			<button type="submit">Log In</button>
+			<div class="align-items-center"
+				style="background: rgba(255,0,0,0);min-height: 263px;height: 243px;margin-top: 17px;">
+				<div class="row" style="margin: 16px;">
+					<div class="col" style="margin-top: 32px;">
+						<input type="email" placeholder="Email:" name="email"
+							style="background: rgba(255,255,255,0);border-style: none;border-bottom-style: solid;border-bottom-color: rgb(0,0,0);margin-top: 12px;"
+							inputmode="email">
+					</div>
+				</div>
+				<div class="row" style="margin: 16px;">
+					<div class="col" style="margin-top: 32px;"><input type="password" placeholder="Senha"
+							name="password"
+							style="background: rgba(255,255,255,0);border-style: none;border-bottom-style: solid;border-bottom-color: rgb(0,0,0);">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col d-xxl-flex justify-content-xxl-center align-items-xxl-center"><button
+							class="btn btn-primary d-xxl-flex justify-content-xxl-center align-items-xxl-center"
+							type="submit"
+							style="width: 62.5px;height: 27px;background: rgb(0,0,0);font-size: 11px;border-radius: 5px;border-style: none;margin-top: 37px;">Login</button>
+					</div>
+				</div>
 		</form>
-	</div>
-	<div class="overlay-container">
-		<div class="overlay">
-		</div>
-		<div class="overlay-panel overlay-right">
-			<div class="cima"><img src="static\img\icon\bolinhasdolinux.png" width="60px" height="20px"></div>
-			<h1 class="pisc">_</h1>
+		<div class="row">
+			<div class="col" style="margin-top: 110px;font-size: 12px;"><a href="{{url_for('register')}}"
+					style="width: 0px;margin-top: 0px;">Não tem conta?</a>
+				<div class="row">
+					<div class="col"><a href="#">Termos de uso</a></div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
-
 </div>
 {% endblock %}
