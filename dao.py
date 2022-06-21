@@ -78,6 +78,8 @@ SQL_LIST_NOTIFICATION = 'SELECT * FROM notifications WHERE iduser = %s'
 
 SQL_DELETE_NOTIFICATION = 'DELETE FROM notifications WHERE idnoti = %s'
 
+SQL_COUNT_NOTIFICATION = 'SELECT COUNT(*) FROM notifications WHERE iduser = %s'
+
 class FriendDao:
     def __init__(self, db:psycopg2) -> None:
         self.__db = db
@@ -324,14 +326,18 @@ class CommentDao:
 class NotificationDao:
     def __init__(self, db:psycopg2) -> None:
         self.__db = db
-
     
     def store(self, notification:Notification):
         cursor = self.__db.cursor()
         cursor.execute(SQL_INSERT_NOTIFICATION, (notification._action, notification._type,notification._message, notification._iduser))
         self.__db.commit()
 
-    def find_all(self, user_id):
+    def count(self, user_id):
+        cursor = self.__db.cursor()
+        cursor.execute(SQL_COUNT_NOTIFICATION, (user_id,))
+        return cursor.fetchone()
+
+    def find_all(self, user_id:int):
         cursor = self.__db.cursor()
         cursor.execute(SQL_LIST_NOTIFICATION, (user_id,))
         return self.__translate_to_list(cursor.fetchall())

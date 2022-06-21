@@ -5,3 +5,6 @@ class ControllerNotification:
     def find_all(self):
         notifications_list:list = dao.notification.find_all(session['user_id'])
         return jsonify([notification.__dict__ for notification in notifications_list]),200
+
+    def count(self):
+        return jsonify(dao.notification.count(session['user_id']))

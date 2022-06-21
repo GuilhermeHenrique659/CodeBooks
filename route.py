@@ -71,3 +71,5 @@ class Routes:
         server.app.add_url_rule('/confirm_friend/<int:id_friendship>/<int:id_notification>', endpoint='confirm_friend', view_func=controllers.friend.confirm_friend)
 
         server.app.add_url_rule('/reject_friend/<int:id_friendship>/<int:id_notification>', endpoint='reject_friend', view_func=controllers.friend.reject_friend)
+
+        server.app.add_url_rule('/notification_count', endpoint='notification_count', view_func=controllers.notification.count)

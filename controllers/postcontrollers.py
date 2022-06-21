@@ -13,7 +13,7 @@ class ControllerPost:
         post_form = request.form
         post_files = request.files.getlist('files[]')
         post = Post(post_form['title'],post_form['description'],session['user_id']) 
-        post.set_idPost(dao.post.store(post) )
+        post.set_idPost(dao.post.store(post))
         code = Code(post_form['code'],post._idPost,session['user_id'])
         dao.code.store(code)
         self.file_validation(post_files, post)
@@ -50,8 +50,8 @@ class ControllerPost:
         
     @server.loggin_required
     def delete_post(self,id):
-        dao.post.delete(id,session['user_id'])
         self.delete_files(dao.file.find_all(id))
+        dao.post.delete(id,session['user_id'])    
         flash('Post deletado com sucesso')
         return redirect(url_for('index'))
     
