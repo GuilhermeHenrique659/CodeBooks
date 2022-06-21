@@ -236,6 +236,12 @@
                 console.log(response_json.message)
             }
         </script>
+        <script>
+            programing_language = document.querySelector('#programing-language')
+            programing_language.addEventListener('change', ()=>{
+                document.querySelector('#code-input').setAttribute('lang',programing_language.value)
+            })
+        </script>
 </body>
 
 </html>

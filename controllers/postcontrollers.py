@@ -4,28 +4,9 @@ from config import server
 from factoryDao import dao
 from models import Code, File, Post
 import os
-
+from validation.fileValidation import validation_file
 
 class ControllerPost:
-    def __init__(self) -> None:
-        pass
-        
-
-    def type_file(self, filename:str):
-        return filename.rsplit('.', 1)[1].lower()
-
-
-    def isImage(self, file) -> bool:
-        if file == 'png' or file == 'jpg' or file == 'jfif' or file =='gif' or file=='jpeg':
-            return True
-        else:
-            return False
-
-    def isVideo(self, file) -> bool:
-        if file == 'mp4':
-            return True
-        else:
-            return False
 
     @server.loggin_required
     def create_post(self):
@@ -41,13 +22,12 @@ class ControllerPost:
     def file_validation(self, post_files, post):
         if post_files[0].filename != '':
             for i in range(len(post_files)):
-                    print(self.type_file(post_files[i].filename))
-                    if self.isImage(self.type_file(post_files[i].filename)): 
-                        self.save_image(post_files,post,i)
-                    elif self.isVideo(self.type_file(post_files[i].filename)):
-                        self.save_movie(post_files,post,i)
-                    else:
-                        flash('Arquivo não aceita')
+                if validation_file.isImageValid(validation_file.type_file(post_files[i].filename)): 
+                    self.save_image(post_files,post,i)
+                elif validation_file.isVideoValid(validation_file.type_file(post_files[i].filename)):
+                    self.save_movie(post_files,post,i)
+                else:
+                    flash('Arquivo não aceita')
 
     def save_movie(self, post_files, post:Post, i):
         file_name = f'post_video{post._idPost}{i}.mp4'

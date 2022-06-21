@@ -1,4 +1,5 @@
 from flask import flash, render_template,request,redirect, session,url_for
+from validation.fileValidation import validation_file
 from config import server
 from factoryDao import dao
 from models import User 
@@ -55,7 +56,7 @@ class ControllerUser:
         return redirect(url_for('user_profile',pag='view', id=id))
 
     def image_save(self, id, user_image_file):
-        if user_image_file:
+        if user_image_file and validation_file.isImageValid(validation_file.type_file(user_image_file)):
             image_filename = f'user_image_profile{id}.jpg'
             upload_folder = server.app.config['UPLOAD_FOLDER']
             user_image_file.save(f'{upload_folder}/{image_filename}')

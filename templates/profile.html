@@ -139,7 +139,7 @@
                                       style="text-decoration: none; color: black;">
                                       <button class="btn btn-primary btn-sm" type="submit"
                                           style="background: rgb(0,0,0);border-radius: 14px;border-style: none;height: 35px;">Editar</button>
-                                      {% endif %}
+                                    {% endif %}
                                   </a>
                               </div>
                           </div>
@@ -161,7 +161,11 @@
           height: 40rem;
       }
   </style>
-
+{% if user._id != session['user_id'] %}
+<script>
+    document.querySelector('#new-publication').setAttribute('hidden','')
+</script>
+{% endif %}
   <div id="container" class="container-xl shadow p-3 mb-5 bg-body rounded">
       {% if session['login_user'] %}
       <div class="form-publication" hidden>
@@ -183,7 +187,28 @@
                   </div>
                   <div class="col-6">
                       <div class="mb-3">
-                          <label for="exampleFormControlTextarea1" class="form-label"><strong>Codigo</strong> </label>
+                        <div class="col-4">
+                            <label for="code-input" class="form-label"><strong>Codigo</strong></label>
+                            </div>
+                            <div class="col-8">
+                                <select class="form-select" id="programing-language" aria-label="Default select example" style="margin-bottom: 5px;">
+                                    <option selected value="Python">Python</option>
+                                    <option value="JavaScript">JavaScript</option>
+                                    <option value="CSS">CSS</option>
+                                    <option value="HTML">HTML</option>
+                                    <option value="C">C</option>
+                                    <option value="C++">C++</option>
+                                    <option value="Java">Java</option>
+                                    <option value="Ruby">Ruby</option>
+                                    <option value="C#">C#</option>
+                                    <option value="Go">Go</option>
+                                    <option value="Lua">Lua</option>
+                                    <option value="Dart">Dart</option>
+                                    <option value="Swift">Swift</option>
+                                    <option value="PHP">PHP</option>
+                                    <option value="TypeScript">TypeScript</option>
+                                  </select>
+                            </div>
                           <textarea class="form-control" id="exampleFormControlTextarea1" name="code"
                               rows="3"></textarea>
                       </div>
@@ -349,17 +374,20 @@
           </div>
           {% endfor %}
           {% else %}
-
-          <div class="d-flex justify-content-center">
-            <div class="spinner-border" style="width: 20rem; height: 20rem;" role="status">
-              <span class="visually-hidden">Loading...</span>
-            </div>
-
-          </div>
-          <div class="justify-content-center" style="display: flex; justify-content: space-evenly;">
-            <h4>Loading Forever</h4>
+        <div class="col align-self-center" style="display: flex; justify-content: space-evenly;">
+            <h1>{{user._name}} não fez nenhuma publicação ainda <i class="bi bi-emoji-frown"></i></h1>
         </div>
-        
+        <script>
+            const style = document.createElement('style')
+            style.innerHTML += `
+            #container{
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+            }
+            `
+            document.head.appendChild(style);
+        </script>
           {% endif %}
       </div>
   </div>
