@@ -43,6 +43,7 @@ SQL_LIST_POST_BY_USER = '''
                 FROM Post 
                 LEFT JOIN users ON users.idUser = Post.User_idUser
                 WHERE User_idUser = %s
+                ORDER BY created_at DESC
 '''
 
 SQL_CREATE_POST = 'INSERT INTO post (title, description, User_iduser) VALUES (%s,%s,%s) RETURNING idPost'
