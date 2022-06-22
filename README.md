@@ -1,7 +1,7 @@
 # CodeBooks
 
 ## Site
-  https://codesbook.herokuapp.com/
+  http://138.197.67.45/
   
 ## Sobre
 <p>O projeto consiste em uma rede social simples onde será possivel conversas, postagem, grupos e fazer amigos. O foco da rede social seria para programação e tecnologia, sendo possivel compartilhar codigos de qualquer linguagem.
